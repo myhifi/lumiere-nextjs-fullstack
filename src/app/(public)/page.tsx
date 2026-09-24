@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MenuItemCard } from "@/components/menu/MenuItemCard";
+export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   // جلب الأطباق المميزة للعرض في الصفحة الرئيسية
