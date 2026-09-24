@@ -1,30 +1,24 @@
 // ═══════════════════════════════════════════════════
 // 🔌 Prisma Client Singleton
 // ═══════════════════════════════════════════════════
-// الهدف: ضمان وجود نسخة واحدة فقط من PrismaClient في التطبيق
-// ملاحظة: نحدد مسار قاعدة البيانات بشكل مطلق (Absolute Path) لتفادي
-//          اختلاف تفسير المسار النسبي بين Prisma CLI و Next.js
+// الهدف: نسخة واحدة من PrismaClient لكل التطبيق
+// الفائدة: تجنّب استنزاف اتصالات قاعدة البيانات
+//
+// ملاحظة: في PostgreSQL (عبر Neon)، نستخدم DATABASE_URL مباشرة
+// من .env — لا حاجة لحساب مسار مطلق كما كنا مع SQLite.
 
-import path from 'node:path'
-import { PrismaClient } from '../generated/prisma/client'
+import { PrismaClient } from "../generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
-}
-
-// بناء مسار مطلق لملف قاعدة البيانات في التطوير (SQLite)
-// في الإنتاج (PostgreSQL)، لن نحتاج هذا السطر — سنستخدم DATABASE_URL مباشرة
-const sqlitePath = path
-  .join(process.cwd(), 'prisma', 'dev.db')
-  .replace(/\\/g, '/') // Windows: نحوّل \ إلى / لصيغة URI
+  prisma: PrismaClient | undefined;
+};
 
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    datasourceUrl: `file:${sqlitePath}`,
-    log: ['error', 'warn'],
-  })
+    log: ["error", "warn"],
+  });
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
 }
