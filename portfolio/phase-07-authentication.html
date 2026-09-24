@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 7 — Authentication · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+.filetree .indent-4 { padding-left: 5rem; }
+
+/* ─── Flow Diagram ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Layers (Auth flow / decisions) ─── */
+.layers { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.layer { padding: 0.75rem 1.25rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; border-left: 4px solid; }
+.layer.client { background: #fdecea; border-color: #c0392b; color: #7a1c1c; }
+.layer.edge { background: #fef5e7; border-color: #e67e22; color: #7a4a12; }
+.layer.node { background: #eaf7ef; border-color: #27ae60; color: #1e5a3a; }
+.layer.db { background: #eaf0fa; border-color: #2e6fc0; color: #1a3d75; }
+.layer strong { color: inherit; }
+
+/* ─── Security Layers ─── */
+.sec-layers { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+.sec-row { display: grid; grid-template-columns: 60px 1fr; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
+.sec-row:last-child { border-bottom: none; }
+.sec-check { background: var(--danger); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+.sec-body { font-size: 0.85rem; }
+.sec-body code { font-size: 0.85em; }
+.sec-body .why { color: var(--fg-muted); font-size: 0.78rem; margin-top: 2px; }
+.sec-final { background: var(--success); color: #fff; padding: 0.75rem 1.25rem; border-radius: 8px; text-align: center; font-weight: 700; font-family: 'Consolas', monospace; font-size: 0.85rem; margin-top: 1rem; }
+
+/* ─── Terminal ─── */
+.terminal { background: #0d1117; color: #c9d1d9; border-radius: 10px; overflow: hidden; margin: 1rem 0; font-family: 'Consolas', monospace; font-size: 0.8rem; border: 1px solid #30363d; }
+.terminal-bar { background: #161b22; padding: 0.5rem 0.75rem; display: flex; gap: 0.4rem; border-bottom: 1px solid #30363d; }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; } .terminal-dot.yellow { background: #ffbd2e; } .terminal-dot.green { background: #27c93f; }
+.terminal-body { padding: 1rem 1.25rem; line-height: 1.7; }
+.terminal-body .cmd { color: #79c0ff; }
+.terminal-body .out { color: #c9d1d9; }
+.terminal-body .ok { color: #7ee787; }
+.terminal-body .warn { color: #ffa657; }
+.terminal-body .dim { color: #8b949e; }
+.terminal-body .accent { color: #d2a8ff; }
+.terminal-body .err { color: #ff7b72; }
+
+/* ─── Login Form Mock ─── */
+.login-mock {
+  max-width: 380px; margin: 1.5rem auto;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  direction: rtl;
+}
+.login-mock .lm-title { text-align: center; margin-bottom: 1.5rem; }
+.login-mock .lm-logo { font-size: 24px; font-weight: 700; color: var(--accent); letter-spacing: 1px; margin-bottom: 4px; }
+.login-mock .lm-sub { font-size: 12px; color: var(--fg-muted); }
+.login-mock .lm-field { margin-bottom: 1rem; }
+.login-mock .lm-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block; }
+.login-mock .lm-label .req { color: var(--accent); }
+.login-mock .lm-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; background: var(--bg); direction: ltr; }
+.login-mock .lm-error { background: #fdecea; border: 1px solid #f5b7b1; color: #922b21; padding: 10px 12px; border-radius: 8px; font-size: 12px; text-align: center; margin: 1rem 0; }
+.login-mock .lm-btn { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: 999px; font-weight: 600; font-size: 14px; margin-top: 0.5rem; }
+.login-mock .lm-footer { text-align: center; font-size: 11px; color: var(--fg-muted); margin-top: 1rem; }
+
+/* ─── Security Test Grid ─── */
+.test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.test-item { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--success); border-radius: 8px; padding: 1rem 1.25rem; }
+.test-item .test-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.test-item .test-num { font-size: 0.7rem; color: var(--accent-dark); font-weight: 700; letter-spacing: 1px; }
+.test-item .test-badge { background: var(--success); color: #fff; font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700; }
+.test-item .test-name { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.35rem; }
+.test-item .test-desc { font-size: 0.78rem; color: var(--fg-muted); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .sec-row { grid-template-columns: 1fr; }
+  .sec-check { margin-bottom: 0.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 07</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#decision">Auth Strategy Decisions</a>
+      <a href="#comparison">Credentials vs OAuth</a>
+      <a href="#sessions">JWT vs Database Sessions</a>
+      <a href="#adapter">Why No PrismaAdapter</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#user-model">User Model</a>
+      <a href="#types">TypeScript Augmentation</a>
+      <a href="#bcrypt">Bcrypt Concepts</a>
+      <a href="#password">password.ts</a>
+      <a href="#pw-tests">Password Tests</a>
+      <a href="#config">auth.config.ts</a>
+      <a href="#edge">Edge Runtime Problem</a>
+      <a href="#auth">auth.ts</a>
+      <a href="#authorize">authorize() Security</a>
+      <a href="#handler">Route Handler</a>
+      <a href="#login-form">LoginForm</a>
+      <a href="#login-deep">redirect: false Deep-Dive</a>
+      <a href="#login-page">/login Page</a>
+      <a href="#middleware">middleware.ts</a>
+      <a href="#matcher">Matcher Scoping</a>
+      <a href="#seed">create-admin.ts</a>
+      <a href="#flow">Auth Flow Trace</a>
+      <a href="#sec-tests">8 Security Tests</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#polish">Polish Contributions</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 07 · Authentication</div>
+      <h1>Auth.js v5, Credentials Provider &amp; Role-Based Access</h1>
+      <p class="lede">Build a complete authentication system from scratch — no Google OAuth, no paid services, no black boxes. Uses Auth.js v5 with credentials, bcrypt password hashing, JWT sessions, Edge middleware, and a User table with role-based access.</p>
+      <div class="stack">
+        <span>Auth.js v5</span><span>Credentials</span><span>Bcrypt</span>
+        <span>JWT Sessions</span><span>Edge Middleware</span><span>RBAC</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Protect the admin dashboard behind a real login system that requires zero external services, zero paid tiers, and zero credit cards.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><code>User</code> model in <code>schema.prisma</code> with <code>email</code>, <code>passwordHash</code>, <code>role</code>, <code>isActive</code>.</li>
+        <li><code>src/lib/auth/password.ts</code> — bcrypt hash + verify utilities.</li>
+        <li><code>src/auth.config.ts</code> — Edge-safe Auth.js configuration.</li>
+        <li><code>src/auth.ts</code> — Node-only Auth.js config extending the above.</li>
+        <li><code>src/app/api/auth/[...nextauth]/route.ts</code> — HTTP bridge.</li>
+        <li><code>src/components/auth/LoginForm.tsx</code> — RTL Arabic login form.</li>
+        <li><code>src/app/login/page.tsx</code> — login page with redirect-if-authenticated.</li>
+        <li><code>src/middleware.ts</code> — protects <code>/admin/*</code> at the Edge.</li>
+        <li><code>scripts/create-admin.ts</code> — idempotent admin seeder.</li>
+        <li><code>src/types/next-auth.d.ts</code> — TypeScript augmentation for <code>session.user.id</code> and <code>role</code>.</li>
+      </ol>
+    </section>
+
+    <section id="decision">
+      <h2><span class="num">2</span> Architectural Decision — Auth Strategy</h2>
+      <p><strong>Three questions, three decisions:</strong></p>
+      <table>
+        <thead><tr><th>Question</th><th>Options</th><th>Chosen</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Who signs in?</strong></td><td>Credentials / OAuth / Magic Link</td><td><strong>Credentials only</strong></td><td>Only admins need accounts; zero external dependencies</td></tr>
+          <tr><td><strong>How to store sessions?</strong></td><td>JWT / Database</td><td><strong>JWT</strong></td><td>No <code>Session</code> table, no per-request DB lookup</td></tr>
+          <tr><td><strong>Need PrismaAdapter?</strong></td><td>Yes / No</td><td><strong>No</strong></td><td>Adapter targets OAuth tables we don't use</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <strong>Zero cost guarantees</strong>
+        <ul style="margin:0.5rem 0 0">
+          <li>No Google Cloud console setup.</li>
+          <li>No Resend API key required (for login).</li>
+          <li>No credit card anywhere.</li>
+          <li>No <code>Account</code>, <code>Session</code>, or <code>VerificationToken</code> tables.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <h2><span class="num">3</span> Credentials vs OAuth vs Magic Link</h2>
+      <table>
+        <thead><tr><th>Provider</th><th>Signup Flow</th><th>External Service</th><th>Card Required</th><th>Fits Lumière?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Credentials</strong></td><td>Email + password</td><td>None</td><td>No</td><td>✅ Yes</td></tr>
+          <tr><td>Google OAuth</td><td>Google popup</td><td>Google Cloud</td><td>No (but console setup)</td><td>❌ Overkill</td></tr>
+          <tr><td>GitHub OAuth</td><td>GitHub popup</td><td>GitHub</td><td>No (but console setup)</td><td>❌ Wrong audience</td></tr>
+          <tr><td>Magic Link</td><td>Email link</td><td>Resend/SMTP</td><td>Yes for production</td><td>❌ Needs paid tier</td></tr>
+          <tr><td>SMS OTP</td><td>SMS code</td><td>Twilio</td><td>Yes</td><td>❌ Paid</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Verdict:</strong> Credentials only. Restaurant staff get an email and password from the owner. Guests never register.</p>
+    </section>
+
+    <section id="sessions">
+      <h2><span class="num">4</span> JWT vs Database Sessions</h2>
+      <table>
+        <thead><tr><th>Feature</th><th>JWT</th><th>Database Sessions</th></tr></thead>
+        <tbody>
+          <tr><td>Storage</td><td>Encrypted cookie</td><td>Row in <code>Session</code> table</td></tr>
+          <tr><td>Per-request DB hit</td><td>None</td><td>One <code>SELECT</code></td></tr>
+          <tr><td>Instant revocation</td><td>No</td><td>Yes</td></tr>
+          <tr><td>Scaling</td><td>Zero state</td><td>Shared DB required</td></tr>
+          <tr><td><strong>Chosen</strong></td><td>✅</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Rationale:</strong> For a single-restaurant dashboard with a handful of staff, JWT is optimal. Revocation isn't critical — a role change or password reset takes effect on next login. If a session must be killed immediately, rotating <code>AUTH_SECRET</code> invalidates all JWTs at once.</p>
+    </section>
+
+    <section id="adapter">
+      <h2><span class="num">5</span> Why NO PrismaAdapter?</h2>
+      <p><strong>What PrismaAdapter adds:</strong></p>
+      <ul>
+        <li><code>Account</code> table — links OAuth accounts to users.</li>
+        <li><code>Session</code> table — server-side sessions.</li>
+        <li><code>VerificationToken</code> table — Magic Link tokens.</li>
+      </ul>
+      <p><strong>Why we skip it:</strong></p>
+      <ul>
+        <li>We use <strong>Credentials</strong> → no <code>Account</code> needed.</li>
+        <li>We use <strong>JWT</strong> → no <code>Session</code> table needed.</li>
+        <li>We use <strong>no Magic Link</strong> → no <code>VerificationToken</code> needed.</li>
+      </ul>
+      <div class="callout">
+        <strong>Result</strong>
+        Three fewer tables, zero adapter imports, no stale <code>@auth/prisma-adapter</code> initialization cost. The package remains installed (harmless) but unused.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">6</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npx prisma migrate dev --name add_user_model</code></td><td>Create the <code>users</code> table</td></tr>
+          <tr><td>2</td><td><code>tasklist | findstr node</code></td><td>Diagnose <code>EPERM</code> (Windows-only)</td></tr>
+          <tr><td>3</td><td><code>taskkill /F /IM node.exe</code></td><td>Force-kill orphan Node processes</td></tr>
+          <tr><td>4</td><td><code>del src\generated\prisma\query_engine-windows.dll.node.tmp*</code></td><td>Remove stale temp engine files</td></tr>
+          <tr><td>5</td><td><code>npx prisma generate</code></td><td>Regenerate Prisma Client</td></tr>
+          <tr><td>6</td><td><code>npx tsx scripts/test-password.ts</code></td><td>Verify bcrypt hash + verify</td></tr>
+          <tr><td>7</td><td><code>node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"</code></td><td>Generate <code>AUTH_SECRET</code></td></tr>
+          <tr><td>8</td><td><code>npx tsc --noEmit</code></td><td>Type-check (silent = success)</td></tr>
+          <tr><td>9</td><td><code>Remove-Item -Recurse -Force .next</code></td><td>Clear Next.js cache (fixes Edge stale chunks)</td></tr>
+          <tr><td>10</td><td><code>npm run dev</code></td><td>Start dev server</td></tr>
+          <tr><td>11</td><td><code>npm run db:admin</code></td><td>Seed the first admin user</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">7</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">lumiere-nextjs-fullstack/</span></div>
+        <div class="indent-1"><span class="dir new">scripts/</span></div>
+        <div class="indent-2"><span class="file new">create-admin.ts</span></div>
+        <div class="indent-2"><span class="file new">test-password.ts</span></div>
+        <div class="indent-1"><span class="dir">src/</span></div>
+        <div class="indent-2"><span class="dir">app/</span></div>
+        <div class="indent-3"><span class="dir new">api/auth/[...nextauth]/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">route.ts</span></div>
+        <div class="indent-3"><span class="dir new">login/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">page.tsx</span></div>
+        <div class="indent-2"><span class="dir">components/</span></div>
+        <div class="indent-3"><span class="dir new">auth/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">LoginForm.tsx</span></div>
+        <div class="indent-2"><span class="dir">lib/</span></div>
+        <div class="indent-3"><span class="dir new">auth/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">password.ts</span></div>
+        <div class="indent-2"><span class="dir new">types/</span></div>
+        <div class="indent-3"><span class="file new">next-auth.d.ts</span></div>
+        <div class="indent-2"><span class="file new">auth.config.ts</span> <span class="note">← Edge-safe</span></div>
+        <div class="indent-2"><span class="file new">auth.ts</span> <span class="note">← Node config</span></div>
+        <div class="indent-2"><span class="file new">middleware.ts</span> <span class="note">← Edge guard</span></div>
+      </div>
+    </section>
+
+    <section id="user-model">
+      <h2><span class="num">8</span> User Model — schema.prisma</h2>
+      <pre><code>model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("STAFF")
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}</code></pre>
+      <table>
+        <thead><tr><th>Field</th><th>Purpose</th><th>Security Note</th></tr></thead>
+        <tbody>
+          <tr><td><code>id</code></td><td>Primary key (CUID)</td><td>Sortable, collision-resistant</td></tr>
+          <tr><td><code>email</code></td><td>Login identifier</td><td><code>@unique</code> prevents duplicates</td></tr>
+          <tr><td><code>passwordHash</code></td><td><strong>Bcrypt hash</strong> (60 chars)</td><td>Never plain text; name reminds developers</td></tr>
+          <tr><td><code>name</code></td><td>Display name</td><td>Shown in Navbar and dashboard</td></tr>
+          <tr><td><code>role</code></td><td><code>ADMIN</code> or <code>STAFF</code></td><td>Defaults to lowest privilege</td></tr>
+          <tr><td><code>isActive</code></td><td>Disable without delete</td><td>Terminated employees</td></tr>
+          <tr><td><code>lastLoginAt</code></td><td>Audit trail</td><td>Fires on successful login</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>Security-first default</strong>
+        <code>role: "STAFF"</code> — even if a bug forgets to set a role, the least-privilege value applies.
+      </div>
+    </section>
+
+    <section id="types">
+      <h2><span class="num">9</span> TypeScript Augmentation — next-auth.d.ts</h2>
+      <pre><code>import type { DefaultSession } from "next-auth";
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: string;
+    } &amp; DefaultSession["user"];
+  }
+
+  interface User {
+    role: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+  }
+}</code></pre>
+      <p><strong>What <code>declaration merging</code> does:</strong> Extends Auth.js's built-in <code>Session</code>, <code>User</code>, and <code>JWT</code> interfaces. Enables <code>session.user.role</code> and <code>session.user.id</code> across the app without <code>as</code> casts everywhere.</p>
+      <div class="callout warn">
+        <strong>Auth.js v5 beta caveat</strong>
+        The <code>JWT</code> interface augments less reliably than <code>Session</code> in v5 beta. In the <code>session()</code> callback, we use a single <code>token as { id: string; role: string }</code> cast to bridge the gap. Documented as a Polish item for when v5 stabilizes.
+      </div>
+    </section>
+
+    <section id="bcrypt">
+      <h2><span class="num">10</span> Bcrypt Concepts — How Hashing Works</h2>
+      <p><strong>Why hashing (not encryption):</strong> Encryption is reversible — decrypt to get the original. Hashing is one-way — impossible to reverse. A leaked database of bcrypt hashes is effectively useless to attackers.</p>
+
+      <h3>Bcrypt parameters</h3>
+      <table>
+        <thead><tr><th>Parameter</th><th>Value</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Salt</strong></td><td>128-bit random</td><td>Unique per password → same password produces different hashes</td></tr>
+          <tr><td><strong>Rounds</strong></td><td>10 → 2¹⁰ = 1,024 iterations</td><td>~50-400ms — slow enough to stop brute force, fast enough for users</td></tr>
+          <tr><td><strong>Output</strong></td><td>60 chars</td><td>Fixed length regardless of input password length</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Salt is embedded in the hash</h3>
+      <pre><code>$2b$10$NvjaWGsGkR9bq54pMMeZauWy3UIgHPYsTdwwX/mf6LqCyB9YauCW
+ │   │  └─── 22-char salt + hash payload
+ │   └────── cost factor (10)
+ └────────── algorithm version (2b)</code></pre>
+
+      <h3>Verification flow</h3>
+      <ol>
+        <li>Extract salt from stored hash.</li>
+        <li>Hash the candidate password with the same salt.</li>
+        <li>Compare byte-for-byte. If equal → match.</li>
+      </ol>
+    </section>
+
+    <section id="password">
+      <h2><span class="num">11</span> password.ts — Full File</h2>
+      <pre><code>import bcrypt from "bcryptjs";
+
+export const BCRYPT_ROUNDS = 10;
+export const MIN_PASSWORD_LENGTH = 8;
+
+export async function hashPassword(plainPassword: string): Promise&lt;string&gt; {
+  if (plainPassword.length &lt; MIN_PASSWORD_LENGTH) {
+    throw new Error(
+      `كلمة السر قصيرة جداً (الحد الأدنى ${MIN_PASSWORD_LENGTH} أحرف)`
+    );
+  }
+  return bcrypt.hash(plainPassword, BCRYPT_ROUNDS);
+}
+
+export async function verifyPassword(
+  plainPassword: string,
+  storedHash: string
+): Promise&lt;boolean&gt; {
+  try {
+    return await bcrypt.compare(plainPassword, storedHash);
+  } catch {
+    return false;
+  }
+}</code></pre>
+      <ul>
+        <li><code>bcryptjs</code> (not <code>bcrypt</code>) — pure JavaScript, no <code>node-gyp</code> compilation on Windows.</li>
+        <li><code>BCRYPT_ROUNDS = 10</code> — exported constant, changes propagate everywhere.</li>
+        <li><code>MIN_PASSWORD_LENGTH = 8</code> — enforces NIST/OWASP minimum at the utility layer.</li>
+        <li><code>verifyPassword</code> wraps <code>compare</code> in <code>try/catch</code> — malformed hashes return <code>false</code> instead of throwing.</li>
+        <li>Both functions are <code>async</code> — bcrypt is CPU-intensive; async keeps the event loop responsive.</li>
+      </ul>
+    </section>
+
+    <section id="pw-tests">
+      <h2><span class="num">12</span> Password Tests — Verified Results</h2>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-body">
+          <div class="out">🧪 اختبار password.ts</div>
+          <div class="out">══════════════════════════════════════════════════════════════</div>
+          <div class="out">&nbsp;</div>
+          <div class="out">📋 السيناريو 1: تشفير كلمة سر صحيحة</div>
+          <div class="out">   الـ Hash:       <span class="dim">$2b$10$NvjaWGsGkR9bq54pMMeZau...</span></div>
+          <div class="out">   الطول:         60 حرفاً</div>
+          <div class="out">   يستغرق:        <span class="ok">369ms</span> (10 rounds)</div>
+          <div class="out">&nbsp;</div>
+          <div class="out">📋 السيناريو 4: نفس كلمة السر تُنتج Hash مختلفاً (Salt)</div>
+          <div class="out">   Hash الأول:    <span class="dim">$2b$10$NvjaWGsGkR9bq54pMMeZaum...</span></div>
+          <div class="out">   Hash الثاني:   <span class="dim">$2b$10$hJlSZrOUvb3gQOGj9EjKgu7...</span></div>
+          <div class="out">   متطابقان؟     <span class="ok">✅ مختلفان (Salt يعمل)</span></div>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Test</th><th>Proves</th></tr></thead>
+        <tbody>
+          <tr><td>Round-trip hash → verify</td><td>Core functionality works</td></tr>
+          <tr><td>Wrong password rejected</td><td><code>compare</code> returns false correctly</td></tr>
+          <tr><td>Two hashes of same password differ</td><td>Salt is unique per call</td></tr>
+          <tr><td>Short password rejected</td><td>Length guard fires</td></tr>
+          <tr><td>Corrupt hash → false</td><td><code>try/catch</code> swallows malformed input</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: test-password.ts terminal output showing two different hashes</div>
+    </section>
+
+    <section id="config">
+      <h2><span class="num">13</span> auth.config.ts — Edge-Safe Config</h2>
+      <pre><code>import type { NextAuthConfig } from "next-auth";
+
+export const authConfig: NextAuthConfig = {
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+  providers: [], // Populated in auth.ts
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id as string;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      const t = token as { id: string; role: string };
+      session.user.id = t.id;
+      session.user.role = t.role;
+      return session;
+    },
+    authorized({ auth, request }) {
+      const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
+      if (isOnAdmin) return !!auth;
+      return true;
+    },
+  },
+};</code></pre>
+      <p><strong>Why this file is Edge-safe:</strong></p>
+      <ul>
+        <li>No <code>prisma</code> import.</li>
+        <li>No <code>bcrypt</code> import.</li>
+        <li>No <code>node:*</code> imports.</li>
+        <li>Only Auth.js types and callbacks that operate on plain objects.</li>
+      </ul>
+    </section>
+
+    <section id="edge">
+      <h2><span class="num">14</span> The Edge Runtime Problem — Why Two Files?</h2>
+      <div class="callout danger">
+        <strong>Symptom observed during development</strong>
+        <code>Failed to load external module node:path: TypeError: Native module not found: node:path</code> at <code>src/lib/prisma.ts:8:1</code>
+      </div>
+      <p><strong>The chain that broke:</strong></p>
+      <pre><code>middleware.ts (Edge Runtime)
+    └── imports auth.ts
+            └── imports prisma.ts
+                    └── imports 'node:path'  ❌ Edge can't load Node built-ins</code></pre>
+      <table>
+        <thead><tr><th>Capability</th><th>Edge Runtime</th><th>Node Runtime</th></tr></thead>
+        <tbody>
+          <tr><td><code>node:path</code>, <code>node:fs</code>, <code>node:crypto</code></td><td>❌</td><td>✅</td></tr>
+          <tr><td>Native <code>.dll</code>/<code>.node</code> binaries</td><td>❌</td><td>✅</td></tr>
+          <tr><td>Network APIs (<code>fetch</code>, <code>Request</code>)</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Run globally, low latency</td><td>✅</td><td>❌</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <strong>The fix — split configuration</strong>
+        <code>auth.config.ts</code> — Edge-safe (pages, session, callbacks). <code>auth.ts</code> — Node-only (extends config, adds Prisma-backed Credentials). Middleware imports only <code>auth.config.ts</code>. Result: Edge bundle shrinks from ~100 MB (with Prisma engine) to a few KB.
+      </div>
+    </section>
+
+    <section id="auth">
+      <h2><span class="num">15</span> auth.ts — Node Runtime Config</h2>
+      <pre><code>import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { verifyPassword } from "@/lib/auth/password";
+import { authConfig } from "./auth.config";
+
+const credentialsSchema = z.object({
+  email: z.string().trim().toLowerCase().email(),
+  password: z.string().min(1),
+});
+
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
+  providers: [
+    Credentials({
+      credentials: {
+        email: { label: "البريد", type: "email" },
+        password: { label: "كلمة السر", type: "password" },
+      },
+      async authorize(rawCredentials) {
+        const parsed = credentialsSchema.safeParse(rawCredentials);
+        if (!parsed.success) return null;
+
+        const { email, password } = parsed.data;
+        const user = await prisma.user.findUnique({ where: { email } });
+        if (!user) return null;
+        if (!user.isActive) return null;
+
+        const isValid = await verifyPassword(password, user.passwordHash);
+        if (!isValid) return null;
+
+        prisma.user.update({
+          where: { id: user.id },
+          data: { lastLoginAt: new Date() },
+        }).catch(() =&gt; {});
+
+        return {
+          id: user.id, email: user.email,
+          name: user.name, role: user.role,
+        };
+      },
+    }),
+  ],
+});</code></pre>
+      <p><strong>Four exports from NextAuth():</strong></p>
+      <table>
+        <thead><tr><th>Export</th><th>Used In</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>handlers</code></td><td><code>app/api/auth/[...nextauth]/route.ts</code></td><td>HTTP GET/POST handlers</td></tr>
+          <tr><td><code>auth</code></td><td>Server Components, Server Actions</td><td>Read session server-side</td></tr>
+          <tr><td><code>signIn</code></td><td>Server Actions (rarely)</td><td>Programmatic sign-in</td></tr>
+          <tr><td><code>signOut</code></td><td>Server Actions</td><td>Programmatic sign-out</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="authorize">
+      <h2><span class="num">16</span> authorize() Deep-Dive — Security Layers</h2>
+      <p><strong>The five returns of <code>null</code>:</strong></p>
+      <div class="sec-layers">
+        <div class="sec-row">
+          <div class="sec-check">1</div>
+          <div class="sec-body">
+            <code>if (!parsed.success) return null;</code>
+            <div class="why">Malformed input — Zod catches bad shapes first.</div>
+          </div>
+        </div>
+        <div class="sec-row">
+          <div class="sec-check">2</div>
+          <div class="sec-body">
+            <code>if (!user) return null;</code>
+            <div class="why">Email not found — cannot leak whether the account exists.</div>
+          </div>
+        </div>
+        <div class="sec-row">
+          <div class="sec-check">3</div>
+          <div class="sec-body">
+            <code>if (!user.isActive) return null;</code>
+            <div class="why">Account disabled — terminated employees cannot log in.</div>
+          </div>
+        </div>
+        <div class="sec-row">
+          <div class="sec-check">4</div>
+          <div class="sec-body">
+            <code>if (!isValid) return null;</code>
+            <div class="why">Wrong password — bcrypt compare returned false.</div>
+          </div>
+        </div>
+        <div class="sec-final">→ Auth.js converts all nulls into a generic "CredentialsSignin" error</div>
+      </div>
+
+      <h3>This prevents User Enumeration Attacks</h3>
+      <table>
+        <thead><tr><th>Different messages</th><th>Same message (ours)</th></tr></thead>
+        <tbody>
+          <tr><td>Attacker learns which emails exist</td><td>Attacker learns nothing</td></tr>
+          <tr><td>Can target known accounts</td><td>Must guess blindly</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Side effect — lastLoginAt update</h3>
+      <ul>
+        <li>Fired but <strong>not awaited</strong> (<code>fire-and-forget</code>).</li>
+        <li><code>.catch(() =&gt; {})</code> swallows errors — a logging failure must not block login.</li>
+        <li>Runs in parallel with the response serialization.</li>
+      </ul>
+    </section>
+
+    <section id="handler">
+      <h2><span class="num">17</span> Route Handler — Two Lines</h2>
+      <pre><code>import { handlers } from "@/auth";
+
+export const { GET, POST } = handlers;</code></pre>
+      <p><strong>That's the entire file.</strong> No logic here — everything lives in <code>auth.ts</code>.</p>
+      <table>
+        <thead><tr><th>Route</th><th>Method</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>/api/auth/session</code></td><td>GET</td><td>Returns current session JSON</td></tr>
+          <tr><td><code>/api/auth/csrf</code></td><td>GET</td><td>Generates CSRF token</td></tr>
+          <tr><td><code>/api/auth/providers</code></td><td>GET</td><td>Lists configured providers</td></tr>
+          <tr><td><code>/api/auth/signin</code></td><td>GET</td><td>Redirects to <code>/login</code></td></tr>
+          <tr><td><code>/api/auth/signin/credentials</code></td><td>POST</td><td>Processes login</td></tr>
+          <tr><td><code>/api/auth/signout</code></td><td>POST</td><td>Clears session cookie</td></tr>
+          <tr><td><code>/api/auth/callback/credentials</code></td><td>POST</td><td>Internal callback</td></tr>
+        </tbody>
+      </table>
+      <p><strong>File naming:</strong> <code>[...nextauth]</code> is a catch-all dynamic segment. One folder handles all seven routes above.</p>
+    </section>
+
+    <section id="login-form">
+      <h2><span class="num">18</span> LoginForm — Client Component</h2>
+      <pre><code>"use client";
+
+import { useState, type FormEvent } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormField, inputClasses } from "@/components/ui/FormField";
+
+type Result =
+  | { kind: "idle" }
+  | { kind: "submitting" }
+  | { kind: "error"; message: string };
+
+export function LoginForm() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [result, setResult] = useState&lt;Result&gt;({ kind: "idle" });
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setResult({ kind: "submitting" });
+
+    const response = await signIn("credentials", {
+      email, password, redirect: false,
+    });
+
+    if (!response || response.error) {
+      setResult({
+        kind: "error",
+        message: "البريد الإلكتروني أو كلمة السر غير صحيحة",
+      });
+      return;
+    }
+
+    router.push(callbackUrl);
+    router.refresh();
+  }
+
+  /* JSX continues */
+}</code></pre>
+
+      <h3>Rendered Preview</h3>
+      <div class="login-mock">
+        <div class="lm-title">
+          <div class="lm-logo">Lumière</div>
+          <div class="lm-sub">لوحة التحكم</div>
+        </div>
+        <div class="lm-field">
+          <label class="lm-label">البريد الإلكتروني <span class="req">*</span></label>
+          <input class="lm-input" value="wrong@example.com" readonly>
+        </div>
+        <div class="lm-field">
+          <label class="lm-label">كلمة السر <span class="req">*</span></label>
+          <input class="lm-input" type="password" value="••••••" readonly>
+        </div>
+        <div class="lm-error">البريد الإلكتروني أو كلمة السر غير صحيحة</div>
+        <button class="lm-btn">تسجيل الدخول</button>
+        <div class="lm-footer">هذه الصفحة مخصصة لفريق العمل فقط</div>
+      </div>
+      <div class="screenshot">Screenshot: /login page with the Arabic error message visible</div>
+    </section>
+
+    <section id="login-deep">
+      <h2><span class="num">19</span> LoginForm Deep-Dive — redirect: false</h2>
+      <table>
+        <thead><tr><th>redirect</th><th>Behavior on failure</th></tr></thead>
+        <tbody>
+          <tr><td><code>true</code> (default)</td><td>Browser jumps to <code>/login?error=CredentialsSignin</code></td></tr>
+          <tr><td><code>false</code> (ours)</td><td>Function returns <code>{ error: "..." }</code>; we render Arabic message</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Why we override:</strong></p>
+      <ul>
+        <li>Auth.js's default error page is English and generic.</li>
+        <li>We need Arabic text styled to match Lumière.</li>
+        <li>Full control over navigation timing (push then refresh).</li>
+      </ul>
+
+      <h3>router.refresh() — the less-obvious necessity</h3>
+      <p>After <code>router.push(callbackUrl)</code>, the URL changes but <strong>cached Server Components still hold old session data</strong>. The Navbar won't show the user's name, and any server-side session read returns <code>null</code>.</p>
+      <p><code>router.refresh()</code> forces Next.js to re-fetch all Server Components for the current route. Combined with the newly-set JWT cookie, they re-render with the session.</p>
+      <pre><code>router.push(callbackUrl);  // navigate first
+router.refresh();          // then invalidate</code></pre>
+    </section>
+
+    <section id="login-page">
+      <h2><span class="num">20</span> /login Page — Server Component Shell</h2>
+      <pre><code>import { redirect } from "next/navigation";
+import { auth } from "@/auth";
+import { LoginForm } from "@/components/auth/LoginForm";
+
+export default async function LoginPage() {
+  const session = await auth();
+  if (session?.user) {
+    redirect("/admin");
+  }
+
+  return (
+    &lt;div className="min-h-[70vh] flex items-center justify-center px-4 py-12"&gt;
+      &lt;div className="w-full max-w-md"&gt;
+        &lt;div className="text-center mb-8"&gt;
+          &lt;h1 className="text-3xl font-bold text-accent mb-2"&gt;Lumière&lt;/h1&gt;
+          &lt;p className="text-muted text-sm"&gt;لوحة التحكم&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;LoginForm /&gt;
+        &lt;p className="text-center text-xs text-muted mt-6"&gt;
+          هذه الصفحة مخصصة لفريق العمل فقط
+        &lt;/p&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+      <p><strong>Why check session in the page:</strong> Redirects already-authenticated users away from login. Prevents "double login" confusion.</p>
+      <p><strong>Layout pattern:</strong> Server Component shell wraps the Client form. Only the form's JS hydrates.</p>
+    </section>
+
+    <section id="middleware">
+      <h2><span class="num">21</span> middleware.ts — Edge Guard</h2>
+      <pre><code>import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
+
+export default NextAuth(authConfig).auth;
+
+export const config = {
+  matcher: ["/admin/:path*"],
+};</code></pre>
+      <p><strong>Why not <code>import { auth } from "@/auth"</code>:</strong></p>
+      <ul>
+        <li>That module imports Prisma.</li>
+        <li>Prisma cannot load in Edge Runtime.</li>
+        <li>We instantiate a <strong>fresh</strong> <code>NextAuth(authConfig)</code> — Edge-safe by construction.</li>
+      </ul>
+
+      <h3>How redirection happens</h3>
+      <ul>
+        <li>The <code>authorized</code> callback (in <code>auth.config.ts</code>) returns <code>false</code> for unauthenticated <code>/admin</code> requests.</li>
+        <li>Auth.js <strong>automatically</strong> redirects to <code>pages.signIn</code> (<code>/login</code>).</li>
+        <li><code>callbackUrl</code> is preserved via Auth.js's internal cookie.</li>
+      </ul>
+    </section>
+
+    <section id="matcher">
+      <h2><span class="num">22</span> Matcher Scoping</h2>
+      <pre><code>matcher: ["/admin/:path*"]</code></pre>
+      <table>
+        <thead><tr><th>Path</th><th>Matched?</th></tr></thead>
+        <tbody>
+          <tr><td><code>/admin</code></td><td>✅</td></tr>
+          <tr><td><code>/admin/reservations</code></td><td>✅</td></tr>
+          <tr><td><code>/admin/menu/items</code></td><td>✅</td></tr>
+          <tr><td><code>/menu</code></td><td>❌</td></tr>
+          <tr><td><code>/api/auth/*</code></td><td>❌</td></tr>
+          <tr><td><code>/_next/static/*</code></td><td>❌</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>Performance rationale</strong>
+        Without <code>matcher</code>, middleware runs on every request — including CSS, JS, and auth endpoints (causing loops). The matcher restricts it to <code>/admin</code>.
+      </div>
+    </section>
+
+    <section id="seed">
+      <h2><span class="num">23</span> create-admin.ts — Idempotent Seeder</h2>
+      <pre><code>import "dotenv/config";
+import { PrismaClient } from "../src/generated/prisma/client";
+import { hashPassword } from "../src/lib/auth/password";
+
+const prisma = new PrismaClient();
+
+const ADMIN_DATA = {
+  email: "admin@lumiere.com",
+  password: "Admin@Lumiere2026",
+  name: "مدير Lumière",
+  role: "ADMIN",
+};
+
+async function main() {
+  const passwordHash = await hashPassword(ADMIN_DATA.password);
+
+  const admin = await prisma.user.upsert({
+    where: { email: ADMIN_DATA.email },
+    update: { passwordHash, name: ADMIN_DATA.name, role: ADMIN_DATA.role, isActive: true },
+    create: { email: ADMIN_DATA.email, passwordHash, name: ADMIN_DATA.name, role: ADMIN_DATA.role, isActive: true },
+  });
+
+  console.log("✅ تم بنجاح:");
+  console.log(`   ID:      ${admin.id}`);
+  console.log(`   البريد:  ${admin.email}`);
+}
+
+main()
+  .catch((error) =&gt; { console.error("❌ خطأ:", error); process.exit(1); })
+  .finally(async () =&gt; { await prisma.$disconnect(); });</code></pre>
+      <p><strong>Why this script is separate from <code>prisma/seed.ts</code>:</strong></p>
+      <table>
+        <thead><tr><th>Concern</th><th>seed.ts</th><th>create-admin.ts</th></tr></thead>
+        <tbody>
+          <tr><td>Deletes data first</td><td>✅ Yes</td><td>❌ No</td></tr>
+          <tr><td>Idempotent</td><td>No</td><td>✅ Yes (<code>upsert</code>)</td></tr>
+          <tr><td>Safe to re-run</td><td>❌</td><td>✅</td></tr>
+          <tr><td>Purpose</td><td>Demo data</td><td>First admin</td></tr>
+        </tbody>
+      </table>
+      <p><strong><code>upsert</code> semantics:</strong> create if missing, update if present. Running the script twice updates the admin's password rather than failing on a unique constraint.</p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-body">
+          <div class="out"><span class="cmd">&gt;</span> npm run db:admin</div>
+          <div class="out">&nbsp;</div>
+          <div class="out">👤 إنشاء / تحديث حساب المسؤول...</div>
+          <div class="out">&nbsp;</div>
+          <div class="out"><span class="ok">✅ تم بنجاح:</span></div>
+          <div class="out">   ID:      <span class="dim">cmu79yoon0000he4ct8l5wxs9</span></div>
+          <div class="out">   البريد:  <span class="cmd">admin@lumiere.com</span></div>
+          <div class="out">   الاسم:   مدير Lumière</div>
+          <div class="out">   الدور:   <span class="accent">ADMIN</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">24</span> Auth Flow Trace — Login with Valid Credentials</h2>
+      <div class="flow">
+        <div class="flow-step">1. User opens /login</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">2. Submits admin@lumiere.com / Admin@Lumiere2026</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. signIn("credentials", { redirect: false }) fires</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── HTTP POST /api/auth/callback/credentials ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. Route Handler → Auth.js:<br>a. Read AUTH_SECRET from .env<br>b. Execute authorize() with email + password<br>c. Zod validates shape</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">5. prisma.user.findUnique({ where: { email } })</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">6. verifyPassword(password, user.passwordHash) → true</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">7. Fire-and-forget update lastLoginAt<br>8. Return { id, email, name, role }</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">9. Auth.js creates JWT with those fields<br>10. Sets encrypted cookie: authjs.session-token</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">11. Responds 200 to the client</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── CLIENT ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">12. router.push("/admin") → middleware intercepts<br>13. middleware reads JWT cookie → authorized() → true</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">14. router.refresh() invalidates Server Component caches</div>
+      </div>
+      <p><strong>Boundary guarantees:</strong></p>
+      <ul>
+        <li>Passwords never leave the server in plaintext (only over HTTPS in production).</li>
+        <li>JWT cookie is HTTP-only + Secure (in production) + SameSite=Lax.</li>
+        <li>Prisma is never imported into client bundles.</li>
+      </ul>
+    </section>
+
+    <section id="sec-tests">
+      <h2><span class="num">25</span> Security Verification Tests — 8 Scenarios</h2>
+      <div class="test-grid">
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 1</span><span class="test-badge">PASS</span></div><div class="test-name">Valid credentials</div><div class="test-desc">Login succeeds → redirect to /admin</div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 2</span><span class="test-badge">PASS</span></div><div class="test-name">Session endpoint</div><div class="test-desc"><code>/api/auth/session</code> returns <code>{ user: { id, role } }</code></div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 3</span><span class="test-badge">PASS</span></div><div class="test-name">Authed user visits /admin</div><div class="test-desc">Passes middleware → 404 (page not built)</div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 4</span><span class="test-badge">PASS</span></div><div class="test-name">Unauthed user visits /admin</div><div class="test-desc">Redirected to <code>/login</code></div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 5</span><span class="test-badge">PASS</span></div><div class="test-name">Wrong password</div><div class="test-desc">Arabic error message shown</div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 6</span><span class="test-badge">PASS</span></div><div class="test-name">Wrong email</div><div class="test-desc"><strong>Same</strong> Arabic message (no enumeration)</div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 7</span><span class="test-badge">PASS</span></div><div class="test-name">Sign out</div><div class="test-desc">Cookie cleared; <code>/session</code> → <code>null</code></div></div>
+        <div class="test-item"><div class="test-head"><span class="test-num">TEST 8</span><span class="test-badge">PASS</span></div><div class="test-name">Prisma Studio check</div><div class="test-desc"><code>passwordHash</code> starts with <code>$2b$10$</code></div></div>
+      </div>
+      <h3>Prisma Studio verification (Test 8)</h3>
+      <table>
+        <thead><tr><th>Field</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>email</code></td><td>admin@lumiere.com</td></tr>
+          <tr><td><code>passwordHash</code></td><td><code>$2b$10$F7yN9pMoIZuQ06KGAPck6u1Y8B...</code></td></tr>
+          <tr><td><code>role</code></td><td>ADMIN</td></tr>
+          <tr><td><code>isActive</code></td><td>true</td></tr>
+          <tr><td><code>lastLoginAt</code></td><td>2026-09-19T13:48:22.048Z (updated after login)</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: Prisma Studio showing the User row with bcrypt hash</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">26</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>EPERM: query_engine-windows.dll.node</code></td><td><code>npx prisma generate</code> fails</td><td>Stop <code>npm run dev</code> + <code>prisma studio</code> first; delete <code>.tmp*</code> files</td></tr>
+          <tr><td>Type <code>unknown</code> not assignable to <code>string</code></td><td><code>session.user.id = token.id</code> fails</td><td>Cast: <code>const t = token as { id: string; role: string }</code></td></tr>
+          <tr><td><code>Failed to load node:path</code></td><td>Edge runtime error on <code>/admin</code></td><td>Split into <code>auth.config.ts</code> (Edge) + <code>auth.ts</code> (Node)</td></tr>
+          <tr><td>Middleware stale chunk</td><td>Error persists after edit</td><td><code>Remove-Item -Recurse -Force .next</code> + restart dev</td></tr>
+          <tr><td><code>AUTH_SECRET missing</code></td><td>Auth.js throws on startup</td><td>Add secret to <code>.env</code> and restart dev server</td></tr>
+          <tr><td>Redirect loop on <code>/login</code></td><td>Middleware matches <code>/login</code></td><td>Narrow <code>matcher</code> to <code>["/admin/:path*"]</code></td></tr>
+          <tr><td>Password hash looks different every run</td><td>Salt working correctly</td><td>Not a bug — expected behavior</td></tr>
+          <tr><td><code>CredentialsSignin</code> error in terminal</td><td>Auth.js logs failed attempts</td><td>Not a bug — security audit trail</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="polish">
+      <h2><span class="num">27</span> Polish Contributions</h2>
+      <p>Phase 7 adds four items to the accumulated Polish backlog:</p>
+      <ul>
+        <li><strong>Upgrade <code>middleware.ts</code> → <code>proxy.ts</code></strong> — Next.js 16 already runs it as <code>proxy.ts</code> internally; the deprecation warning will disappear after migration.</li>
+        <li><strong>"Forgot password" page</strong> — for staff password recovery via email.</li>
+        <li><strong>Staff management UI</strong> — add/edit/deactivate users from the dashboard.</li>
+        <li><strong>Remove the <code>as</code> cast in <code>session()</code></strong> — once Auth.js v5 stabilizes and JWT declaration merging works reliably.</li>
+      </ul>
+      <p><strong>Carried over from earlier phases:</strong></p>
+      <ul>
+        <li>Reservations &gt; 10 guests (multi-table assignment or phone handoff)</li>
+        <li>15-minute cleaning buffer between bookings</li>
+        <li>Window-table preference; VIP table exclusion</li>
+        <li>Custom reservation duration</li>
+        <li>Show <code>table.number</code> in Prisma Studio's first columns</li>
+        <li>Reminder email 1 hour before reservation</li>
+        <li>"Ask about this dish" WhatsApp button</li>
+        <li>"Modify reservation" link in confirmation email</li>
+        <li>Real WhatsApp Business number</li>
+        <li><code>npm run db:reset</code> script to automate EPERM recovery</li>
+        <li>Silence <code>schemastore.org</code> warning</li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">28</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>Auth.js</td><td>(library)</td><td>Next.js authentication library (formerly NextAuth)</td></tr>
+          <tr><td>bcrypt</td><td>(cryptographic algorithm)</td><td>Password-hashing algorithm; deliberately slow</td></tr>
+          <tr><td>CRUD</td><td>Create, Read, Update, Delete</td><td>The four basic data operations</td></tr>
+          <tr><td>CSRF</td><td>Cross-Site Request Forgery</td><td>Attack where a third-party site submits forms on your behalf</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char sortable ID</td></tr>
+          <tr><td>Edge Runtime</td><td>(Vercel)</td><td>V8-isolated environment without Node APIs</td></tr>
+          <tr><td>FK</td><td>Foreign Key</td><td>Column pointing to another table's PK</td></tr>
+          <tr><td>HTTP</td><td>HyperText Transfer Protocol</td><td>Browser-server communication protocol</td></tr>
+          <tr><td>JWT</td><td>JSON Web Token</td><td>Self-contained signed session token</td></tr>
+          <tr><td>Middleware</td><td>(Next.js)</td><td>Function that intercepts requests before routing</td></tr>
+          <tr><td>NIST</td><td>National Institute of Standards and Technology</td><td>US body issuing security guidelines</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Translates objects ↔ SQL</td></tr>
+          <tr><td>OWASP</td><td>Open Worldwide Application Security Project</td><td>Publishes top-10 security risks</td></tr>
+          <tr><td>PK</td><td>Primary Key</td><td>Column uniquely identifying a row</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>React components rendered on the server</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>Salt</td><td>(cryptographic)</td><td>Random data appended before hashing</td></tr>
+          <tr><td>UI</td><td>User Interface</td><td>What the user sees</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using the app</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">29</span> Phase 7 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li><code>User</code> model with <code>email</code>, <code>passwordHash</code>, <code>role</code>, <code>isActive</code>, <code>lastLoginAt</code></li>
+        <li>Prisma migration applied (<code>add_user_model</code>)</li>
+        <li>TypeScript augmentation for <code>Session</code>, <code>User</code>, <code>JWT</code></li>
+        <li>Bcrypt hash + verify utilities with 5 passing test scenarios</li>
+        <li>Auth.js configuration split into Edge-safe (<code>auth.config.ts</code>) and Node-only (<code>auth.ts</code>)</li>
+        <li>Credentials provider with Zod validation and User Enumeration defense</li>
+        <li>Route Handler under <code>/api/auth/[...nextauth]</code></li>
+        <li>RTL Arabic login page with error handling</li>
+        <li>Edge middleware protecting <code>/admin/*</code></li>
+        <li>Idempotent admin seeder script</li>
+        <li>8 security verification scenarios passed</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Zero external auth services</strong> — no Google, GitHub, Auth0, or paid tiers</li>
+        <li><strong>Zero credit card</strong> — pure local bcrypt + JWT</li>
+        <li><strong>Edge + Node runtime separation</strong> — Prisma kept out of Edge bundles</li>
+        <li><strong>Role-based access ready</strong> — <code>ADMIN</code> vs <code>STAFF</code> foundation laid</li>
+        <li><strong>Fail-safe login</strong> — <code>lastLoginAt</code> update cannot block authentication</li>
+        <li>Ready for Phase 8: Admin Dashboard</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-06-email-whatsapp.html">← Phase 6 (Email + WhatsApp)</a>
+      <span class="center">Phase 7 of 11</span>
+      <a href="phase-08-admin-dashboard.html">Phase 8 (Admin Dashboard) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

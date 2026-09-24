@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 8 — Admin Dashboard · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+.filetree .indent-4 { padding-left: 5rem; }
+
+/* ─── Layers ─── */
+.layers { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.layer { padding: 0.75rem 1.25rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; border-left: 4px solid; }
+.layer.client { background: #fdecea; border-color: #c0392b; color: #7a1c1c; }
+.layer.edge { background: #fef5e7; border-color: #e67e22; color: #7a4a12; }
+.layer.guard { background: #eaf0fa; border-color: #2e6fc0; color: #1a3d75; }
+.layer.action { background: #f5ecd9; border-color: #a88847; color: #5c4616; }
+.layer.db { background: #eaf7ef; border-color: #27ae60; color: #1e5a3a; }
+.layer strong { color: inherit; }
+
+/* ─── Flow ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Stats Grid ─── */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.stat-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
+.stat-box.highlight { border-color: var(--accent); background: var(--accent-light); }
+.stat-box .stat-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.stat-box .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent-dark); margin-bottom: 0.25rem; }
+.stat-box .stat-label { font-size: 0.85rem; color: var(--fg-muted); }
+.stat-box .stat-hint { font-size: 0.7rem; color: var(--fg-muted); margin-top: 0.5rem; background: var(--bg); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 999px; }
+
+/* ─── Route Map ─── */
+.route-map { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.75rem 1.5rem; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; font-family: 'Consolas', monospace; font-size: 0.82rem; }
+.route-map .file { background: var(--bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent); }
+.route-map .arrow { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+.route-map .url { background: var(--bg-code); color: #7cb4e8; padding: 0.5rem 0.75rem; border-radius: 6px; }
+
+/* ─── File Grid (CRUD summary) ─── */
+.file-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.file-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; border-top: 4px solid var(--accent); }
+.file-card .file-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; font-family: 'Consolas', monospace; }
+.file-card .file-desc { font-size: 0.8rem; color: var(--fg-muted); margin: 0; }
+.file-card .file-badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; margin-left: 0.5rem; }
+.file-card .file-badge.new { background: rgba(39,174,96,0.15); color: #1e7e45; }
+.file-card .file-badge.upd { background: rgba(230,126,34,0.15); color: #b8610e; }
+
+/* ─── Security Layers ─── */
+.sec-layers { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+.sec-row { display: grid; grid-template-columns: 60px 1fr; align-items: center; gap: 1rem; padding: 0.75rem 0; border-bottom: 1px dashed var(--border); }
+.sec-row:last-child { border-bottom: none; }
+.sec-check { background: var(--danger); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+.sec-body { font-size: 0.85rem; }
+.sec-body code { font-size: 0.85em; }
+.sec-body .why { color: var(--fg-muted); font-size: 0.78rem; margin-top: 2px; }
+
+/* ─── Screen Mock ─── */
+.screen-mock { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; display: flex; gap: 1rem; }
+.screen-mock .sm-sidebar { width: 140px; background: var(--bg-dark); border-radius: 8px; padding: 0.75rem; color: #fff; font-size: 0.75rem; }
+.screen-mock .sm-sidebar .sm-logo { color: var(--accent); font-weight: 700; margin-bottom: 0.75rem; font-size: 0.9rem; }
+.screen-mock .sm-sidebar .sm-link { padding: 0.35rem 0.5rem; border-radius: 4px; margin-bottom: 0.15rem; opacity: 0.7; }
+.screen-mock .sm-sidebar .sm-link.active { background: var(--accent); color: var(--bg-dark); font-weight: 700; opacity: 1; }
+.screen-mock .sm-main { flex: 1; }
+.screen-mock .sm-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+.screen-mock .sm-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+.screen-mock .sm-card { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.5rem; text-align: center; font-size: 0.7rem; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .sec-row { grid-template-columns: 1fr; }
+  .sec-check { margin-bottom: 0.5rem; }
+  .route-map { grid-template-columns: 1fr; gap: 0.5rem; }
+  .route-map .arrow { transform: rotate(90deg); justify-self: center; }
+  .screen-mock { flex-direction: column; }
+  .screen-mock .sm-sidebar { width: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 08</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#route-groups">Route Groups</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#dashboard">Dashboard Overview</a>
+      <a href="#statcard">StatCard Component</a>
+      <a href="#server-actions">Server Actions Pattern</a>
+      <a href="#reservations">Reservations CRUD</a>
+      <a href="#menu-crud">Menu CRUD</a>
+      <a href="#menu-form">Menu Form + slugify</a>
+      <a href="#categories-crud">Categories CRUD</a>
+      <a href="#cascade">Cascade Protection</a>
+      <a href="#tables-crud">Tables CRUD</a>
+      <a href="#table-protect">Reservation Protection</a>
+      <a href="#users-crud">Users CRUD</a>
+      <a href="#user-protect">Three Safety Layers</a>
+      <a href="#sidebar">AdminSidebar</a>
+      <a href="#active-link">Active Link & Logout</a>
+      <a href="#ui-components">UI Components</a>
+      <a href="#loading-error">Loading & Error</a>
+      <a href="#flow">Full CRUD Flow</a>
+      <a href="#security">Security Layers</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 08 · Admin Dashboard</div>
+      <h1>Complete CRUD, Role-Based Access &amp; Security Boundaries</h1>
+      <p class="lede">Build a full-featured admin dashboard with CRUD operations for five entities (Reservations, Menu, Categories, Tables, Users), server-side business-rule enforcement, role-based access control, and reusable UI primitives. Every operation is guarded by defense-in-depth layers — from Edge middleware to per-action authorization.</p>
+      <div class="stack">
+        <span>Route Groups</span><span>Server Actions</span><span>revalidatePath</span>
+        <span>useTransition</span><span>RBAC</span><span>Cascade Protection</span>
+        <span>Loading &amp; Error Boundaries</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Turn the authentication foundation from Phase 7 into a productive admin workspace where staff can manage the entire restaurant without touching code or the database directly.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Route Groups</strong> — separate <code>(public)</code>, <code>(auth)</code>, and <code>admin/</code> layouts.</li>
+        <li><strong>Dashboard Overview</strong> — 4 stat cards with real-time counts, powered by <code>Promise.all</code>.</li>
+        <li><strong>Reservations management</strong> — status transitions (confirm / cancel / complete / delete).</li>
+        <li><strong>Menu management</strong> — toggle availability, toggle featured, delete, plus add/edit forms.</li>
+        <li><strong>Categories management</strong> — CRUD with cascade protection.</li>
+        <li><strong>Tables management</strong> — CRUD with reservation-history protection.</li>
+        <li><strong>Users management</strong> — staff CRUD with three safety rules.</li>
+        <li><strong>AdminSidebar</strong> — active link highlighting + logout button + role-based link visibility.</li>
+        <li><strong>Reusable UI primitives</strong> — <code>EmptyState</code>, <code>LoadingSpinner</code>, <code>ErrorFallback</code>.</li>
+        <li><strong>Loading &amp; Error boundaries</strong> — per route group.</li>
+      </ol>
+    </section>
+
+    <section id="route-groups">
+      <h2><span class="num">2</span> Route Groups — Architectural Decision</h2>
+      <p><strong>The problem:</strong> The global <code>layout.tsx</code> from Phase 4 wrapped <em>every</em> page — including <code>/admin</code> — with the customer-facing <code>Navbar</code> and floating <code>WhatsAppButton</code>. The admin workspace deserves its own shell.</p>
+
+      <h3>The three groups</h3>
+      <div class="layers">
+        <div class="layer client"><strong>(public)/</strong> · Navbar + WhatsAppButton · pages: <code>/</code>, <code>/menu</code>, <code>/reserve</code></div>
+        <div class="layer edge"><strong>(auth)/</strong> · Centered minimal layout · page: <code>/login</code></div>
+        <div class="layer db"><strong>admin/</strong> · AdminSidebar + protected · pages: <code>/admin/*</code></div>
+      </div>
+
+      <div class="callout">
+        <strong>Key insight</strong>
+        Parentheses <code>()</code> are ignored by the router — <code>src/app/(public)/menu/page.tsx</code> still serves <code>/menu</code>. They exist purely to group <em>layout inheritance</em>, not URLs.
+      </div>
+
+      <h3>Files moved</h3>
+      <table>
+        <thead><tr><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td><code>src/app/page.tsx</code></td><td><code>src/app/(public)/page.tsx</code></td></tr>
+          <tr><td><code>src/app/menu/**</code></td><td><code>src/app/(public)/menu/**</code></td></tr>
+          <tr><td><code>src/app/reserve/page.tsx</code></td><td><code>src/app/(public)/reserve/page.tsx</code></td></tr>
+          <tr><td><code>src/app/login/page.tsx</code></td><td><code>src/app/(auth)/login/page.tsx</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">3</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">src/</span></div>
+        <div class="indent-1"><span class="dir">app/</span></div>
+        <div class="indent-2"><span class="file upd">layout.tsx</span> <span class="note">← root only: html/body</span></div>
+        <div class="indent-2"><span class="dir new">(public)/</span></div>
+        <div class="indent-3"><span class="file new">layout.tsx</span> <span class="note">← Navbar + WhatsApp</span></div>
+        <div class="indent-3"><span class="file">page.tsx</span></div>
+        <div class="indent-3"><span class="file new">loading.tsx</span></div>
+        <div class="indent-3"><span class="file new">error.tsx</span></div>
+        <div class="indent-3"><span class="dir">menu/ · reserve/</span></div>
+        <div class="indent-2"><span class="dir new">(auth)/</span></div>
+        <div class="indent-3"><span class="file new">layout.tsx</span></div>
+        <div class="indent-3"><span class="dir">login/</span></div>
+        <div class="indent-2"><span class="dir new">admin/</span></div>
+        <div class="indent-3"><span class="file new">layout.tsx</span> <span class="note">← AdminSidebar + redirect</span></div>
+        <div class="indent-3"><span class="file new">page.tsx</span> <span class="note">← Overview</span></div>
+        <div class="indent-3"><span class="file new">loading.tsx</span></div>
+        <div class="indent-3"><span class="file new">error.tsx</span></div>
+        <div class="indent-3"><span class="dir new">reservations/</span></div>
+        <div class="indent-3"><span class="dir new">menu/</span> <span class="note">← incl. new/ + [id]/edit/</span></div>
+        <div class="indent-3"><span class="dir new">categories/</span></div>
+        <div class="indent-3"><span class="dir new">tables/</span></div>
+        <div class="indent-3"><span class="dir new">users/</span></div>
+        <div class="indent-1"><span class="dir new">actions/</span></div>
+        <div class="indent-2"><span class="file new">admin-reservations.ts</span></div>
+        <div class="indent-2"><span class="file new">admin-menu.ts</span></div>
+        <div class="indent-2"><span class="file new">admin-categories.ts</span></div>
+        <div class="indent-2"><span class="file new">admin-tables.ts</span></div>
+        <div class="indent-2"><span class="file new">admin-users.ts</span></div>
+        <div class="indent-1"><span class="dir">components/admin/</span></div>
+        <div class="indent-2"><span class="file new">AdminSidebar.tsx</span></div>
+        <div class="indent-2"><span class="file new">StatCard.tsx</span></div>
+        <div class="indent-2"><span class="file new">ReservationRow.tsx</span></div>
+        <div class="indent-2"><span class="file new">MenuItemRow.tsx</span> <span class="file new">MenuItemForm.tsx</span></div>
+        <div class="indent-2"><span class="file new">CategoryRow.tsx</span> <span class="file new">CategoryForm.tsx</span></div>
+        <div class="indent-2"><span class="file new">TableRow.tsx</span> <span class="file new">TableForm.tsx</span></div>
+        <div class="indent-2"><span class="file new">UserRow.tsx</span> <span class="file new">UserForm.tsx</span></div>
+        <div class="indent-1"><span class="dir">components/ui/</span></div>
+        <div class="indent-2"><span class="file new">EmptyState.tsx</span> · <span class="file new">LoadingSpinner.tsx</span> · <span class="file new">ErrorFallback.tsx</span></div>
+      </div>
+    </section>
+
+    <section id="dashboard">
+      <h2><span class="num">4</span> Dashboard Overview — The Command Center</h2>
+      <p><strong>What the admin sees first:</strong> four key metrics, one click away from action.</p>
+
+      <h3>The four stat cards</h3>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value">0</div>
+          <div class="stat-label">حجوزات اليوم</div>
+          <div class="stat-hint">من 7 طاولة</div>
+        </div>
+        <div class="stat-box highlight">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value">2</div>
+          <div class="stat-label">قيد الانتظار</div>
+          <div class="stat-hint">بحاجة تأكيد</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">🍽️</div>
+          <div class="stat-value">13</div>
+          <div class="stat-label">أطباق متاحة</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">🪑</div>
+          <div class="stat-value">88%</div>
+          <div class="stat-label">نسبة تفعيل الطاولات</div>
+          <div class="stat-hint">7 من 8</div>
+        </div>
+      </div>
+
+      <h3>Query optimization — Promise.all</h3>
+      <pre><code>const [
+  todayCount,       // prisma.reservation.count
+  pendingCount,     // prisma.reservation.count
+  itemsCount,       // prisma.menuItem.count
+  activeTables,     // prisma.table.count
+  totalTables,      // prisma.table.count
+  recentReservations, // prisma.reservation.findMany (take: 5)
+] = await Promise.all([...])</code></pre>
+      <div class="callout success">
+        <strong>Performance rationale</strong>
+        Six independent queries run in parallel → total latency ≈ slowest query instead of sum of all six. Typical improvement: 500ms instead of 3s.
+      </div>
+    </section>
+
+    <section id="statcard">
+      <h2><span class="num">5</span> StatCard — Reusable Component</h2>
+      <pre><code>type StatCardProps = {
+  icon: string;
+  label: string;
+  value: string | number;
+  hint?: string;
+  href?: string;
+  accent?: boolean;
+};</code></pre>
+      <p><strong>Polymorphic choice:</strong> when <code>href</code> is provided, the card renders as a <code>&lt;Link&gt;</code> — turning numbers into clickable filters.</p>
+      <div class="callout warn">
+        <strong>Engineering lesson</strong>
+        A first attempt used <code>const Wrapper = href ? Link : "div"</code> with <code>{...props as any}</code>. ESLint's <code>no-explicit-any</code> rule rejected it. The cleaner solution: two explicit <code>if</code> branches — a <code>Link</code> when interactive, a <code>div</code> otherwise.
+      </div>
+    </section>
+
+    <section id="server-actions">
+      <h2><span class="num">6</span> Server Actions Pattern — Across All 5 Entities</h2>
+      <p>Every CRUD operation follows an identical structure:</p>
+      <pre><code>"use server";
+
+// 1. Authorization guard
+async function requireAdmin() {
+  const session = await auth();
+  if (!session?.user) return null;
+  if (session.user.role !== "ADMIN" &amp;&amp; session.user.role !== "STAFF") return null;
+  return session.user;
+}
+
+// 2. The action
+export async function someAction(input: unknown) {
+  const user = await requireAdmin();
+  if (!user) return { success: false, error: "غير مصرح" };
+
+  // 3. Zod validation
+  const parsed = schema.safeParse(input);
+  if (!parsed.success) return { success: false, error: "تحقق من البيانات", fieldErrors };
+
+  try {
+    // 4. Prisma mutation
+    await prisma.model.create / update / delete(...);
+
+    // 5. Cache invalidation
+    revalidatePath("/admin/...");
+    revalidatePath("/menu");
+    revalidatePath("/");
+    return { success: true, id };
+  } catch (error) {
+    console.error("[someAction]", error);
+    return { success: false, error: "فشل الإجراء" };
+  }
+}</code></pre>
+
+      <h3>Why revalidatePath?</h3>
+      <table>
+        <thead><tr><th>Path</th><th>Invalidated when</th></tr></thead>
+        <tbody>
+          <tr><td><code>/admin/&lt;section&gt;</code></td><td>Always — refresh the admin list</td></tr>
+          <tr><td><code>/admin</code></td><td>When counters change</td></tr>
+          <tr><td><code>/menu</code></td><td>When items / categories change</td></tr>
+          <tr><td><code>/</code></td><td>When featured items change</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Zero manual refetch</strong>
+        After a Server Action completes, Next.js purges the cached HTML for the listed paths. The next browser request re-runs the Server Components with fresh data — no <code>router.refresh()</code> required for the affected paths.
+      </div>
+    </section>
+
+    <section id="reservations">
+      <h2><span class="num">7</span> Reservations Management</h2>
+      <p><strong>Status lifecycle:</strong> <code>PENDING</code> → <code>CONFIRMED</code> → <code>COMPLETED</code> (or <code>CANCELLED</code> at any step).</p>
+
+      <h3>Available actions per status</h3>
+      <table>
+        <thead><tr><th>Current status</th><th>Actions shown</th></tr></thead>
+        <tbody>
+          <tr><td><code>PENDING</code></td><td>✓ تأكيد · ✗ إلغاء</td></tr>
+          <tr><td><code>CONFIRMED</code></td><td>✓ إكمال · ✗ إلغاء</td></tr>
+          <tr><td><code>CANCELLED</code></td><td>🗑 حذف (Admin only)</td></tr>
+          <tr><td><code>COMPLETED</code></td><td>🗑 حذف (Admin only)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>useTransition for loading state</h3>
+      <pre><code>const [isPending, startTransition] = useTransition();
+
+function handleStatus(status) {
+  startTransition(async () => {
+    const result = await updateReservationStatus(reservation.id, status);
+    if (!result.success) setError(result.error);
+  });
+}</code></pre>
+      <p><strong>Why not useState for loading:</strong> <code>useTransition</code> tracks the entire async Server Action — including its network round-trip. Simpler and more accurate.</p>
+    </section>
+
+    <section id="menu-crud">
+      <h2><span class="num">8</span> Menu Management — Toggles &amp; Delete</h2>
+      <p><strong>Three actions per item</strong>, plus visual badges for state:</p>
+
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-title">⊘ إخفاء / ✓ إظهار</div>
+          <p class="file-desc">Toggle <code>isAvailable</code> → item disappears from public menu immediately.</p>
+        </div>
+        <div class="file-card">
+          <div class="file-title">⭐ تمييز / ☆ إلغاء</div>
+          <p class="file-desc">Toggle <code>isFeatured</code> → item appears on the homepage featured section.</p>
+        </div>
+        <div class="file-card">
+          <div class="file-title">🗑 حذف (Admin)</div>
+          <p class="file-desc">Permanent deletion — restricted to <code>ADMIN</code> role only.</p>
+        </div>
+      </div>
+
+      <h3>Dual filtering</h3>
+      <p>Two independent filter bars — by category and by availability. Both preserved in URL:</p>
+      <pre><code>/admin/menu?category=desserts&amp;availability=available
+
+function buildURL(params) {
+  const qs = new URLSearchParams();
+  if (params.category) qs.set("category", params.category);
+  if (params.availability) qs.set("availability", params.availability);
+  return `/admin/menu${qs.toString() ? `?${qs}` : ""}`;
+}</code></pre>
+      <p><strong>Why buildURL:</strong> Each filter link preserves the other filter's value — clicking "متاح" while filtered by "حلويات" keeps the category filter intact.</p>
+    </section>
+
+    <section id="menu-form">
+      <h2><span class="num">9</span> Menu Item Form — Shared Between Add &amp; Edit</h2>
+      <p>One component serves both routes: <code>/admin/menu/new</code> and <code>/admin/menu/[id]/edit</code>.</p>
+
+      <pre><code>const isEdit = !!initialData?.id;
+
+const result = isEdit
+  ? await updateMenuItem(initialData.id, payload)
+  : await createMenuItem(payload);</code></pre>
+
+      <h3>Auto-slugify from English name</h3>
+      <pre><code>function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}</code></pre>
+      <p><strong>Behavior:</strong></p>
+      <ul>
+        <li><strong>In "new" mode:</strong> slug regenerates with every keystroke in the name field.</li>
+        <li><strong>In "edit" mode:</strong> slug stays frozen — protects existing URLs from silent changes.</li>
+        <li><strong>Arabic names:</strong> slugify strips all Arabic characters → admin enters slug manually (common pattern).</li>
+      </ul>
+
+      <h3>Duplicate slug detection</h3>
+      <pre><code>const duplicate = await prisma.menuItem.findFirst({
+  where: { slug: data.slug, NOT: { id: itemId } },
+});
+// NOT clause prevents matching the item against itself in edit mode</code></pre>
+      <div class="callout danger">
+        <strong>Tested and verified</strong>
+        Attempted to create a new item with slug <code>hummus</code> → rejected with "هذا المعرّف مستخدم بالفعل" shown under the slug field.
+      </div>
+    </section>
+
+    <section id="categories-crud">
+      <h2><span class="num">10</span> Categories Management</h2>
+      <p>Standard CRUD with two additional features over the menu:</p>
+      <ul>
+        <li><strong><code>displayOrder</code></strong> — numeric field controls sort order in filters and menu.</li>
+        <li><strong><code>_count</code> on read</strong> — each category displays its item count without a second query.</li>
+      </ul>
+
+      <pre><code>const categories = await prisma.category.findMany({
+  orderBy: { displayOrder: "asc" },
+  include: {
+    _count: { select: { items: true } },
+  },
+});</code></pre>
+
+      <p><strong>Duplicate detection runs on both <code>slug</code> and <code>name</code>:</strong></p>
+      <pre><code>const duplicate = await prisma.category.findFirst({
+  where: { OR: [{ slug }, { name }] },
+});
+const key = duplicate.slug === data.slug ? "slug" : "name";
+// Report the specific conflicting field</code></pre>
+    </section>
+
+    <section id="cascade">
+      <h2><span class="num">11</span> Cascade Protection — Category Deletion</h2>
+      <div class="callout danger">
+        <strong>The hidden trap</strong>
+        In Phase 2 we set <code>onDelete: Cascade</code> on <code>MenuItem.category</code>. Deleting a category therefore deletes all its items <em>silently</em>. This is correct for referential integrity but devastating in production if a user clicks "Delete" casually.
+      </div>
+
+      <h3>The guard</h3>
+      <pre><code>const itemsCount = await prisma.menuItem.count({ where: { categoryId: id } });
+if (itemsCount &gt; 0) {
+  return {
+    success: false,
+    error: `لا يمكن حذف التصنيف — يحتوي على ${itemsCount} طبق. انقل الأطباق لتصنيف آخر أولاً.`,
+  };
+}</code></pre>
+
+      <p><strong>Verification from dev.log:</strong></p>
+      <pre><code>deleteCategory("...")  in 25ms    ← protection rejected instantly (fail-fast)
+deleteCategory("...")  in 629ms   ← empty category actually deleted</code></pre>
+
+      <div class="callout success">
+        <strong>Fail-fast principle</strong>
+        The 25ms response proves the guard runs <em>before</em> any database write — no wasted work, no risk of a partial delete.
+      </div>
+    </section>
+
+    <section id="tables-crud">
+      <h2><span class="num">12</span> Tables Management</h2>
+      <p>Same CRUD pattern with one critical safety rule: <strong>tables with reservation history cannot be deleted</strong>.</p>
+
+      <h3>Fields</h3>
+      <ul>
+        <li><code>number</code> — unique integer (1, 2, 3...)</li>
+        <li><code>capacity</code> — number of seats</li>
+        <li><code>location</code> — enum-like string (<code>Indoor</code>, <code>Window</code>, <code>Outdoor</code>, <code>VIP</code>)</li>
+        <li><code>isActive</code> — enable/disable without deletion</li>
+      </ul>
+
+      <h3>Toggle instead of delete</h3>
+      <p>Disabled tables stop being considered by the Phase 5 booking engine but remain in the database for historical queries. The <code>isActive</code> flag is the primary lifecycle tool.</p>
+
+      <h3>Reservation count badge</h3>
+      <pre><code>include: { _count: { select: { reservations: true } } }
+// Row shows "1 حجز" badge if the table has any history</code></pre>
+    </section>
+
+    <section id="table-protect">
+      <h2><span class="num">13</span> Reservation-History Protection</h2>
+      <pre><code>const reservationsCount = await prisma.reservation.count({ where: { tableId: id } });
+if (reservationsCount &gt; 0) {
+  return {
+    success: false,
+    error: `لا يمكن حذف الطاولة — لها ${reservationsCount} حجز تاريخي. عطّلها بدلاً من ذلك.`,
+  };
+}</code></pre>
+
+      <h3>Why stricter than categories?</h3>
+      <table>
+        <thead><tr><th>Entity</th><th>Deletion allowed when</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Category</strong></td><td>Zero <em>current</em> items</td><td>Items can be reassigned</td></tr>
+          <tr><td><strong>Table</strong></td><td>Zero <em>historical</em> reservations</td><td>Reservations are financial records</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>Business reality</strong>
+        A deleted category leaves items easy to reassign. A deleted table orphans financial records — potentially a tax/legal problem. Stricter for a reason.
+      </div>
+    </section>
+
+    <section id="users-crud">
+      <h2><span class="num">14</span> Users Management — Admin Only</h2>
+      <p>Only users with <code>role === "ADMIN"</code> can access <code>/admin/users</code>. All other roles are redirected to <code>/admin</code>.</p>
+
+      <h3>Fields</h3>
+      <ul>
+        <li><code>email</code> — unique, set at creation, <strong>immutable</strong> afterward</li>
+        <li><code>name</code> — display name</li>
+        <li><code>role</code> — <code>ADMIN</code> or <code>STAFF</code></li>
+        <li><code>isActive</code> — soft-disable without deleting</li>
+        <li><code>password</code> / <code>newPassword</code> — creation requires it, edit makes it optional</li>
+      </ul>
+
+      <h3>Why email is immutable</h3>
+      <p>The email is the login identifier. Changing it would invalidate the target user's active session without warning. A safe policy: keep it fixed, create a new user if the email must change.</p>
+    </section>
+
+    <section id="user-protect">
+      <h2><span class="num">15</span> Three Safety Layers in User Management</h2>
+      <div class="sec-layers">
+        <div class="sec-row">
+          <div class="sec-check">1</div>
+          <div class="sec-body">
+            <code>if (id === admin.id &amp;&amp; data.role !== "ADMIN") return error;</code>
+            <div class="why">You cannot remove your own admin role.</div>
+          </div>
+        </div>
+        <div class="sec-row">
+          <div class="sec-check">2</div>
+          <div class="sec-body">
+            <code>if (id === admin.id &amp;&amp; !data.isActive) return error;</code>
+            <div class="why">You cannot disable your own account.</div>
+          </div>
+        </div>
+        <div class="sec-row">
+          <div class="sec-check">3</div>
+          <div class="sec-body">
+            <code>const otherActiveAdmins = await prisma.user.count({ where: { role: "ADMIN", isActive: true, NOT: { id } } });</code>
+            <div class="why">You cannot remove the last active admin — locks the entire system out.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <strong>Combined effect</strong>
+        These three rules make it impossible to accidentally lock the system out of admin access, no matter what combination of role changes or deletions is attempted.
+      </div>
+    </section>
+
+    <section id="sidebar">
+      <h2><span class="num">16</span> AdminSidebar — Command Palette</h2>
+      <p>The persistent left (right in RTL) navigation that appears on every admin page.</p>
+
+      <div class="screen-mock">
+        <div class="sm-sidebar">
+          <div class="sm-logo">Lumière</div>
+          <div class="sm-link">📊 نظرة عامة</div>
+          <div class="sm-link active">📅 الحجوزات</div>
+          <div class="sm-link">🍽️ الأطباق</div>
+          <div class="sm-link">📂 التصنيفات</div>
+          <div class="sm-link">🪑 الطاولات</div>
+          <div class="sm-link">👥 الموظفون</div>
+        </div>
+        <div class="sm-main">
+          <div class="sm-title">إدارة الحجوزات</div>
+          <div class="sm-cards">
+            <div class="sm-card">طاولة 3<br>4 أشخاص</div>
+            <div class="sm-card">طاولة 5<br>2 أشخاص</div>
+            <div class="sm-card">طاولة 8<br>6 أشخاص</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Role-based link visibility</h3>
+      <pre><code>{isAdmin &amp;&amp; (
+  &lt;&gt;
+    &lt;div className="border-t border-white/10 my-2" /&gt;
+    {adminOnlyLinks.map((link) =&gt; &lt;SidebarLink {...link} /&gt;)}
+  &lt;/&gt;
+)}</code></pre>
+      <p><strong>STAFF users</strong> see the divider and the "الموظفون" link — <strong>not rendered at all</strong>. Even if they guess the URL, the page redirects (belt and suspenders).</p>
+    </section>
+
+    <section id="active-link">
+      <h2><span class="num">17</span> Active Link &amp; Logout — UX Essentials</h2>
+
+      <h3>Active link highlighting</h3>
+      <pre><code>const pathname = usePathname();
+
+function isActive(href: string, exact?: boolean) {
+  if (exact) return pathname === href;
+  return pathname === href || pathname.startsWith(href + "/");
+}</code></pre>
+      <table>
+        <thead><tr><th>Path visited</th><th>Link highlighted</th></tr></thead>
+        <tbody>
+          <tr><td><code>/admin</code></td><td>نظرة عامة (exact)</td></tr>
+          <tr><td><code>/admin/menu</code></td><td>الأطباق</td></tr>
+          <tr><td><code>/admin/menu/new</code></td><td>الأطباق (prefix match)</td></tr>
+          <tr><td><code>/admin/menu/xyz/edit</code></td><td>الأطباق</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Why <code>exact</code> for /admin</strong>
+        Without <code>exact</code>, <code>/admin</code> would match every admin URL because everything starts with <code>/admin/</code>. The exact flag ensures "نظرة عامة" only lights up on the dashboard itself.
+      </div>
+
+      <h3>Logout button — the missing feature</h3>
+      <pre><code>function handleLogout() {
+  if (!confirm("تسجيل الخروج من لوحة التحكم؟")) return;
+  startTransition(async () => {
+    await signOut({ callbackUrl: "/login" });
+  });
+}</code></pre>
+      <div class="callout warn">
+        <strong>Real bug caught in testing</strong>
+        During Phase 8 verification, a user could not log out from the admin UI — the button didn't exist. This was corrected by adding the logout button, which now lives prominently in the sidebar footer.
+      </div>
+    </section>
+
+    <section id="ui-components">
+      <h2><span class="num">18</span> Reusable UI Components</h2>
+
+      <h3>EmptyState</h3>
+      <pre><code>&lt;EmptyState
+  icon="🍽️"
+  title="لا توجد أطباق بعد"
+  description="أضف أول طبق ليظهر في قائمة العملاء."
+  action={
+    &lt;Link href="/admin/menu/new" className="..."&gt;
+      + إضافة طبق جديد
+    &lt;/Link&gt;
+  }
+/&gt;</code></pre>
+      <p><strong>The <code>action</code> prop:</strong> optional <code>ReactNode</code>. Used on admin sections where "add new" makes sense. Omitted on <code>/admin/reservations</code> — because reservations come from customers, not from the admin.</p>
+
+      <h3>LoadingSpinner</h3>
+      <pre><code>&lt;div className="w-10 h-10 border-4 border-accent-light border-t-accent rounded-full animate-spin" /&gt;</code></pre>
+      <p>Pure CSS spinner — animated gold ring. Zero JavaScript, zero external icons.</p>
+
+      <h3>ErrorFallback</h3>
+      <pre><code>export function ErrorFallback({ error, reset }: { error: Error; reset: () =&gt; void }) {
+  return (
+    &lt;div&gt;
+      &lt;div&gt;⚠️&lt;/div&gt;
+      &lt;h2&gt;حدث خطأ غير متوقع&lt;/h2&gt;
+      &lt;button onClick={reset}&gt;حاول مرة أخرى&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="loading-error">
+      <h2><span class="num">19</span> Loading &amp; Error Boundaries</h2>
+
+      <p>Next.js recognizes two special file names per route segment:</p>
+
+      <table>
+        <thead><tr><th>File</th><th>When rendered</th></tr></thead>
+        <tbody>
+          <tr><td><code>loading.tsx</code></td><td>While the route segment's data is being fetched (React Suspense boundary).</td></tr>
+          <tr><td><code>error.tsx</code></td><td>When the segment throws an error. Must be a Client Component (uses <code>reset</code>).</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Files placed</h3>
+      <div class="file-grid">
+        <div class="file-card">
+          <div class="file-title">src/app/admin/loading.tsx<span class="file-badge new">NEW</span></div>
+          <p class="file-desc">Renders <code>LoadingSpinner</code> while admin pages fetch.</p>
+        </div>
+        <div class="file-card">
+          <div class="file-title">src/app/admin/error.tsx<span class="file-badge new">NEW</span></div>
+          <p class="file-desc">Renders <code>ErrorFallback</code> when an admin page throws.</p>
+        </div>
+        <div class="file-card">
+          <div class="file-title">src/app/(public)/loading.tsx<span class="file-badge new">NEW</span></div>
+          <p class="file-desc">Loading state for public pages.</p>
+        </div>
+        <div class="file-card">
+          <div class="file-title">src/app/(public)/error.tsx<span class="file-badge new">NEW</span></div>
+          <p class="file-desc">Error fallback for public pages.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Automatic wiring</strong>
+        No imports needed in parent layouts. Next.js discovers these files by name and inserts them into the render tree automatically.
+      </div>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">20</span> Full CRUD Flow — Reservations Example</h2>
+      <div class="flow">
+        <div class="flow-step">1. Admin clicks "✓ تأكيد" on a reservation row</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">2. handleStatus("CONFIRMED") wraps in startTransition<br>→ setIsPending(true)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. Server Action invoked: updateReservationStatus(id, "CONFIRMED")</div>
+        <div class="flow-label">─── SERVER ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. requireAdmin() — session verified<br>5. prisma.reservation.update({ data: { status: "CONFIRMED" } })</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">6. revalidatePath("/admin/reservations")<br>7. revalidatePath("/admin")</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">8. Return { success: true }</div>
+        <div class="flow-label">─── CLIENT ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">9. isPending back to false · Row re-renders with new status badge</div>
+      </div>
+      <p><strong>Total latency:</strong> ~500-800ms including network, DB write, cache invalidation, and DOM update.</p>
+    </section>
+
+    <section id="security">
+      <h2><span class="num">21</span> Defense-in-Depth — Five Layers</h2>
+      <div class="layers">
+        <div class="layer client"><strong>Layer 1 · Client Guard</strong> — Buttons hidden by role (<code>isAdmin</code> prop). No security, only UX.</div>
+        <div class="layer edge"><strong>Layer 2 · Edge Middleware</strong> — Redirects unauthenticated users away from <code>/admin/*</code> before any page loads.</div>
+        <div class="layer guard"><strong>Layer 3 · Layout Guard</strong> — <code>admin/layout.tsx</code> verifies the session — safety net if middleware is bypassed.</div>
+        <div class="layer action"><strong>Layer 4 · Server Action Guard</strong> — <code>requireAdmin()</code> runs on every mutation. Cannot be bypassed — the code lives server-side.</div>
+        <div class="layer db"><strong>Layer 5 · Business Rule Guard</strong> — Cascade protection, reservation-history checks, and last-admin rule prevent destructive mistakes.</div>
+      </div>
+      <div class="callout success">
+        <strong>Why so many layers</strong>
+        Each layer can fail independently (misconfiguration, middleware exception, session race). Defense-in-depth ensures no single point of failure compromises authorization.
+      </div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">22</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>Route Groups</td><td>Visit <code>/</code>, <code>/menu</code>, <code>/login</code>, <code>/admin</code></td><td>Public pages show Navbar · login is centered · admin shows sidebar</td></tr>
+          <tr><td>Dashboard counters</td><td>Visit <code>/admin</code></td><td>4 cards with real numbers</td></tr>
+          <tr><td>Reservation status transition</td><td>Click "تأكيد" on PENDING</td><td>Badge turns green · buttons change</td></tr>
+          <tr><td>Reservation filter</td><td>Click "مكتمل"</td><td>URL becomes <code>?status=COMPLETED</code></td></tr>
+          <tr><td>Menu availability toggle</td><td>Click "⊘ إخفاء"</td><td>Item disappears from <code>/menu</code></td></tr>
+          <tr><td>Menu featured toggle</td><td>Click "⭐ تمييز"</td><td>Item appears on <code>/</code></td></tr>
+          <tr><td>Category cascade protection</td><td>Delete a category with items</td><td>Rejected with clear Arabic message</td></tr>
+          <tr><td>Table reservation protection</td><td>Delete a table with reservations</td><td>Rejected with reservation count</td></tr>
+          <tr><td>User self-delete protection</td><td>Try to delete your own account</td><td>Button not rendered</td></tr>
+          <tr><td>User last-admin protection</td><td>Try to downgrade the last ADMIN</td><td>Rejected</td></tr>
+          <tr><td>Active link</td><td>Visit <code>/admin/menu</code></td><td>"الأطباق" gold-highlighted</td></tr>
+          <tr><td>Logout button</td><td>Click "🚪 تسجيل الخروج"</td><td>Confirm → redirect to <code>/login</code></td></tr>
+          <tr><td>STAFF access restriction</td><td>Login as STAFF, visit <code>/admin/users</code></td><td>Redirected to <code>/admin</code> (307)</td></tr>
+          <tr><td>EmptyState</td><td>Apply a filter with zero results</td><td>Icon + title + optional action button</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">23</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Missing <code>"use client"</code></td><td><code>useTransition</code> errors</td><td>Add at top of any interactive component</td></tr>
+          <tr><td>Forgetting <code>revalidatePath</code></td><td>Stale data after mutation</td><td>Call for every affected path</td></tr>
+          <tr><td>No <code>requireAdmin()</code></td><td>Any user can call the action</td><td>Guard at the start of every action</td></tr>
+          <tr><td>Cascade deletes silently</td><td>Orphaned data loss</td><td>Pre-check <code>_count</code> before delete</td></tr>
+          <tr><td>Slug duplicated across items</td><td>Unique constraint error</td><td>Check <code>findFirst</code> with <code>NOT: { id }</code></td></tr>
+          <tr><td>Deleting last admin</td><td>System locked out</td><td>Count other active admins first</td></tr>
+          <tr><td>Editing email in user form</td><td>Session invalidated</td><td>Disable email field in edit mode</td></tr>
+          <tr><td>Active link matches too broadly</td><td>All admin links highlighted</td><td>Use <code>exact: true</code> for the dashboard link</td></tr>
+          <tr><td>No logout button</td><td>User stuck in a session</td><td>Add <code>signOut()</code> button in sidebar</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">24</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>CRUD</td><td>Create, Read, Update, Delete</td><td>The four basic data operations</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char ID; sortable, URL-safe</td></tr>
+          <tr><td>FK</td><td>Foreign Key</td><td>Column pointing to another table's PK</td></tr>
+          <tr><td>HTTP</td><td>HyperText Transfer Protocol</td><td>Protocol for browser-server communication</td></tr>
+          <tr><td>JSX</td><td>JavaScript XML</td><td>React's HTML-like syntax</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Translates objects ↔ SQL</td></tr>
+          <tr><td>PK</td><td>Primary Key</td><td>Column uniquely identifying a row</td></tr>
+          <tr><td>RBAC</td><td>Role-Based Access Control</td><td>Permissions assigned by user role</td></tr>
+          <tr><td>RPC</td><td>Remote Procedure Call</td><td>Calls a function over a network</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>React components rendered on the server</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>SQL</td><td>Structured Query Language</td><td>Standard relational database language</td></tr>
+          <tr><td>UI</td><td>User Interface</td><td>What the user sees</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using an app</td></tr>
+          <tr><td>Zod</td><td>(library name)</td><td>TypeScript-first schema validation library</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">25</span> Phase 8 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Route Groups refactor — clean separation of public, auth, and admin layouts</li>
+        <li>Dashboard Overview with 4 stat cards and parallel queries</li>
+        <li>Reservations management with status lifecycle and filters</li>
+        <li>Menu management with availability and featured toggles</li>
+        <li>Menu item form with auto-slugify, shared between add and edit</li>
+        <li>Categories CRUD with cascade protection</li>
+        <li>Tables CRUD with reservation-history protection</li>
+        <li>Users CRUD with three-tier safety rules</li>
+        <li>AdminSidebar with active link highlighting and logout button</li>
+        <li>Reusable UI primitives: <code>EmptyState</code>, <code>LoadingSpinner</code>, <code>ErrorFallback</code></li>
+        <li>Loading and Error boundaries per route group</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Five-layer defense-in-depth</strong> — client, edge, layout, action, business rule</li>
+        <li><strong>Consistent action pattern</strong> — authorize → validate → mutate → revalidate</li>
+        <li><strong>Zero stale data</strong> — revalidatePath purges caches automatically</li>
+        <li><strong>Impossible to lock out</strong> — last-admin rule guarantees access</li>
+        <li><strong>Consistent UX</strong> — every list has empty/loading/error states</li>
+        <li>Ready for Phase 9: Deployment on Vercel + Neon PostgreSQL</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-07-authentication.html">← Phase 7 (Authentication)</a>
+      <span class="center">Phase 8 of 11</span>
+      <a href="phase-09-deployment.html">Phase 9 (Deployment) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

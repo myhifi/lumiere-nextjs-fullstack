@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 6 — Email + WhatsApp · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+  --whatsapp: #25d366;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+.filetree .indent-4 { padding-left: 5rem; }
+
+/* ─── Strategy Diagram ─── */
+.strategy {
+  display: grid; grid-template-columns: 1fr; gap: 0.5rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0;
+  font-family: 'Consolas', monospace; font-size: 0.82rem;
+  align-items: center;
+}
+.strategy-row { display: flex; justify-content: center; gap: 1rem; align-items: center; }
+.strategy-box { background: var(--bg); border: 2px solid var(--accent); padding: 0.65rem 1rem; border-radius: 8px; text-align: center; min-width: 200px; color: var(--fg); font-weight: 600; }
+.strategy-box.facade { background: var(--accent); color: #fff; border-color: var(--accent-dark); }
+.strategy-box.provider-1 { border-color: #7cb4e8; background: #eaf0fa; color: #1a3d75; }
+.strategy-box.provider-2 { border-color: var(--success); background: #eaf7ef; color: #1e5a3a; }
+.strategy-arrow { color: var(--accent); font-size: 1.2rem; font-weight: 700; }
+.strategy-label { font-size: 0.7rem; color: var(--fg-muted); text-align: center; font-style: italic; }
+
+/* ─── Flow Diagram ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Email Preview Mock ─── */
+.email-mock {
+  max-width: 480px; margin: 1.5rem auto;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  font-family: system-ui, sans-serif;
+}
+.email-mock .em-header { background: var(--accent); color: #fff; padding: 24px; text-align: center; }
+.email-mock .em-logo { font-size: 24px; font-weight: 700; letter-spacing: 1px; margin: 0; }
+.email-mock .em-tagline { font-size: 11px; margin-top: 4px; opacity: 0.9; }
+.email-mock .em-body { padding: 24px 20px; direction: rtl; text-align: right; }
+.email-mock .em-greeting { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.email-mock .em-text { font-size: 13px; color: #444; margin-bottom: 16px; line-height: 1.7; }
+.email-mock .em-details { background: #faf7f2; border-radius: 12px; padding: 8px 16px; margin: 16px 0; border: 1px solid #e5ddd0; }
+.email-mock .em-row { padding: 10px 0; border-bottom: 1px solid #e5ddd0; }
+.email-mock .em-row:last-child { border-bottom: none; }
+.email-mock .em-label { font-size: 11px; color: #6b6b6b; margin: 0; }
+.email-mock .em-value { font-size: 14px; font-weight: 600; color: #1a1a1a; margin: 2px 0 0; }
+.email-mock .em-value.highlight { font-size: 18px; color: var(--accent-dark); font-weight: 700; }
+.email-mock .em-footer { padding: 16px; text-align: center; font-size: 11px; color: #6b6b6b; border-top: 1px solid #e5ddd0; direction: rtl; }
+
+/* ─── Fail-Safe Diagram ─── */
+.failsafe {
+  display: grid; grid-template-columns: 1fr; gap: 0.5rem;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; margin: 1rem 0;
+  font-family: 'Consolas', monospace; font-size: 0.82rem;
+}
+.failsafe-outer { border: 2px dashed var(--danger); border-radius: 10px; padding: 1rem; background: #fef5f5; }
+.failsafe-outer-title { color: var(--danger); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.5rem; }
+.failsafe-inner { border: 2px solid var(--success); border-radius: 10px; padding: 1rem; background: #eaf7ef; margin-top: 0.5rem; }
+.failsafe-inner-title { color: var(--success); font-weight: 700; font-size: 0.8rem; margin-bottom: 0.5rem; }
+.failsafe-row { padding: 0.5rem 0; color: var(--fg); }
+
+/* ─── Code Terminal ─── */
+.terminal {
+  background: #0d1117; color: #c9d1d9;
+  border-radius: 10px; overflow: hidden; margin: 1rem 0;
+  font-family: 'Consolas', monospace; font-size: 0.8rem;
+  border: 1px solid #30363d;
+}
+.terminal-bar { background: #161b22; padding: 0.5rem 0.75rem; display: flex; gap: 0.4rem; border-bottom: 1px solid #30363d; }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; } .terminal-dot.yellow { background: #ffbd2e; } .terminal-dot.green { background: #27c93f; }
+.terminal-body { padding: 1rem 1.25rem; line-height: 1.7; }
+.terminal-body .cmd { color: #79c0ff; }
+.terminal-body .out { color: #c9d1d9; }
+.terminal-body .ok { color: #7ee787; }
+.terminal-body .warn { color: #ffa657; }
+.terminal-body .dim { color: #8b949e; }
+.terminal-body .accent { color: #d2a8ff; }
+
+/* ─── WhatsApp Button Preview ─── */
+.wa-preview { position: relative; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; height: 200px; margin: 1rem 0; overflow: hidden; }
+.wa-btn { position: absolute; bottom: 20px; left: 20px; background: var(--whatsapp); color: #fff; padding: 12px 20px; border-radius: 999px; display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.wa-btn svg { width: 22px; height: 22px; }
+.wa-note { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--fg-muted); font-size: 0.75rem; text-align: center; }
+.wa-note::before { content: "Preview area"; display: block; font-weight: 700; color: var(--fg); margin-bottom: 4px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .strategy-box { min-width: auto; font-size: 0.72rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 06</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#strategy">Strategy Pattern Decision</a>
+      <a href="#comparison">Django Comparison</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#types">Email Types</a>
+      <a href="#template-1">React Email Template (1)</a>
+      <a href="#template-2">React Email Template (2)</a>
+      <a href="#preview">Email Preview Mock</a>
+      <a href="#inline">Inline Styles Constraint</a>
+      <a href="#console">Console Provider</a>
+      <a href="#facade">send.ts Facade</a>
+      <a href="#env">.env Configuration</a>
+      <a href="#test-email">Test Script</a>
+      <a href="#html-preview">HTML Preview Artifact</a>
+      <a href="#wiring">Wiring to Server Action</a>
+      <a href="#failsafe">Fail-Safe Design</a>
+      <a href="#trace">End-to-End Trace</a>
+      <a href="#contact">Contact Constants</a>
+      <a href="#wa-button">WhatsApp Button</a>
+      <a href="#wa-deep">WhatsApp Deep-Dive</a>
+      <a href="#layout-int">Layout Integration</a>
+      <a href="#flow">Request Data Flow</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#screenshots">Screenshot Guide</a>
+      <a href="#polish">Polish Accumulated</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 06 · Email + WhatsApp</div>
+      <h1>Email Notifications &amp; WhatsApp Integration</h1>
+      <p class="lede">Deliver transactional emails to guests after every successful reservation and provide a one-tap WhatsApp channel for inquiries — all without requiring any paid service or credit card. Uses the Strategy Pattern for swappable providers and fail-safe delivery so email failures never break a reservation.</p>
+      <div class="stack">
+        <span>React Email</span><span>Resend (deferred)</span>
+        <span>Console Provider</span><span>Strategy Pattern</span>
+        <span>Fail-Safe Design</span><span>WhatsApp Deep Link</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Send Arabic confirmation emails to guests when a reservation is created — and keep a fast, one-tap WhatsApp channel always available — without breaking the bank or violating the strict no-card policy.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><code>src/lib/email/types.ts</code> — shared types for the email subsystem.</li>
+        <li><code>src/lib/email/templates/ReservationConfirmation.tsx</code> — RTL Arabic email template.</li>
+        <li><code>src/lib/email/providers/console.ts</code> — development email provider (prints to terminal).</li>
+        <li><code>src/lib/email/send.ts</code> — facade that selects the provider at runtime.</li>
+        <li>Wiring inside <code>src/actions/reservation.ts</code> — non-blocking email dispatch.</li>
+        <li><code>src/lib/constants/contact.ts</code> — WhatsApp number &amp; default message.</li>
+        <li><code>src/components/layout/WhatsAppButton.tsx</code> — floating button on every page.</li>
+      </ol>
+    </section>
+
+    <section id="strategy">
+      <h2><span class="num">2</span> Architectural Decision — Strategy Pattern</h2>
+      <p><strong>The problem:</strong> Every environment needs a different email backend.</p>
+      <table>
+        <thead><tr><th>Environment</th><th>Requirement</th><th>Solution</th></tr></thead>
+        <tbody>
+          <tr><td>Local development</td><td>No signup, no card, instant feedback</td><td><code>console</code> provider</td></tr>
+          <tr><td>Staging / Production</td><td>Real delivery to guests</td><td><code>resend</code> provider (deferred)</td></tr>
+          <tr><td>Future</td><td>Alternative (SendGrid, AWS SES, etc.)</td><td>Add another provider file</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Architecture Diagram</h3>
+      <div class="strategy">
+        <div class="strategy-row"><div class="strategy-box">actions/reservation.ts</div></div>
+        <div class="strategy-row"><span class="strategy-arrow">↓</span></div>
+        <div class="strategy-row"><div class="strategy-box facade">lib/email/send.ts (Facade)</div></div>
+        <div class="strategy-row"><span class="strategy-label">reads EMAIL_PROVIDER from .env</span></div>
+        <div class="strategy-row">
+          <span class="strategy-arrow">↙</span>
+          <span style="width:100px"></span>
+          <span class="strategy-arrow">↘</span>
+        </div>
+        <div class="strategy-row">
+          <div class="strategy-box provider-1">providers/console.ts</div>
+          <div class="strategy-box provider-2">providers/resend.ts</div>
+        </div>
+        <div class="strategy-row"><span class="strategy-label">prints to terminal · real delivery (deferred)</span></div>
+      </div>
+
+      <div class="callout success">
+        <strong>Engineering rationale</strong>
+        The Server Action never knows which provider is active. Switching from <code>console</code> to <code>resend</code> requires <strong>zero code changes</strong> — only one line in <code>.env</code>.
+      </div>
+    </section>
+
+    <section id="comparison">
+      <h2><span class="num">3</span> Comparison with Django Email Backends</h2>
+      <table>
+        <thead><tr><th>Concern</th><th>Django</th><th>Next.js (this project)</th></tr></thead>
+        <tbody>
+          <tr><td>Dev backend</td><td><code>console.EmailBackend</code></td><td><code>console</code> provider (custom)</td></tr>
+          <tr><td>Production backend</td><td><code>anymail.backends.resend</code></td><td><code>resend</code> provider (deferred)</td></tr>
+          <tr><td>Switch mechanism</td><td><code>settings.EMAIL_BACKEND</code></td><td><code>process.env.EMAIL_PROVIDER</code></td></tr>
+          <tr><td>Calling API</td><td><code>send_mail(...)</code></td><td><code>sendReservationConfirmation(...)</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Why start with console</h3>
+      <ul>
+        <li><strong>Zero signup required</strong> — no email address, no verification</li>
+        <li><strong>Zero credit card</strong> — absolute compliance with project constraint</li>
+        <li><strong>Instant feedback</strong> — terminal shows email within milliseconds</li>
+        <li><strong>Deterministic testing</strong> — email content reproducible across runs</li>
+        <li><strong>Drop-in replacement</strong> — <code>Resend</code> provider added later without refactoring</li>
+      </ul>
+      <div class="callout warn">
+        <strong>Deferred decision</strong>
+        Resend signup is scheduled for a future session to verify its card policy together before committing.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">4</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npm install @react-email/components resend</code></td><td>Already installed in Phase 5 preamble batch</td></tr>
+          <tr><td>2</td><td><code>npx tsx scripts/test-email.ts</code></td><td>Verify email renders + prints to console</td></tr>
+          <tr><td>3</td><td><code>npx tsc --noEmit</code></td><td>Type-check (must be silent)</td></tr>
+          <tr><td>4</td><td><code>npm run dev</code></td><td>Run dev server and watch console output</td></tr>
+          <tr><td>5</td><td><code>npx prisma studio</code></td><td>Inspect reservation rows (port 5555)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Phase 6 introduces zero new downloads.</strong> Every package was installed in the Phase 5 preamble batch.</p>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">5</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">src/</span></div>
+        <div class="indent-1"><span class="dir">actions/</span></div>
+        <div class="indent-2"><span class="file upd">reservation.ts</span> <span class="note">← UPDATED: dispatch email</span></div>
+        <div class="indent-1"><span class="dir">app/</span></div>
+        <div class="indent-2"><span class="file upd">layout.tsx</span> <span class="note">← UPDATED: mount WhatsAppButton</span></div>
+        <div class="indent-1"><span class="dir">components/</span></div>
+        <div class="indent-2"><span class="dir">layout/</span></div>
+        <div class="indent-3"><span class="file new">WhatsAppButton.tsx</span> <span class="note">← NEW</span></div>
+        <div class="indent-1"><span class="dir">lib/</span></div>
+        <div class="indent-2"><span class="dir new">constants/</span></div>
+        <div class="indent-3"><span class="file new">contact.ts</span> <span class="note">← NEW: phone, WhatsApp, email</span></div>
+        <div class="indent-2"><span class="dir new">email/</span> <span class="note">← NEW: full subsystem</span></div>
+        <div class="indent-3"><span class="file new">types.ts</span></div>
+        <div class="indent-3"><span class="file new">send.ts</span> <span class="note">← facade</span></div>
+        <div class="indent-3"><span class="dir new">providers/</span></div>
+        <div class="indent-4"><span class="file new">console.ts</span></div>
+        <div class="indent-3"><span class="dir new">templates/</span></div>
+        <div class="indent-4"><span class="file new">ReservationConfirmation.tsx</span></div>
+        <div class="indent-1"><span class="dir new">scripts/</span></div>
+        <div class="indent-2"><span class="file new">test-email.ts</span></div>
+      </div>
+    </section>
+
+    <section id="types">
+      <h2><span class="num">6</span> Email Types — types.ts</h2>
+      <pre><code>export type EmailProviderName = "console" | "resend";
+
+export type ReservationEmailData = {
+  to: string;
+  guestName: string;
+  reservationId: string;
+  tableNumber: number;
+  reservationDate: Date;
+  guestsCount: number;
+};
+
+export type SendEmailResult = {
+  success: boolean;
+  messageId?: string;
+  error?: string;
+};</code></pre>
+      <ul>
+        <li><code>EmailProviderName</code> — union type narrows <code>EMAIL_PROVIDER</code> to exactly two valid values. Typos become compile errors.</li>
+        <li><code>ReservationEmailData</code> — the <strong>canonical input shape</strong> for every email template. New templates (cancel, reminder) reuse this shape or extend it.</li>
+        <li><code>SendEmailResult</code> — uniform return contract. All providers must return this shape. Callers don't branch per provider.</li>
+        <li><code>messageId?</code> optional — <code>console</code> returns a fake ID; <code>resend</code> returns a real one.</li>
+        <li><code>error?</code> optional — populated only on failure.</li>
+      </ul>
+      <p><strong>Why these three types live in one file:</strong> They form the <strong>interface</strong> of the email subsystem. Any provider or template imports from here. One file to review for API shape changes.</p>
+    </section>
+
+    <section id="template-1">
+      <h2><span class="num">7</span> React Email Template (Part 1)</h2>
+      <pre><code>import {
+  Html, Head, Preview, Body, Container, Section,
+  Text, Heading, Hr,
+} from "@react-email/components";
+import type { ReservationEmailData } from "../types";
+
+const colors = {
+  bg: "#faf7f2", card: "#ffffff",
+  accent: "#c9a961", accentDark: "#a88847",
+  text: "#1a1a1a", muted: "#6b6b6b", border: "#e5ddd0",
+};
+
+function formatArabicDate(date: Date): string {
+  return new Intl.DateTimeFormat("ar-EG", {
+    weekday: "long", year: "numeric", month: "long",
+    day: "numeric", hour: "2-digit", minute: "2-digit", hour12: true,
+  }).format(date);
+}
+
+export function ReservationConfirmation({
+  guestName, reservationId, tableNumber,
+  reservationDate, guestsCount,
+}: Omit&lt;ReservationEmailData, "to"&gt;) {
+  const shortId = reservationId.slice(0, 8).toUpperCase();
+
+  return (
+    &lt;Html dir="rtl" lang="ar"&gt;
+      &lt;Head /&gt;
+      &lt;Preview&gt;{`تم استلام حجزك في Lumière — طاولة رقم ${tableNumber}`}&lt;/Preview&gt;
+      {/* ... Body continues in next section ... */}
+    &lt;/Html&gt;
+  );
+}</code></pre>
+      <ul>
+        <li><code>Omit&lt;ReservationEmailData, "to"&gt;</code> — the template doesn't need the recipient address; excluding it prevents accidental misuse.</li>
+        <li><code>Intl.DateTimeFormat("ar-EG", ...)</code> — native Arabic date formatting. <code>"ar-EG"</code> (Egypt) yields <code>الخميس، ١٥ أكتوبر ٢٠٢٦ في ٠٨:٣٠ م</code>. Zero dependency on external date libraries.</li>
+        <li><code>&lt;Preview&gt;{...}&lt;/Preview&gt;</code> — <strong>must be a single string</strong>. Template literals force the type, avoiding the TypeScript error <code>number is not assignable to ReactNode &amp; string</code>.</li>
+      </ul>
+    </section>
+
+    <section id="template-2">
+      <h2><span class="num">8</span> React Email Template (Part 2)</h2>
+      <pre><code>&lt;Body style={body}&gt;
+  &lt;Container style={container}&gt;
+    &lt;Section style={header}&gt;
+      &lt;Heading style={logo}&gt;Lumière&lt;/Heading&gt;
+      &lt;Text style={tagline}&gt;تجربة طعام استثنائية&lt;/Text&gt;
+    &lt;/Section&gt;
+
+    &lt;Section style={content}&gt;
+      &lt;Heading as="h1" style={h1}&gt;مرحباً {guestName} 👋&lt;/Heading&gt;
+      &lt;Text style={paragraph}&gt;
+        تم استلام حجزك بنجاح، ونحن في انتظارك بشغف. إليك تفاصيل حجزك:
+      &lt;/Text&gt;
+
+      &lt;Section style={detailsBox}&gt;
+        &lt;DetailRow label="رقم الطاولة" value={`رقم ${tableNumber}`} highlight /&gt;
+        &lt;DetailRow label="عدد الأشخاص" value={`${guestsCount} أشخاص`} /&gt;
+        &lt;DetailRow label="التاريخ والوقت" value={formatArabicDate(reservationDate)} /&gt;
+        &lt;DetailRow label="رقم الحجز" value={`#${shortId}`} /&gt;
+      &lt;/Section&gt;
+
+      &lt;Text style={paragraph}&gt;
+        سيتم تأكيد حجزك نهائياً عبر البريد الإلكتروني، أو سيتواصل معك
+        فريقنا هاتفياً في حال الحاجة.
+      &lt;/Text&gt;
+
+      &lt;Hr style={hr} /&gt;
+      &lt;Text style={footer}&gt;
+        هذا البريد أُرسل تلقائياً من نظام حجوزات Lumière.
+      &lt;/Text&gt;
+    &lt;/Section&gt;
+  &lt;/Container&gt;
+&lt;/Body&gt;</code></pre>
+      <p>Every style object (e.g., <code>header</code>, <code>logo</code>, <code>h1</code>) is a JavaScript object that React Email converts to inline <code>style=""</code> attributes during HTML generation.</p>
+    </section>
+
+    <section id="preview">
+      <h2><span class="num">9</span> Email Preview — What Guests See</h2>
+      <div class="email-mock">
+        <div class="em-header">
+          <p class="em-logo">Lumière</p>
+          <p class="em-tagline">تجربة طعام استثنائية</p>
+        </div>
+        <div class="em-body">
+          <p class="em-greeting">مرحباً أحمد محمد 👋</p>
+          <p class="em-text">تم استلام حجزك بنجاح، ونحن في انتظارك بشغف. إليك تفاصيل حجزك:</p>
+          <div class="em-details">
+            <div class="em-row">
+              <p class="em-label">رقم الطاولة</p>
+              <p class="em-value highlight">رقم 3</p>
+            </div>
+            <div class="em-row">
+              <p class="em-label">عدد الأشخاص</p>
+              <p class="em-value">4 أشخاص</p>
+            </div>
+            <div class="em-row">
+              <p class="em-label">التاريخ والوقت</p>
+              <p class="em-value">الخميس، ١٥ أكتوبر ٢٠٢٦ في ٠٨:٣٠ م</p>
+            </div>
+            <div class="em-row">
+              <p class="em-label">رقم الحجز</p>
+              <p class="em-value">#CMU2TEST</p>
+            </div>
+          </div>
+          <p class="em-text">سيتم تأكيد حجزك نهائياً عبر البريد الإلكتروني، أو سيتواصل معك فريقنا هاتفياً.</p>
+        </div>
+        <div class="em-footer">هذا البريد أُرسل تلقائياً من نظام حجوزات Lumière.</div>
+      </div>
+      <div class="screenshot">Screenshot: email-preview.html open in browser showing the rendered email</div>
+    </section>
+
+    <section id="inline">
+      <h2><span class="num">10</span> Why Inline Styles — The Email Client Constraint</h2>
+      <p><strong>The core problem:</strong> Email clients are stuck in 2005.</p>
+      <table>
+        <thead><tr><th>Feature</th><th>Web Browser</th><th>Gmail</th><th>Outlook</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;link rel="stylesheet"&gt;</code></td><td>✅</td><td>❌ Stripped</td><td>❌ Stripped</td></tr>
+          <tr><td><code>&lt;style&gt;</code> block</td><td>✅</td><td>⚠️ Partial</td><td>❌ Mostly stripped</td></tr>
+          <tr><td>External CSS variables</td><td>✅</td><td>❌</td><td>❌</td></tr>
+          <tr><td><code>inline style=""</code></td><td>✅</td><td>✅</td><td>✅</td></tr>
+        </tbody>
+      </table>
+      <p><strong>The only universally supported approach:</strong> inline <code>style</code> attributes on every element.</p>
+      <p><strong>React Email solves this elegantly:</strong></p>
+      <ul>
+        <li>You write styles as JavaScript objects.</li>
+        <li><code>render()</code> from <code>@react-email/components</code> converts them to inline <code>style=""</code> attributes during HTML generation.</li>
+        <li>Component tree stays readable; output is 2005-compatible.</li>
+      </ul>
+    </section>
+
+    <section id="console">
+      <h2><span class="num">11</span> Console Provider — providers/console.ts</h2>
+      <pre><code>import type { ReservationEmailData, SendEmailResult } from "../types";
+
+export async function sendViaConsole(
+  data: ReservationEmailData,
+  html: string
+): Promise&lt;SendEmailResult&gt; {
+  const line = "═".repeat(60);
+
+  console.log("\n" + line);
+  console.log("📧 [DEV] إيميل جاهز للإرسال (لم يُرسل فعلياً)");
+  console.log(line);
+  console.log(`   إلى:      ${data.to}`);
+  console.log(`   الموضوع:  تأكيد حجزك في Lumière — طاولة رقم ${data.tableNumber}`);
+  console.log(`   المعرّف:  ${data.reservationId}`);
+  console.log(line);
+  console.log("📄 محتوى HTML (مقتطف):");
+  console.log(html.slice(0, 400) + "...");
+  console.log(line);
+  console.log("💡 للتبديل إلى Resend: أضف EMAIL_PROVIDER=resend في .env\n");
+
+  return { success: true, messageId: `console-${Date.now()}` };
+}</code></pre>
+      <ul>
+        <li><code>async</code> even though there's no <code>await</code> — because the caller awaits it. Making it sync would force a different calling convention per provider. <strong>Uniform interface wins.</strong></li>
+        <li><code>html.slice(0, 400)</code> — truncates the HTML preview. Full HTML is thousands of characters; dumping it would drown the terminal.</li>
+        <li><code>messageId: \`console-${Date.now()}\`</code> — mimics a real provider's response. Callers depending on a <code>messageId</code> keep working.</li>
+      </ul>
+
+      <h3>Terminal output mockup</h3>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-body">
+          <div class="out">════════════════════════════════════════════════════════════</div>
+          <div class="out">📧 <span class="ok">[DEV]</span> إيميل جاهز للإرسال (لم يُرسل فعلياً)</div>
+          <div class="out">════════════════════════════════════════════════════════════</div>
+          <div class="out">   إلى:      <span class="cmd">222@test.com</span></div>
+          <div class="out">   الموضوع:  تأكيد حجزك في Lumière — طاولة رقم <span class="accent">3</span></div>
+          <div class="out">   المعرّف:  <span class="dim">cmu7107z30001he9c6t836ili</span></div>
+          <div class="out">════════════════════════════════════════════════════════════</div>
+          <div class="out">📄 محتوى HTML (مقتطف):</div>
+          <div class="out"><span class="dim">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0..."</span></div>
+          <div class="out">💡 للتبديل إلى Resend: أضف <span class="warn">EMAIL_PROVIDER=resend</span> في .env</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="facade">
+      <h2><span class="num">12</span> send.ts Facade — Provider Selection</h2>
+      <pre><code>import { render } from "@react-email/components";
+import { ReservationConfirmation } from "./templates/ReservationConfirmation";
+import { sendViaConsole } from "./providers/console";
+import type {
+  EmailProviderName, ReservationEmailData, SendEmailResult,
+} from "./types";
+
+function getProvider(): EmailProviderName {
+  const provider = process.env.EMAIL_PROVIDER as EmailProviderName | undefined;
+  return provider ?? "console";
+}
+
+export async function sendReservationConfirmation(
+  data: ReservationEmailData
+): Promise&lt;SendEmailResult&gt; {
+  try {
+    const html = await render(
+      ReservationConfirmation({
+        guestName: data.guestName,
+        reservationId: data.reservationId,
+        tableNumber: data.tableNumber,
+        reservationDate: data.reservationDate,
+        guestsCount: data.guestsCount,
+      })
+    );
+
+    const provider = getProvider();
+
+    switch (provider) {
+      case "console":
+        return await sendViaConsole(data, html);
+
+      case "resend":
+        console.warn("[email] Resend provider not implemented yet, falling back to console");
+        return await sendViaConsole(data, html);
+
+      default:
+        return { success: false, error: `مزوّد إيميل غير معروف: ${provider}` };
+    }
+  } catch (error) {
+    console.error("[sendReservationConfirmation] error:", error);
+    return { success: false, error: "فشل تجهيز الإيميل" };
+  }
+}</code></pre>
+      <ul>
+        <li><code>render()</code> — React Email's core function. Converts a React element tree into an HTML string. Runs on the server; zero client bytes.</li>
+        <li><code>process.env.EMAIL_PROVIDER as EmailProviderName | undefined</code> — <code>process.env</code> values are always <code>string | undefined</code>. The cast narrows the type; runtime validation happens in the <code>switch default</code> case.</li>
+        <li><code>provider ?? "console"</code> — safe default if <code>.env</code> is missing the key.</li>
+        <li><code>default:</code> case — defensive. If <code>.env</code> contains a typo (<code>EMAIL_PROVIDER=consle</code>), the return shape is still <code>SendEmailResult</code> with a clear error.</li>
+      </ul>
+    </section>
+
+    <section id="env">
+      <h2><span class="num">13</span> .env Configuration</h2>
+      <pre><code># ─── Email Provider ───
+# console = print to terminal (development)
+# resend  = real delivery (requires API key)
+EMAIL_PROVIDER=console</code></pre>
+      <p><strong>HOW:</strong> <code>send.ts</code> reads <code>process.env.EMAIL_PROVIDER</code> at call time.</p>
+      <p><strong>WHY runtime read:</strong> Unlike some config that is read once at boot, this read happens per email. In development, you can flip the provider by editing <code>.env</code> and — thanks to Next.js hot-reloading the environment — the next submission uses the new provider without restarting the server.</p>
+    </section>
+
+    <section id="test-email">
+      <h2><span class="num">14</span> Test Script — scripts/test-email.ts</h2>
+      <pre><code>import "dotenv/config";
+import { sendReservationConfirmation } from "../src/lib/email/send";
+
+async function main() {
+  console.log("\n🧪 اختبار إرسال إيميل\n");
+
+  const result = await sendReservationConfirmation({
+    to: "test@example.com",
+    guestName: "أحمد محمد",
+    reservationId: "cmu2test1234567890abcdef",
+    tableNumber: 3,
+    reservationDate: new Date("2026-10-15T20:30:00"),
+    guestsCount: 4,
+  });
+
+  console.log("\n📊 النتيجة:", result);
+}
+
+main().catch(console.error);</code></pre>
+      <ul>
+        <li><code>import "dotenv/config"</code> — required because <code>tsx</code> does <strong>not</strong> auto-load <code>.env</code>. Same fix as Phase 2's <code>seed.ts</code>.</li>
+        <li>Hard-coded test data — makes the script deterministic. Any changes to output are due to template changes, not input variation.</li>
+      </ul>
+      <p><strong>Command:</strong> <code>npx tsx scripts/test-email.ts</code></p>
+    </section>
+
+    <section id="html-preview">
+      <h2><span class="num">15</span> HTML Preview Artifact — Optional Enhancement</h2>
+      <p><strong>Why this exists:</strong> Reading HTML in a terminal is inefficient. Rendering to a file lets you see the actual design.</p>
+      <pre><code>import "dotenv/config";
+import { writeFileSync } from "node:fs";
+import { render } from "@react-email/components";
+import { ReservationConfirmation } from "../src/lib/email/templates/ReservationConfirmation";
+
+async function main() {
+  const html = await render(
+    ReservationConfirmation({
+      guestName: "أحمد محمد",
+      reservationId: "cmu2test1234567890abcdef",
+      tableNumber: 3,
+      reservationDate: new Date("2026-10-15T20:30:00"),
+      guestsCount: 4,
+    })
+  );
+  writeFileSync("email-preview.html", html);
+  console.log("✅ تم حفظ الإيميل في email-preview.html");
+  console.log("👉 افتحه في المتصفح لرؤيته بشكل حقيقي!");
+}
+
+main().catch(console.error);</code></pre>
+      <p><strong>Workflow:</strong></p>
+      <ol>
+        <li>Run <code>npx tsx scripts/test-email.ts</code>.</li>
+        <li>Open <code>email-preview.html</code> in any browser.</li>
+        <li>See the email exactly as guests will see it.</li>
+      </ol>
+      <p><strong>.gitignore addition (required):</strong></p>
+      <pre><code># Email preview artifact
+email-preview.html</code></pre>
+      <p><strong>Why not commit the preview:</strong> It's a build artifact regenerated on demand. Committing it pollutes the diff.</p>
+    </section>
+
+    <section id="wiring">
+      <h2><span class="num">16</span> Wiring the Email into createReservation</h2>
+      <pre><code>import { sendReservationConfirmation } from "@/lib/email/send";
+// ... other imports
+
+    // ─── Save reservation (primary priority) ───
+    const reservation = await prisma.reservation.create({
+      data: { /* ... */ },
+    });
+
+    // ─── Send confirmation email (never blocks the save) ───
+    try {
+      const emailResult = await sendReservationConfirmation({
+        to: data.guestEmail,
+        guestName: data.guestName,
+        reservationId: reservation.id,
+        tableNumber: bestTable.number,
+        reservationDate,
+        guestsCount: data.guestsCount,
+      });
+
+      if (!emailResult.success) {
+        console.error(
+          `[createReservation] Email failed for ${reservation.id}:`,
+          emailResult.error
+        );
+      }
+    } catch (emailError) {
+      console.error("[createReservation] Email exception:", emailError);
+    }
+
+    return { success: true, reservationId: reservation.id, tableNumber: bestTable.number };</code></pre>
+    </section>
+
+    <section id="failsafe">
+      <h2><span class="num">17</span> Fail-Safe Design — Nested try/catch</h2>
+      <p><strong>The two-layer protection:</strong></p>
+      <div class="failsafe">
+        <div class="failsafe-outer">
+          <div class="failsafe-outer-title">OUTER try / catch</div>
+          <div class="failsafe-row">Wraps ALL database operations</div>
+          <div class="failsafe-row">If it catches: reservation failed → return <code>{ success: false }</code></div>
+          <div class="failsafe-inner">
+            <div class="failsafe-inner-title">INNER try / catch</div>
+            <div class="failsafe-row">Wraps ONLY the email send</div>
+            <div class="failsafe-row">If it catches: reservation <strong>SUCCEEDED</strong>, log the error silently, do NOT return success: false</div>
+          </div>
+          <div class="failsafe-row" style="margin-top:0.75rem">Return: <code>{ success: true }</code> — reservation is safe</div>
+        </div>
+      </div>
+
+      <table>
+        <thead><tr><th>Failure scenario</th><th>Correct outcome</th></tr></thead>
+        <tbody>
+          <tr><td>Database write fails</td><td><code>success: false</code> — user must retry</td></tr>
+          <tr><td>Email provider fails, DB succeeded</td><td><code>success: true</code> — reservation is safe</td></tr>
+        </tbody>
+      </table>
+
+      <p><strong>Why the customer must not see the email failure:</strong></p>
+      <ul>
+        <li>The reservation <strong>exists</strong> in the database.</li>
+        <li>The admin can manually resend the email.</li>
+        <li>Showing an error to the user creates confusion ("Is my table booked?").</li>
+      </ul>
+
+      <div class="callout danger">
+        <strong>Anti-pattern avoided</strong>
+        <pre style="margin:0.5rem 0 0;background:transparent;border:none;color:inherit;padding:0"><code style="background:transparent;color:inherit;padding:0">// ❌ Bad pattern
+const reservation = await prisma.reservation.create(...);
+await sendReservationConfirmation(...);   // If this throws → outer catch → success: false
+return { success: true };</code></pre>
+        Without the inner try/catch, an email failure would bubble up to the outer handler and incorrectly report the reservation as failed.
+      </div>
+    </section>
+
+    <section id="trace">
+      <h2><span class="num">18</span> End-to-End Trace — Verified</h2>
+      <p><strong>Dev terminal output after a real submission:</strong></p>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+        </div>
+        <div class="terminal-body">
+          <div class="out"><span class="cmd">POST</span> /reserve <span class="ok">200</span> in 2.6s</div>
+          <div class="out">  └─ ƒ <span class="accent">createReservation</span>({...}) in 2150ms src/actions/reservation.ts</div>
+          <div class="out">&nbsp;</div>
+          <div class="out">════════════════════════════════════════════════════════════</div>
+          <div class="out">📧 <span class="ok">[DEV]</span> إيميل جاهز للإرسال (لم يُرسل فعلياً)</div>
+          <div class="out">════════════════════════════════════════════════════════════</div>
+          <div class="out">   إلى:      <span class="cmd">222@test.com</span></div>
+          <div class="out">   الموضوع:  تأكيد حجزك في Lumière — طاولة رقم <span class="accent">3</span></div>
+          <div class="out">   المعرّف:  <span class="dim">cmu7107z30001he9c6t836ili</span></div>
+        </div>
+      </div>
+      <p><strong>What this confirms:</strong></p>
+      <ul>
+        <li><code>POST /reserve</code> returned <code>200</code> (form submitted).</li>
+        <li><code>createReservation</code> ran for <code>2150ms</code> (validation + query + save + render email + console output).</li>
+        <li>The email dispatch is visible in the same terminal as <code>npm run dev</code> — not in a separate process.</li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2><span class="num">19</span> Contact Constants — lib/constants/contact.ts</h2>
+      <pre><code>export const CONTACT = {
+  // WhatsApp number in international format, no "+", no spaces
+  // Example: 201001234567 (Egypt)
+  whatsappNumber: "201001234567",
+
+  whatsappDefaultMessage:
+    "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة.",
+
+  email: "hello@lumiere.example",
+  phone: "+20 100 123 4567",
+  address: "القاهرة، مصر",
+} as const;
+
+export function getWhatsAppLink(message?: string): string {
+  const text = encodeURIComponent(message ?? CONTACT.whatsappDefaultMessage);
+  return `https://wa.me/${CONTACT.whatsappNumber}?text=${text}`;
+}</code></pre>
+      <ul>
+        <li><code>as const</code> — freezes the object literal. <code>CONTACT.whatsappNumber</code> is typed as the literal <code>"201001234567"</code>, not <code>string</code>. Catches typos.</li>
+        <li><code>whatsappNumber</code> — the <code>wa.me</code> format requires <strong>no</strong> <code>+</code>, <strong>no</strong> spaces, <strong>no</strong> dashes. Just digits with country code.</li>
+        <li><code>getWhatsAppLink()</code> — accepts an optional custom message. When called with no argument, uses the default.</li>
+        <li><code>encodeURIComponent</code> — Arabic text and spaces must be URL-encoded. <code>مرحباً</code> becomes <code>%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B</code>. Without this, WhatsApp would receive garbled text.</li>
+      </ul>
+    </section>
+
+    <section id="wa-button">
+      <h2><span class="num">20</span> WhatsApp Button — components/layout/WhatsAppButton.tsx</h2>
+      <pre><code>import { getWhatsAppLink } from "@/lib/constants/contact";
+
+export function WhatsAppButton() {
+  return (
+    &lt;a href={getWhatsAppLink()} target="_blank" rel="noopener noreferrer"
+       aria-label="تواصل معنا عبر واتساب"
+       className="fixed bottom-6 left-6 z-50 group flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5a] text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl transition-all"&gt;
+      &lt;svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6" aria-hidden="true"&gt;
+        &lt;path d="M17.472 14.382c-.297-.149..." /&gt;
+      &lt;/svg&gt;
+      &lt;span className="hidden md:inline text-sm font-medium"&gt;تواصل معنا&lt;/span&gt;
+    &lt;/a&gt;
+  );
+}</code></pre>
+
+      <h3>Visual Preview</h3>
+      <div class="wa-preview">
+        <div class="wa-note">Bottom-left corner of every page</div>
+        <div class="wa-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+          </svg>
+          <span>تواصل معنا</span>
+        </div>
+      </div>
+      <div class="screenshot">Screenshot: Navbar + floating WhatsApp button visible on /menu page</div>
+    </section>
+
+    <section id="wa-deep">
+      <h2><span class="num">21</span> WhatsApp Button Deep-Dive</h2>
+      <h3>target="_blank" and rel="noopener noreferrer"</h3>
+      <ul>
+        <li><code>target="_blank"</code> — opens WhatsApp Web in a new tab, preserving the restaurant site in the original tab.</li>
+        <li><code>rel="noopener"</code> — prevents the new tab from accessing <code>window.opener</code> (a class of phishing / tab-nabbing attacks).</li>
+        <li><code>rel="noreferrer"</code> — hides the referrer URL from WhatsApp. Privacy best practice.</li>
+        <li><strong>Both attributes are mandatory</strong> when using <code>target="_blank"</code>.</li>
+      </ul>
+
+      <h3>fixed bottom-6 left-6 z-50</h3>
+      <ul>
+        <li><code>fixed</code> — position relative to viewport, unaffected by scrolling.</li>
+        <li><code>bottom-6 left-6</code> — 24px from bottom-left corner.</li>
+        <li><strong>Why left, not right:</strong> In RTL layouts, the "natural" empty corner shifts. WhatsApp buttons in Arabic UIs conventionally sit bottom-left.</li>
+        <li><code>z-50</code> — highest Tailwind z-index tier. Stays above modals, navbars, and images.</li>
+      </ul>
+
+      <h3>bg-[#25D366] and hover:bg-[#1ebe5a]</h3>
+      <ul>
+        <li><code>[#25D366]</code> — arbitrary-value syntax. Bypasses the theme palette for this one case.</li>
+        <li><strong>Why not add to @theme:</strong> This color is WhatsApp's brand identity, not Lumière's. Adding it to the theme would be semantically wrong.</li>
+      </ul>
+
+      <h3>hidden md:inline</h3>
+      <ul>
+        <li>The text label "تواصل معنا" appears only on screens ≥ 768px.</li>
+        <li><strong>Why:</strong> On mobile, the round icon alone is clear; extra text wastes screen space.</li>
+      </ul>
+
+      <h3>aria-label and aria-hidden</h3>
+      <ul>
+        <li><code>aria-label</code> on the anchor — screen readers announce "تواصل معنا عبر واتساب" even when the text is hidden.</li>
+        <li><code>aria-hidden</code> on the <code>&lt;svg&gt;</code> — prevents the SVG from being read twice.</li>
+      </ul>
+    </section>
+
+    <section id="layout-int">
+      <h2><span class="num">22</span> Layout Integration</h2>
+      <pre><code>import type { Metadata } from "next";
+import "./globals.css";
+import { Navbar } from "@/components/layout/Navbar";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+
+export const metadata: Metadata = {
+  title: "Lumière | مطعم Lumière",
+  description: "مطعم Lumière — تجربة طعام استثنائية",
+};
+
+export default function RootLayout({ children }: LayoutProps&lt;"/"&gt;) {
+  return (
+    &lt;html lang="ar" dir="rtl" className="h-full antialiased"&gt;
+      &lt;body className="min-h-full flex flex-col"&gt;
+        &lt;Navbar /&gt;
+        &lt;main className="flex-1"&gt;{children}&lt;/main&gt;
+        &lt;WhatsAppButton /&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+      <ul>
+        <li>Mounted once at the layout level → appears on <strong>every page</strong> (home, menu, item detail, reservation, 404).</li>
+        <li>Positioned via <code>fixed</code> — its DOM order doesn't affect visual position.</li>
+        <li>Placing it after <code>&lt;main&gt;</code> keeps the DOM in semantic order (main content first, floating widgets after).</li>
+        <li><strong>This component is a Server Component:</strong> No state, no events, no hooks. Just a static <code>&lt;a&gt;</code> tag with a link. <strong>Zero JavaScript ships to the browser for this button.</strong></li>
+      </ul>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">23</span> Request Data Flow — Full Trace</h2>
+      <div class="flow">
+        <div class="flow-step">1. User on /reserve fills form → clicks "تأكيد الحجز"</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">2. Client Component calls createReservation(formData)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── SERVER BOUNDARY ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. Server Action executes:<br>a. Zod validates input<br>b. Prisma queries tables within ±3h window<br>c. findBestTable() returns optimal table</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. Prisma INSERTs reservation row</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">5. Inner try/catch: sendReservationConfirmation()<br>i. render() converts React template → HTML string<br>ii. getProvider() reads EMAIL_PROVIDER=console<br>iii. sendViaConsole() prints to terminal</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">6. Return { success: true, reservationId, tableNumber }</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── CLIENT BOUNDARY ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">7. Success screen replaces form</div>
+      </div>
+      <p><strong>Boundary rationale:</strong></p>
+      <ul>
+        <li>Server Action input/output serialization is handled by Next.js transparently.</li>
+        <li>The email dispatch happens <strong>after</strong> the database write — the reservation is durable before any network call.</li>
+        <li>The inner try/catch isolates the network operation from the transactional operation.</li>
+      </ul>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">24</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>TypeScript clean</td><td><code>npx tsc --noEmit</code></td><td>Silent output</td></tr>
+          <tr><td>Email renders standalone</td><td><code>npx tsx scripts/test-email.ts</code></td><td>Console-formatted email</td></tr>
+          <tr><td>Optional: HTML preview</td><td>Check <code>email-preview.html</code> exists</td><td>Opens in browser, styled</td></tr>
+          <tr><td>End-to-end reservation</td><td>Fill <code>/reserve</code> → submit</td><td>Success card + table number</td></tr>
+          <tr><td>Console shows email</td><td>Watch <code>npm run dev</code> terminal</td><td>Email block with Arabic subject</td></tr>
+          <tr><td>Database persistence</td><td><code>npx prisma studio</code> → Reservation</td><td>New row with <code>status = PENDING</code></td></tr>
+          <tr><td>WhatsApp button</td><td>Visit any page</td><td>Green floating icon bottom-left</td></tr>
+          <tr><td>WhatsApp link click</td><td>Click button</td><td>WhatsApp Web opens with prefilled Arabic message</td></tr>
+          <tr><td>Mobile view</td><td>Resize browser &lt; 768px</td><td>Icon-only button; still clickable</td></tr>
+          <tr><td>.gitignore</td><td><code>git status</code></td><td><code>email-preview.html</code> excluded</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">25</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Missing <code>dotenv/config</code> in script</td><td><code>Environment variable not found</code></td><td>Add <code>import "dotenv/config"</code> as first line</td></tr>
+          <tr><td><code>Preview</code> with <code>{number}</code></td><td><code>Type 'number' is not assignable...</code></td><td>Use <code>{`text ${value}`}</code> template literal</td></tr>
+          <tr><td>Email failure blocks save</td><td>Reservation not persisted</td><td>Add inner <code>try / catch</code> around email</td></tr>
+          <tr><td>WhatsApp link shows <code>%20</code></td><td>Message not decoded</td><td>Ensure <code>encodeURIComponent</code> is applied</td></tr>
+          <tr><td><code>target="_blank"</code> without rel</td><td>Security warning in console</td><td>Add <code>rel="noopener noreferrer"</code></td></tr>
+          <tr><td>Button covers content</td><td>Floating over text</td><td>Ensure <code>z-50</code> is set</td></tr>
+          <tr><td>Committing <code>email-preview.html</code></td><td>Repo pollution</td><td>Add to <code>.gitignore</code></td></tr>
+          <tr><td>Resend provider placeholder</td><td>Console warning "not implemented"</td><td>Expected — deferred to future session</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="screenshots">
+      <h2><span class="num">26</span> Screenshot Guide</h2>
+      <p>Collect these for the final portfolio:</p>
+      <table>
+        <thead><tr><th>#</th><th>Screenshot</th><th>Priority</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Navbar + WhatsApp button (desktop, full page)</td><td>⭐⭐⭐ High</td></tr>
+          <tr><td>2</td><td>Terminal with email output after reservation</td><td>⭐⭐⭐ High</td></tr>
+          <tr><td>3</td><td><code>email-preview.html</code> in browser (full email)</td><td>⭐⭐⭐ High</td></tr>
+          <tr><td>4</td><td>Success screen after <code>/reserve</code> submission</td><td>⭐⭐ Medium</td></tr>
+          <tr><td>5</td><td>WhatsApp button in both desktop/mobile states</td><td>⭐⭐ Medium</td></tr>
+          <tr><td>6</td><td>WhatsApp Web opened from button click (with pre-filled Arabic message)</td><td>⭐⭐ Medium</td></tr>
+          <tr><td>7</td><td>Prisma Studio reservation row with email recipient</td><td>⭐⭐ Medium</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Suggested filenames:</strong></p>
+      <pre><code>screenshots/
+├── phase-06-01-navbar-whatsapp.png
+├── phase-06-02-terminal-email-output.png
+├── phase-06-03-email-preview-browser.png
+├── phase-06-04-success-screen.png
+├── phase-06-05-whatsapp-button-states.png
+├── phase-06-06-whatsapp-web-opened.png
+└── phase-06-07-prisma-studio-row.png</code></pre>
+    </section>
+
+    <section id="polish">
+      <h2><span class="num">27</span> Polish Accumulated</h2>
+      <p>Deferred enhancements documented for Phase 10:</p>
+      <ul>
+        <li>Multi-table reservations for parties &gt; 10: auto-assign adjacent tables or auto-redirect to phone</li>
+        <li>15-minute cleaning buffer between touching reservations</li>
+        <li>Window-table preference when available</li>
+        <li>VIP tables excluded from regular bookings</li>
+        <li>Custom duration for premium dinners (120 min)</li>
+        <li><code>table.number</code> visible in first columns of Prisma Studio</li>
+        <li>Reminder email 1 hour before reservation time</li>
+        <li>"Ask about this dish" WhatsApp button on item detail page</li>
+        <li>"Modify reservation" link inside confirmation email</li>
+        <li>Real WhatsApp Business number replacing the placeholder</li>
+        <li>Resend provider implementation after card policy verification</li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">28</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char ID; sortable, URL-safe</td></tr>
+          <tr><td>DB</td><td>Database</td><td>Persistent storage system</td></tr>
+          <tr><td>DOM</td><td>Document Object Model</td><td>In-memory tree of a rendered page</td></tr>
+          <tr><td>HTML</td><td>HyperText Markup Language</td><td>Language for web page structure</td></tr>
+          <tr><td>HTTP</td><td>HyperText Transfer Protocol</td><td>Browser-server communication protocol</td></tr>
+          <tr><td>JSX</td><td>JavaScript XML</td><td>React's syntax extension for HTML-like markup</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Translates objects ↔ SQL</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>React components rendered on the server</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>SMTP</td><td>Simple Mail Transfer Protocol</td><td>Legacy email transport (not used here)</td></tr>
+          <tr><td>SQL</td><td>Structured Query Language</td><td>Standard relational database language</td></tr>
+          <tr><td>SVG</td><td>Scalable Vector Graphics</td><td>Vector image format (crisp at any size)</td></tr>
+          <tr><td>UI</td><td>User Interface</td><td>What the user sees</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using an app</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">29</span> Phase 6 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Email subsystem with Strategy Pattern (<code>console</code> ↔ <code>resend</code>)</li>
+        <li>RTL Arabic email template with inline styles</li>
+        <li>Facade <code>send.ts</code> selecting provider from <code>.env</code></li>
+        <li>Console provider printing formatted output to terminal</li>
+        <li>Non-blocking email dispatch with nested <code>try / catch</code></li>
+        <li>WhatsApp button on every page (fixed-position, RTL-aware)</li>
+        <li>Centralized <code>CONTACT</code> constants and <code>getWhatsAppLink()</code> helper</li>
+        <li><code>target="_blank"</code> + <code>rel="noopener noreferrer"</code> security best practice</li>
+        <li><code>email-preview.html</code> artifact (gitignored)</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Fail-safe email delivery</strong> — reservation saves even if email fails</li>
+        <li><strong>Zero paid services</strong> — all functionality available on free tiers</li>
+        <li><strong>Zero client JavaScript for WhatsApp button</strong> — Server Component</li>
+        <li><strong>Portability</strong> — switching email providers requires one <code>.env</code> line</li>
+        <li>Ready for Phase 7: Authentication (Auth.js + Prisma adapter)</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-05-reservation-engine.html">← Phase 5 (Reservation Engine)</a>
+      <span class="center">Phase 6 of 11</span>
+      <a href="phase-07-authentication.html">Phase 7 (Authentication) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

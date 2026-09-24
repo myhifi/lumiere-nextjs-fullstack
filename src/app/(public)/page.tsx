@@ -1,0 +1,98 @@
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { MenuItemCard } from "@/components/menu/MenuItemCard";
+
+export default async function HomePage() {
+  // جلب الأطباق المميزة للعرض في الصفحة الرئيسية
+  const featuredItems = await prisma.menuItem.findMany({
+    where: { isAvailable: true, isFeatured: true },
+    take: 3,
+    orderBy: { name: "asc" },
+    include: {
+      category: { select: { name: true, slug: true } },
+    },
+  });
+
+  return (
+    <>
+      {/* ─── Hero ─── */}
+      <section className="min-h-[75vh] flex flex-col items-center justify-center px-4 py-20 text-center bg-linear-to-b from-accent-light/40 to-transparent">
+        <span className="text-accent text-sm font-medium tracking-[0.3em] mb-4">
+          WELCOME TO
+        </span>
+        <h1 className="text-6xl md:text-8xl font-bold text-accent mb-6 tracking-tight">
+          Lumière
+        </h1>
+        <p className="text-xl md:text-2xl text-muted max-w-2xl mb-10 leading-relaxed">
+          تجربة طعام استثنائية بلمسة عصرية
+          <br />
+          حيث تلتقي الأصالة بالأناقة
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
+            href="/menu"
+            className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"
+          >
+            تصفح القائمة
+          </Link>
+          <Link
+            href="/reserve"
+            className="border-2 border-accent text-accent hover:bg-accent hover:text-white font-medium px-8 py-3 rounded-full transition-colors"
+          >
+            احجز طاولة
+          </Link>
+        </div>
+      </section>
+
+      {/* ─── Featured Dishes ─── */}
+      {featuredItems.length > 0 && (
+        <section className="max-w-6xl mx-auto px-4 py-20">
+          <div className="text-center mb-12">
+            <span className="text-accent text-sm font-medium tracking-widest">
+              OUR SPECIALTIES
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">
+              أطباقنا المميزة
+            </h2>
+            <p className="text-muted max-w-xl mx-auto">
+              اختيارات الشيف الخاصة لهذا الموسم
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredItems.map((item) => (
+              <MenuItemCard key={item.id} item={item} />
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              href="/menu"
+              className="inline-block text-accent hover:text-accent-dark font-medium transition-colors"
+            >
+              عرض القائمة كاملة ←
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* ─── CTA: Reserve ─── */}
+      <section className="bg-accent-light/50 py-20">
+        <div className="max-w-3xl mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            جاهز لتجربة Lumière؟
+          </h2>
+          <p className="text-muted mb-8">
+            احجز طاولتك الآن واستمتع بتجربة طعام لا تُنسى
+          </p>
+          <Link
+            href="/reserve"
+            className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-10 py-4 rounded-full transition-colors"
+          >
+            احجز طاولتك
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}

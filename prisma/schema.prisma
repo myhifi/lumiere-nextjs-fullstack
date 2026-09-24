@@ -1,0 +1,111 @@
+// هذا هو ملف مخطط قاعدة البيانات لمشروع Lumière Restaurant
+// كل جدول نكتبه هنا، سيصبح جدولاً حقيقياً في قاعدة البيانات
+// المرجع: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ═══════════════════════════════════════════════════
+// 📂 Category — تصنيفات الأطباق
+// ═══════════════════════════════════════════════════
+model Category {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  slug         String     @unique
+  description  String?
+  displayOrder Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // 🔗 العلاقة: تصنيف واحد → أطباق كثيرة
+  items        MenuItem[]
+
+  @@map("categories")
+}
+
+// ═══════════════════════════════════════════════════
+// 🍽️ MenuItem — الأطباق
+// ═══════════════════════════════════════════════════
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // 🔗 العلاقة: كل طبق ينتمي لتصنيف واحد
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("menu_items")
+}
+
+// ═══════════════════════════════════════════════════
+// 🪑 Table — طاولات المطعم
+// ═══════════════════════════════════════════════════
+model Table {
+  id           String   @id @default(cuid())
+  number       Int      @unique
+  capacity     Int
+  location     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // 🔗 العلاقة: طاولة واحدة → حجوزات كثيرة
+  reservations Reservation[]
+
+  @@map("tables")
+}
+
+// ═══════════════════════════════════════════════════
+// 📅 Reservation — الحجوزات
+// ═══════════════════════════════════════════════════
+model Reservation {
+  id              String   @id @default(cuid())
+  guestName       String
+  guestEmail      String
+  guestPhone      String
+  guestsCount     Int
+  reservationDate DateTime
+  durationMinutes Int      @default(90)
+  status          String   @default("PENDING")
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // 🔗 العلاقة: كل حجز مرتبط بطاولة واحدة
+  tableId String
+  table   Table  @relation(fields: [tableId], references: [id])
+
+  @@map("reservations")
+}
+
+// ═══════════════════════════════════════════════════
+// 👤 User — مستخدمو لوحة التحكم (مسؤولون وموظفون)
+// ═══════════════════════════════════════════════════
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("STAFF")
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}

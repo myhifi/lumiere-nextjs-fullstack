@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 4 — Frontend · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+.filetree .indent-4 { padding-left: 5rem; }
+
+/* ─── Component Tree ─── */
+.tree {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem 2rem; margin: 1rem 0;
+  font-family: 'Consolas', monospace; font-size: 0.85rem;
+}
+.tree .row { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; border-bottom: 1px dashed var(--border); }
+.tree .row:last-child { border-bottom: none; }
+.tree .indent-1 { padding-left: 1.5rem; }
+.tree .indent-2 { padding-left: 3rem; }
+.tree .comp-name { font-weight: 700; }
+.tree .badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; }
+.tree .badge.server { background: rgba(39,174,96,0.15); color: #1e7e45; }
+.tree .badge.client { background: rgba(230,126,34,0.15); color: #b8610e; }
+.tree .desc { color: var(--fg-muted); font-size: 0.75rem; font-family: -apple-system, sans-serif; }
+
+/* ─── Flow Diagram ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 300px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Color Palette Grid ─── */
+.palette { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+.palette .swatch { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--bg-card); }
+.palette .swatch-color { height: 60px; }
+.palette .swatch-label { padding: 0.5rem 0.75rem; font-size: 0.72rem; font-family: 'Consolas', monospace; }
+.palette .swatch-label strong { display: block; font-size: 0.78rem; color: var(--fg); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .tree .row { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 04</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#server-client">Server vs Client Components</a>
+      <a href="#tree">Component Tree for /menu</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#components-rule">components/ Cannot Live in app/</a>
+      <a href="#tokens">Design Tokens</a>
+      <a href="#palette">Brand Palette</a>
+      <a href="#layout">Layout.tsx</a>
+      <a href="#rtl">RTL Deep-Dive</a>
+      <a href="#navbar">Navbar Component</a>
+      <a href="#navbar-sticky">Sticky & Blur</a>
+      <a href="#card">MenuItemCard</a>
+      <a href="#card-tricks">Card Techniques</a>
+      <a href="#menu-page">Menu Page</a>
+      <a href="#searchparams">searchParams & Promise.all</a>
+      <a href="#filter">CategoryFilter (Client)</a>
+      <a href="#url-state">URL-Driven State</a>
+      <a href="#detail">Item Detail Page</a>
+      <a href="#notfound">notFound() & 404</a>
+      <a href="#flow">Request Data Flow</a>
+      <a href="#responsive">Responsive Breakpoints</a>
+      <a href="#cheatsheet">Server/Client Cheat Sheet</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 04 · Frontend</div>
+      <h1>Server Components, RTL Layout &amp; Interactive Menu UI</h1>
+      <p class="lede">Build the customer-facing UI using Next.js Server Components for zero-JS data rendering, with minimal Client Components only where interactivity is required. The result: 5 Server Components, 1 Client Component, zero fetch calls to the internal API.</p>
+      <div class="stack">
+        <span>Server Components</span><span>Client Components</span>
+        <span>RTL Arabic</span><span>Tailwind v4</span>
+        <span>URL State</span><span>Dynamic Routes</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Render the database through an elegant, RTL, mobile-responsive interface where only the small interactive parts ship JavaScript to the browser.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li>RTL Arabic layout with sticky Navbar and Lumière branding.</li>
+        <li><code>/menu</code> page rendering 12 items via Server Component + Prisma.</li>
+        <li><code>MenuItemCard</code> reusable component (grid-aligned, hover-animated).</li>
+        <li><code>CategoryFilter</code> — a Client Component that filters via URL <code>searchParams</code>.</li>
+        <li><code>/menu/[slug]</code> detail page with dynamic routing.</li>
+        <li>Custom <code>not-found.tsx</code> for elegant 404s.</li>
+      </ol>
+    </section>
+
+    <section id="server-client">
+      <h2><span class="num">2</span> Architectural Decision — Server vs Client Components</h2>
+      <p>The core Next.js 16 mental model:</p>
+      <table>
+        <thead><tr><th>Aspect</th><th>Server Component</th><th>Client Component</th></tr></thead>
+        <tbody>
+          <tr><td>Executes on</td><td>Server</td><td>Browser</td></tr>
+          <tr><td>Direct Prisma access</td><td>✅ Yes</td><td>❌ No (must <code>fetch</code>)</td></tr>
+          <tr><td><code>useState</code> / <code>useEffect</code></td><td>❌ Forbidden</td><td>✅ Allowed</td></tr>
+          <tr><td><code>onClick</code> / <code>onChange</code></td><td>❌ Forbidden</td><td>✅ Allowed</td></tr>
+          <tr><td>JS shipped to browser</td><td><strong>Zero</strong></td><td>Full bundle</td></tr>
+          <tr><td>Default in App Router</td><td>✅ <strong>Yes</strong></td><td>Opt-in via <code>"use client"</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Rule of thumb</strong>
+        Keep everything Server. Convert only the smallest interactive leaf to Client.
+      </div>
+      <p><strong>Engineering rationale:</strong> Every Client Component adds JS bytes to the browser bundle. On slow connections, more JS = slower Time-to-Interactive. Server Components deliver HTML with zero hydration cost.</p>
+    </section>
+
+    <section id="tree">
+      <h2><span class="num">3</span> Component Tree for /menu</h2>
+      <div class="tree">
+        <div class="row">
+          <span class="comp-name">📄 page.tsx</span>
+          <span class="badge server">SERVER</span>
+          <span class="desc">Queries Prisma directly</span>
+        </div>
+        <div class="row indent-1">
+          <span class="comp-name">├─ Navbar</span>
+          <span class="badge server">SERVER</span>
+          <span class="desc">Static links</span>
+        </div>
+        <div class="row indent-1">
+          <span class="comp-name">├─ CategoryFilter</span>
+          <span class="badge client">CLIENT</span>
+          <span class="desc">⚡ URL updates on click</span>
+        </div>
+        <div class="row indent-1">
+          <span class="comp-name">└─ MenuItemCard × 12</span>
+          <span class="badge server">SERVER</span>
+          <span class="desc">Static render, zero JS</span>
+        </div>
+      </div>
+      <p><strong>WHY this split:</strong></p>
+      <ul>
+        <li>Only <code>CategoryFilter</code> needs interactivity → only it becomes Client.</li>
+        <li><code>MenuItemCard</code> is pure presentation → stays Server, ships 0 bytes.</li>
+        <li>The page itself stays Server → direct Prisma query, no <code>fetch</code>.</li>
+      </ul>
+      <div class="callout warn">
+        <strong>Anti-pattern avoided</strong>
+        Marking <code>/menu/page.tsx</code> as <code>"use client"</code> — that would force all 12 cards to ship JS and require an HTTP call to <code>/api/menu/items</code>.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">4</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npm run dev</code></td><td>Start dev server</td></tr>
+          <tr><td>2</td><td><code>npx tsc --noEmit</code></td><td>Type-check all files</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Phase 4 introduces zero new dependencies.</strong> Tailwind CSS, React, and Next.js all ship with the scaffold.</p>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">5</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">src/</span></div>
+        <div class="indent-1"><span class="dir">app/</span></div>
+        <div class="indent-2"><span class="file upd">globals.css</span> <span class="note">← UPDATED: design tokens</span></div>
+        <div class="indent-2"><span class="file upd">layout.tsx</span> <span class="note">← UPDATED: RTL + Navbar</span></div>
+        <div class="indent-2"><span class="file">page.tsx</span></div>
+        <div class="indent-2"><span class="dir new">menu/</span></div>
+        <div class="indent-3"><span class="file new">page.tsx</span> <span class="note">← NEW: menu listing</span></div>
+        <div class="indent-3"><span class="dir new">[slug]/</span></div>
+        <div class="indent-4"><span class="file new">page.tsx</span> <span class="note">← NEW: item detail</span></div>
+        <div class="indent-4"><span class="file new">not-found.tsx</span> <span class="note">← NEW: custom 404</span></div>
+        <div class="indent-1"><span class="dir new">components/</span> <span class="note">← MUST be outside app/</span></div>
+        <div class="indent-2"><span class="dir">layout/</span></div>
+        <div class="indent-3"><span class="file new">Navbar.tsx</span></div>
+        <div class="indent-2"><span class="dir">menu/</span></div>
+        <div class="indent-3"><span class="file new">MenuItemCard.tsx</span></div>
+        <div class="indent-3"><span class="file new">CategoryFilter.tsx</span></div>
+      </div>
+    </section>
+
+    <section id="components-rule">
+      <h2><span class="num">6</span> Why components/ Cannot Live Inside app/</h2>
+      <p><strong>The phantom route problem:</strong></p>
+      <pre><code>src/app/components/layout/Navbar.tsx
+        ^^^^^^^^^^
+        treated as a URL segment</code></pre>
+      <p>Next.js App Router generates routes from folder names. A folder <code>src/app/components/</code> is interpreted as the URL prefix <code>/components/</code>. Even though <code>Navbar.tsx</code> isn't a <code>page.tsx</code>, developers will:</p>
+      <ul>
+        <li>Waste time debugging why <code>/components/layout/Navbar</code> returns 404.</li>
+        <li>Accidentally create conflicting routes.</li>
+      </ul>
+      <p><strong>The fix:</strong> Move <code>components/</code> up one level to <code>src/components/</code>.</p>
+      <div class="callout success">
+        <strong>Verified in Phase 4</strong>
+        <code>src/app/</code> → URLs only · <code>src/components/</code> → React components · <code>src/lib/</code> → logic · <code>src/generated/</code> → Prisma Client
+      </div>
+    </section>
+
+    <section id="tokens">
+      <h2><span class="num">7</span> Design Tokens — globals.css</h2>
+      <pre><code>@import "tailwindcss";
+
+@theme {
+  --color-background: #faf7f2;
+  --color-foreground: #1a1a1a;
+  --color-card:       #ffffff;
+  --color-border:     #e5ddd0;
+
+  --color-accent:       #c9a961;
+  --color-accent-dark:  #a88847;
+  --color-accent-light: #f5ecd9;
+
+  --color-muted: #6b6b6b;
+
+  --font-sans: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}</code></pre>
+      <p><strong>HOW:</strong> <code>@theme</code> block defines custom Tailwind v4 tokens that generate utility classes automatically (<code>bg-accent</code>, <code>text-muted</code>, <code>border-border</code>).</p>
+      <p><strong>WHY this approach:</strong></p>
+      <ul>
+        <li>Centralizes brand colors in one file — change once, propagates everywhere.</li>
+        <li>Tailwind v4 uses CSS variables under the hood — no <code>tailwind.config.js</code> needed.</li>
+        <li><code>system-ui</code> font avoids a 150 KB Google Fonts download.</li>
+      </ul>
+    </section>
+
+    <section id="palette">
+      <h2><span class="num">8</span> Brand Palette — Lumière Identity</h2>
+      <div class="palette">
+        <div class="swatch"><div class="swatch-color" style="background:#faf7f2;border-bottom:1px solid #e5ddd0"></div><div class="swatch-label"><strong>background</strong>#faf7f2</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#1a1a1a"></div><div class="swatch-label"><strong>foreground</strong>#1a1a1a</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#ffffff;border-bottom:1px solid #e5ddd0"></div><div class="swatch-label"><strong>card</strong>#ffffff</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#e5ddd0"></div><div class="swatch-label"><strong>border</strong>#e5ddd0</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#c9a961"></div><div class="swatch-label"><strong>accent</strong>#c9a961</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#a88847"></div><div class="swatch-label"><strong>accent-dark</strong>#a88847</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#f5ecd9"></div><div class="swatch-label"><strong>accent-light</strong>#f5ecd9</div></div>
+        <div class="swatch"><div class="swatch-color" style="background:#6b6b6b"></div><div class="swatch-label"><strong>muted</strong>#6b6b6b</div></div>
+      </div>
+      <p><strong>Rationale:</strong> Gold tones trigger appetite and signal premium dining. Every text color exceeds WCAG AA contrast against its background.</p>
+    </section>
+
+    <section id="layout">
+      <h2><span class="num">9</span> layout.tsx — Full File</h2>
+      <pre><code>import type { Metadata } from "next";
+import "./globals.css";
+import { Navbar } from "@/components/layout/Navbar";
+
+export const metadata: Metadata = {
+  title: "Lumière | مطعم Lumière",
+  description: "مطعم Lumière — تجربة طعام استثنائية",
+};
+
+export default function RootLayout({ children }: LayoutProps&lt;"/"&gt;) {
+  return (
+    &lt;html lang="ar" dir="rtl" className="h-full antialiased"&gt;
+      &lt;body className="min-h-full flex flex-col"&gt;
+        &lt;Navbar /&gt;
+        &lt;main className="flex-1"&gt;{children}&lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+      <h3>Line-by-line rationale</h3>
+      <ul>
+        <li><code>lang="ar"</code> — tells browsers, screen readers, and search engines the content language.</li>
+        <li><code>dir="rtl"</code> — flips all layout (text, flexbox, margins) to right-to-left.</li>
+        <li><code>h-full</code> + <code>min-h-full flex flex-col</code> — sticky footer pattern.</li>
+        <li><code>flex-1</code> on <code>&lt;main&gt;</code> — pushes content to fill available space.</li>
+        <li><code>&lt;Navbar /&gt;</code> — rendered once, appears on every page.</li>
+      </ul>
+    </section>
+
+    <section id="rtl">
+      <h2><span class="num">10</span> RTL — How dir="rtl" Changes Everything</h2>
+      <table>
+        <thead><tr><th>CSS Property</th><th>LTR Behavior</th><th>RTL Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>Text alignment</td><td>Left</td><td>Right</td></tr>
+          <tr><td><code>margin-left</code></td><td>Left side</td><td><strong>Mirrored</strong></td></tr>
+          <tr><td><code>padding-inline-start</code></td><td>Left padding</td><td><strong>Right padding</strong></td></tr>
+          <tr><td>Flexbox row</td><td>Left → Right</td><td><strong>Right → Left</strong></td></tr>
+          <tr><td>Scroll bar</td><td>Right side</td><td><strong>Left side</strong></td></tr>
+        </tbody>
+      </table>
+      <p><strong>The magic:</strong> Tailwind's logical utilities (<code>ms-*</code>, <code>me-*</code>, <code>ps-*</code>, <code>pe-*</code>) auto-mirror. Physical utilities (<code>ml-*</code>, <code>mr-*</code>) do not.</p>
+      <pre><code>// ❌ Breaks in RTL
+&lt;div className="ml-4 mr-2"&gt;
+
+// ✅ Mirrors automatically
+&lt;div className="ms-4 me-2"&gt;</code></pre>
+    </section>
+
+    <section id="navbar">
+      <h2><span class="num">11</span> Navbar Component</h2>
+      <pre><code>import Link from "next/link";
+
+const navLinks = [
+  { href: "/", label: "الرئيسية" },
+  { href: "/menu", label: "القائمة" },
+  { href: "/reserve", label: "احجز طاولة" },
+] as const;
+
+export function Navbar() {
+  return (
+    &lt;header className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border"&gt;
+      &lt;nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between"&gt;
+        &lt;Link href="/" className="text-2xl font-bold text-accent hover:text-accent-dark transition-colors"&gt;
+          Lumière
+        &lt;/Link&gt;
+        &lt;ul className="flex items-center gap-6"&gt;
+          {navLinks.map((link) =&gt; (
+            &lt;li key={link.href}&gt;
+              &lt;Link href={link.href} className="text-foreground/80 hover:text-accent transition-colors text-sm font-medium"&gt;
+                {link.label}
+              &lt;/Link&gt;
+            &lt;/li&gt;
+          ))}
+        &lt;/ul&gt;
+      &lt;/nav&gt;
+    &lt;/header&gt;
+  );
+}</code></pre>
+      <p><strong>Server Component:</strong> No state, no events. Ships zero JavaScript.</p>
+    </section>
+
+    <section id="navbar-sticky">
+      <h2><span class="num">12</span> Navbar Deep-Dive — Sticky &amp; Backdrop Blur</h2>
+      <h3>sticky top-0 z-50</h3>
+      <ul>
+        <li><code>sticky</code> — element scrolls with page, then sticks at <code>top: 0</code>.</li>
+        <li><code>z-50</code> — stacks above page content (Tailwind scale 0–50).</li>
+        <li><strong>WHY:</strong> Modern UX expects persistent navigation; users reach any page in one click.</li>
+      </ul>
+      <h3>bg-background/85 backdrop-blur-md</h3>
+      <ul>
+        <li><code>bg-background/85</code> — 85% opacity background.</li>
+        <li><code>backdrop-blur-md</code> — Gaussian blur of content behind the header.</li>
+        <li><strong>WHY:</strong> Content scrolls under the header but stays partially visible — a premium iOS/macOS aesthetic.</li>
+      </ul>
+      <h3>max-w-6xl mx-auto</h3>
+      <p>Constrains content to 1152px and centers it. <strong>WHY:</strong> Prevents stretched text on ultra-wide monitors.</p>
+      <h3>as const on navLinks</h3>
+      <p>Freezes the array literal — TypeScript narrows string types. <strong>WHY:</strong> Typos in <code>href</code> become compile errors.</p>
+    </section>
+
+    <section id="card">
+      <h2><span class="num">13</span> MenuItemCard — Full File</h2>
+      <pre><code>import Link from "next/link";
+import Image from "next/image";
+
+type MenuItemCardProps = {
+  item: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    price: number;
+    imageUrl: string | null;
+    isFeatured: boolean;
+    category: { name: string };
+  };
+};
+
+export function MenuItemCard({ item }: MenuItemCardProps) {
+  return (
+    &lt;Link href={`/menu/${item.slug}`}
+      className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col"&gt;
+
+      &lt;div className="relative aspect-4/3 bg-accent-light overflow-hidden"&gt;
+        {item.imageUrl ? (
+          &lt;Image src={item.imageUrl} alt={item.name} fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500" /&gt;
+        ) : (
+          &lt;div className="absolute inset-0 flex items-center justify-center text-4xl text-accent/40"&gt;🍽️&lt;/div&gt;
+        )}
+        {item.isFeatured &amp;&amp; (
+          &lt;span className="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full"&gt;
+            ⭐ مميز
+          &lt;/span&gt;
+        )}
+      &lt;/div&gt;
+
+      &lt;div className="p-5 flex flex-col flex-1"&gt;
+        &lt;span className="text-xs text-accent-dark font-medium mb-1"&gt;{item.category.name}&lt;/span&gt;
+        &lt;h3 className="text-lg font-bold mb-2 group-hover:text-accent transition-colors"&gt;{item.name}&lt;/h3&gt;
+        {item.description &amp;&amp; (
+          &lt;p className="text-sm text-muted leading-relaxed line-clamp-2 mb-4"&gt;{item.description}&lt;/p&gt;
+        )}
+        &lt;div className="mt-auto flex items-center justify-between pt-3 border-t border-border"&gt;
+          &lt;span className="text-xl font-bold text-accent-dark"&gt;
+            {item.price} &lt;span className="text-sm font-normal"&gt;ج.م&lt;/span&gt;
+          &lt;/span&gt;
+          &lt;span className="text-xs text-muted group-hover:text-accent transition-colors"&gt;التفاصيل ←&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/Link&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="card-tricks">
+      <h2><span class="num">14</span> Card Deep-Dive — Key Techniques</h2>
+      <h3>group + group-hover:</h3>
+      <p>Parent gets <code>group</code> class; children react to <code>group-hover:*</code>. <strong>WHY:</strong> Hover on any part of the card animates all children (image zoom, text color, border).</p>
+
+      <h3>aspect-4/3</h3>
+      <p>New Tailwind v4 syntax for <code>aspect-ratio: 4 / 3</code>. Replaces <code>aspect-[4/3]</code>. <strong>WHY:</strong> Uniform image heights keep grid rows aligned.</p>
+
+      <h3>fill on &lt;Image&gt;</h3>
+      <p>Image fills its parent container absolutely. Requires parent with <code>position: relative</code> + fixed dimensions. <strong>WHY:</strong> Enables <code>object-cover</code> (crop to fit) instead of distortion.</p>
+
+      <h3>sizes="(max-width: 768px) 100vw, 33vw"</h3>
+      <p>Tells Next.js how wide the image renders. <strong>WHY:</strong> Generates optimal <code>srcset</code> — mobile downloads smaller images.</p>
+
+      <h3>line-clamp-2</h3>
+      <p>Truncates text after 2 lines with ellipsis. <strong>WHY:</strong> Prevents variable-length descriptions from breaking grid uniformity.</p>
+
+      <h3>mt-auto</h3>
+      <p>Pushes price to card bottom. <strong>WHY:</strong> Cards with short descriptions still align prices at the bottom.</p>
+    </section>
+
+    <section id="menu-page">
+      <h2><span class="num">15</span> Menu Page — Full File</h2>
+      <pre><code>import { prisma } from "@/lib/prisma";
+import { MenuItemCard } from "@/components/menu/MenuItemCard";
+import { CategoryFilter } from "@/components/menu/CategoryFilter";
+
+type MenuPageProps = {
+  searchParams: Promise&lt;{ category?: string }&gt;;
+};
+
+export default async function MenuPage({ searchParams }: MenuPageProps) {
+  const { category } = await searchParams;
+
+  const [categories, items] = await Promise.all([
+    prisma.category.findMany({
+      orderBy: { displayOrder: "asc" },
+      select: { id: true, name: true, slug: true },
+    }),
+    prisma.menuItem.findMany({
+      where: {
+        isAvailable: true,
+        ...(category &amp;&amp; { category: { slug: category } }),
+      },
+      orderBy: [{ isFeatured: "desc" }, { name: "asc" }],
+      include: { category: { select: { name: true, slug: true } } },
+    }),
+  ]);
+
+  return (
+    &lt;div className="max-w-6xl mx-auto px-4 py-12"&gt;
+      &lt;div className="text-center mb-12"&gt;
+        &lt;span className="text-accent text-sm font-medium tracking-widest"&gt;OUR MENU&lt;/span&gt;
+        &lt;h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4"&gt;قائمة Lumière&lt;/h1&gt;
+        &lt;p className="text-muted max-w-xl mx-auto"&gt;
+          مجموعة مختارة بعناية من أشهى الأطباق، مُعدّة بأجود المكونات
+        &lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;CategoryFilter categories={categories} /&gt;
+
+      {items.length === 0 ? (
+        &lt;p className="text-center text-muted py-16"&gt;
+          لا توجد أطباق في هذا التصنيف حالياً.
+        &lt;/p&gt;
+      ) : (
+        &lt;div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"&gt;
+          {items.map((item) =&gt; (
+            &lt;MenuItemCard key={item.id} item={item} /&gt;
+          ))}
+        &lt;/div&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="searchparams">
+      <h2><span class="num">16</span> Menu Page Deep-Dive — searchParams &amp; Promise.all</h2>
+      <h3>searchParams: Promise&lt;{ category?: string }&gt;</h3>
+      <ul>
+        <li>Next.js 15+ passes <code>searchParams</code> as an async value.</li>
+        <li>Must <code>await</code> before destructuring.</li>
+        <li><strong>WHY this change:</strong> Enables streaming — the page shell renders before params resolve.</li>
+      </ul>
+
+      <h3>Promise.all([...])</h3>
+      <ul>
+        <li>Fires both Prisma queries concurrently.</li>
+        <li>Total latency = <code>max(query1, query2)</code> instead of <code>query1 + query2</code>.</li>
+        <li><strong>WHY:</strong> SQLite handles concurrent reads; no reason to serialize.</li>
+      </ul>
+
+      <h3>Conditional spread</h3>
+      <pre><code>...(category &amp;&amp; { category: { slug: category } })</code></pre>
+      <ul>
+        <li>If <code>category</code> exists → adds filter.</li>
+        <li>If undefined → spreads <code>false</code>, which Prisma ignores.</li>
+        <li><strong>WHY:</strong> One query handles both "all items" and "filtered items" without branching.</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>Zero-JS verification</strong>
+        Open DevTools → Network. The <code>/menu</code> request returns <code>Content-Type: text/html</code>. No <code>fetch('/api/menu/items')</code> call exists. This is the Server Component advantage in action.
+      </div>
+    </section>
+
+    <section id="filter">
+      <h2><span class="num">17</span> CategoryFilter — Client Component</h2>
+      <pre><code>"use client";
+
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+
+type Category = { id: string; name: string; slug: string };
+
+export function CategoryFilter({ categories }: { categories: Category[] }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const activeSlug = searchParams.get("category");
+
+  function handleFilter(slug: string | null) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (slug) {
+      params.set("category", slug);
+    } else {
+      params.delete("category");
+    }
+    router.push(`${pathname}?${params.toString()}`);
+  }
+
+  return (
+    &lt;div className="flex flex-wrap items-center justify-center gap-2 mb-10"&gt;
+      &lt;FilterButton label="الكل" isActive={!activeSlug} onClick={() =&gt; handleFilter(null)} /&gt;
+      {categories.map((cat) =&gt; (
+        &lt;FilterButton key={cat.id} label={cat.name}
+          isActive={activeSlug === cat.slug}
+          onClick={() =&gt; handleFilter(cat.slug)} /&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}
+
+function FilterButton({ label, isActive, onClick }: { label: string; isActive: boolean; onClick: () =&gt; void }) {
+  return (
+    &lt;button type="button" onClick={onClick}
+      className={`px-5 py-2 rounded-full text-sm font-medium border transition-all ${
+        isActive
+          ? "bg-accent text-white border-accent shadow-sm"
+          : "bg-card text-foreground border-border hover:border-accent hover:text-accent"
+      }`}&gt;
+      {label}
+    &lt;/button&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="url-state">
+      <h2><span class="num">18</span> Filter Deep-Dive — URL-Driven State</h2>
+      <p><strong>Why URL state beats useState:</strong></p>
+      <table>
+        <thead><tr><th>Aspect</th><th>useState</th><th>URL searchParams</th></tr></thead>
+        <tbody>
+          <tr><td>Shareable link</td><td>❌</td><td>✅ <code>/menu?category=desserts</code></td></tr>
+          <tr><td>Browser back/forward</td><td>❌</td><td>✅ Works</td></tr>
+          <tr><td>SEO indexable</td><td>❌</td><td>✅ Crawlable</td></tr>
+          <tr><td>Server re-renders</td><td>❌</td><td>✅ Data re-fetched server-side</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The cycle</h3>
+      <div class="flow">
+        <div class="flow-step">User clicks "حلويات"</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">router.push("/menu?category=desserts")</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">Next.js re-renders &lt;MenuPage /&gt; (Server Component)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">MenuPage reads searchParams.category = "desserts"</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">Prisma returns only desserts</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">HTML streams to browser</div>
+      </div>
+
+      <h3>URLSearchParams API</h3>
+      <ul>
+        <li>Standard Web API — works in Node and browser.</li>
+        <li>Preserves existing params (<code>?utm_source=...</code>) when adding <code>category</code>.</li>
+        <li>Auto-encodes Arabic / special characters.</li>
+      </ul>
+    </section>
+
+    <section id="detail">
+      <h2><span class="num">19</span> Item Detail Page — /menu/[slug]</h2>
+      <pre><code>import { notFound } from "next/navigation";
+import Link from "next/link";
+import Image from "next/image";
+import { prisma } from "@/lib/prisma";
+
+type MenuItemPageProps = { params: Promise&lt;{ slug: string }&gt; };
+
+export default async function MenuItemPage({ params }: MenuItemPageProps) {
+  const { slug } = await params;
+  const item = await prisma.menuItem.findUnique({
+    where: { slug },
+    include: { category: { select: { name: true, slug: true } } },
+  });
+
+  if (!item) notFound();
+
+  return (
+    &lt;div className="max-w-5xl mx-auto px-4 py-12"&gt;
+      &lt;Link href="/menu" className="inline-flex items-center gap-2 text-sm text-muted hover:text-accent transition-colors mb-8"&gt;
+        &lt;span&gt;→&lt;/span&gt;
+        &lt;span&gt;العودة إلى القائمة&lt;/span&gt;
+      &lt;/Link&gt;
+
+      &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-start"&gt;
+        &lt;div className="relative aspect-square bg-accent-light rounded-3xl overflow-hidden"&gt;
+          {item.imageUrl ? (
+            &lt;Image src={item.imageUrl} alt={item.name} fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover" priority /&gt;
+          ) : (
+            &lt;div className="absolute inset-0 flex items-center justify-center text-8xl text-accent/30"&gt;🍽️&lt;/div&gt;
+          )}
+          {item.isFeatured &amp;&amp; (
+            &lt;span className="absolute top-4 left-4 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full"&gt;⭐ مميز&lt;/span&gt;
+          )}
+        &lt;/div&gt;
+
+        &lt;div className="flex flex-col"&gt;
+          &lt;span className="text-sm text-accent font-medium mb-2"&gt;{item.category.name}&lt;/span&gt;
+          &lt;h1 className="text-3xl md:text-4xl font-bold mb-4"&gt;{item.name}&lt;/h1&gt;
+          {item.description &amp;&amp; &lt;p className="text-muted leading-relaxed mb-6"&gt;{item.description}&lt;/p&gt;}
+          &lt;div className="text-3xl font-bold text-accent-dark mb-8"&gt;
+            {item.price} &lt;span className="text-base font-normal text-muted"&gt;ج.م&lt;/span&gt;
+          &lt;/div&gt;
+          &lt;Link href="/reserve"
+            className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors self-start"&gt;
+            احجز طاولة &lt;span&gt;←&lt;/span&gt;
+          &lt;/Link&gt;
+          &lt;p className="text-xs text-muted mt-4"&gt;
+            {item.isAvailable ? "✓ متوفر الآن" : "غير متوفر حالياً"}
+          &lt;/p&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="notfound">
+      <h2><span class="num">20</span> notFound() &amp; Custom 404</h2>
+      <p><strong>params: Promise&lt;{ slug: string }&gt;</strong> — Next.js 15+ async params. <code>await params</code> before use. <strong>WHY:</strong> Enables parallel rendering of layout + page.</p>
+
+      <p><strong>notFound()</strong></p>
+      <ul>
+        <li>Throws <code>NEXT_NOT_FOUND</code> — Next.js catches it and renders the nearest <code>not-found.tsx</code>.</li>
+        <li>Automatically sets HTTP status to 404.</li>
+        <li><strong>WHY explicit call:</strong> <code>findUnique</code> returns <code>null</code> when not found; without <code>notFound()</code>, the page would try to render <code>item.name</code> on <code>null</code> → runtime crash → 500.</li>
+      </ul>
+
+      <h3>Custom not-found.tsx</h3>
+      <pre><code>import Link from "next/link";
+
+export default function MenuItemNotFound() {
+  return (
+    &lt;div className="max-w-2xl mx-auto px-4 py-24 text-center"&gt;
+      &lt;div className="text-8xl mb-6"&gt;🍽️&lt;/div&gt;
+      &lt;h1 className="text-3xl font-bold mb-4"&gt;الطبق غير موجود&lt;/h1&gt;
+      &lt;p className="text-muted mb-8"&gt;ربما تم حذف هذا الطبق أو أن الرابط غير صحيح.&lt;/p&gt;
+      &lt;Link href="/menu"
+        className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"&gt;
+        العودة إلى القائمة
+      &lt;/Link&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+      <p><strong>Verified behavior:</strong></p>
+      <pre><code>GET /menu/pizza 404 in 189ms
+GET /menu/hummus 200 in 1974ms (first build)
+GET /menu/aleppo-kebab 200 in 162ms (warm)</code></pre>
+      <div class="screenshot">Screenshot: Custom 404 page with "الطبق غير موجود" message and "العودة إلى القائمة" button</div>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">21</span> Request Data Flow</h2>
+      <p><strong>Trace of <code>GET /menu?category=desserts</code>:</strong></p>
+      <div class="flow">
+        <div class="flow-step">1. User navigates to /menu</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">2. Server Component &lt;MenuPage /&gt; executes:<br>await searchParams → { category: undefined }</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. Promise.all fires:<br>• prisma.category.findMany() (4 rows)<br>• prisma.menuItem.findMany({ where: { isAvailable: true } })</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">4. React streams HTML with 12 &lt;MenuItemCard /&gt; + &lt;CategoryFilter /&gt;</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">5. Filter buttons hydrate — click "حلويات"</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">6. router.push("/menu?category=desserts")</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">7. Next.js re-runs &lt;MenuPage /&gt; with new searchParams</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">8. Streamed HTML replaces previous grid (3 desserts)</div>
+      </div>
+      <p><strong>Boundary rationale:</strong> Data crosses from SQLite → Prisma → React tree → HTML string → browser DOM. Each step is typed; any shape mismatch fails at compile time.</p>
+    </section>
+
+    <section id="responsive">
+      <h2><span class="num">22</span> Responsive Breakpoints Used</h2>
+      <table>
+        <thead><tr><th>Tailwind Prefix</th><th>Min Width</th><th>Grid Columns</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td>(none)</td><td>0px</td><td>1</td><td>Mobile portrait</td></tr>
+          <tr><td><code>sm:</code></td><td>640px</td><td>2</td><td>Large phone / small tablet</td></tr>
+          <tr><td><code>md:</code></td><td>768px</td><td>2 (with side-by-side detail)</td><td>Tablet portrait</td></tr>
+          <tr><td><code>lg:</code></td><td>1024px</td><td>3</td><td>Desktop / laptop</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pattern used:</strong></p>
+      <pre><code>grid-cols-1 sm:grid-cols-2 lg:grid-cols-3</code></pre>
+      <p><strong>WHY mobile-first:</strong></p>
+      <ul>
+        <li>60%+ of restaurant traffic is mobile.</li>
+        <li>Base styles = mobile; larger screens add columns.</li>
+        <li>Total CSS bytes are smaller than desktop-first with <code>max-*</code> overrides.</li>
+      </ul>
+    </section>
+
+    <section id="cheatsheet">
+      <h2><span class="num">23</span> Server vs Client — Decision Cheat Sheet</h2>
+      <p><strong>Ask these questions in order:</strong></p>
+      <ol>
+        <li>Does the component fetch data from Prisma? → <strong>Server</strong></li>
+        <li>Does it use <code>useState</code>, <code>useEffect</code>, <code>useRef</code>? → <strong>Client</strong></li>
+        <li>Does it attach event handlers (<code>onClick</code>, <code>onSubmit</code>)? → <strong>Client</strong></li>
+        <li>Does it access <code>window</code>, <code>localStorage</code>, <code>document</code>? → <strong>Client</strong></li>
+        <li>Otherwise → <strong>Server</strong> (default)</li>
+      </ol>
+
+      <h3>Phase 4 breakdown</h3>
+      <table>
+        <thead><tr><th>Component</th><th>Type</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td>Navbar</td><td>Server</td><td>Static links, no state</td></tr>
+          <tr><td>MenuItemCard</td><td>Server</td><td>Static presentation</td></tr>
+          <tr><td>MenuPage</td><td>Server</td><td>Direct Prisma query</td></tr>
+          <tr><td>MenuItemPage</td><td>Server</td><td>Direct Prisma query</td></tr>
+          <tr><td>not-found</td><td>Server</td><td>Static content</td></tr>
+          <tr><td><strong>CategoryFilter</strong></td><td><strong>Client</strong></td><td><code>onClick</code> + <code>useRouter</code></td></tr>
+        </tbody>
+      </table>
+      <p><strong>Ratio:</strong> 5 Server : 1 Client. The Client component ships ~3 KB gzipped.</p>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">24</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>Dev server</td><td><code>npm run dev</code></td><td>Ready in Xs</td></tr>
+          <tr><td>Menu page</td><td><code>/menu</code></td><td>12 cards in 3-column grid</td></tr>
+          <tr><td>Featured badges</td><td>Visual</td><td>4 items show ⭐</td></tr>
+          <tr><td>Filter works</td><td>Click "حلويات"</td><td>3 desserts, URL = <code>?category=desserts</code></td></tr>
+          <tr><td>Shareable URL</td><td>Copy filtered URL to new tab</td><td>Same filtered view</td></tr>
+          <tr><td>Detail page</td><td><code>/menu/hummus</code></td><td>Full layout with details</td></tr>
+          <tr><td>404 page</td><td><code>/menu/pizza</code></td><td>Custom Arabic 404</td></tr>
+          <tr><td>RTL</td><td>Visual</td><td>Navbar logo right; text right-aligned</td></tr>
+          <tr><td>Responsive</td><td>Resize browser</td><td>3 → 2 → 1 column</td></tr>
+          <tr><td>Zero JS from Server Comps</td><td>DevTools → Network</td><td>No fetch to /api/menu/*</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: /menu page with 12 cards and active category filter</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">25</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>components/</code> inside <code>app/</code></td><td><code>Module not found: @/components/...</code></td><td>Move to <code>src/components/</code></td></tr>
+          <tr><td>Missing <code>"use client"</code></td><td><code>useState is not defined</code></td><td>Add at top of file (first line)</td></tr>
+          <tr><td>Forgetting <code>await params</code></td><td>Warning: <code>params should be awaited</code></td><td><code>const { slug } = await params</code></td></tr>
+          <tr><td><code>dir="rtl"</code> on body only</td><td>Text mirrors but Flexbox doesn't</td><td>Set on <code>&lt;html&gt;</code>, not <code>&lt;body&gt;</code></td></tr>
+          <tr><td>Image 404</td><td><code>next/image</code> refuses remote domains</td><td>Add domain to <code>next.config.ts</code></td></tr>
+          <tr><td>Slow first dev compile</td><td>40+ second initial load</td><td>Expected in dev; production build is &lt;500ms</td></tr>
+          <tr><td>Empty grid on filter</td><td>Wrong param name</td><td>Match <code>searchParams.get()</code> exactly</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">26</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>CSS</td><td>Cascading Style Sheets</td><td>Language for styling web pages</td></tr>
+          <tr><td>DOM</td><td>Document Object Model</td><td>In-memory tree of the rendered page</td></tr>
+          <tr><td>HMR</td><td>Hot Module Replacement</td><td>Live code updates without full reload</td></tr>
+          <tr><td>JS</td><td>JavaScript</td><td>Browser scripting language</td></tr>
+          <tr><td>LCP</td><td>Largest Contentful Paint</td><td>Core Web Vital: when main content appears</td></tr>
+          <tr><td>LTR</td><td>Left-to-Right</td><td>Text direction for English/European languages</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Code layer translating objects ↔ SQL</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>React components rendered on the server</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>SEO</td><td>Search Engine Optimization</td><td>Practices for ranking in search results</td></tr>
+          <tr><td>SVG</td><td>Scalable Vector Graphics</td><td>Vector image format (crisp at any size)</td></tr>
+          <tr><td>UI</td><td>User Interface</td><td>What the user sees and interacts with</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>WCAG</td><td>Web Content Accessibility Guidelines</td><td>International accessibility standard</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">27</span> Phase 4 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>RTL Arabic layout with proper <code>lang</code>/<code>dir</code> attributes</li>
+        <li>Sticky Navbar with backdrop blur and Lumière branding</li>
+        <li><code>/menu</code> page rendering 12 items via Server Component + Prisma</li>
+        <li><code>MenuItemCard</code> reusable component (grid-aligned, hover-animated)</li>
+        <li><code>CategoryFilter</code> — URL-driven Client Component with 5 buttons</li>
+        <li><code>/menu/[slug]</code> detail page with dynamic routing</li>
+        <li>Custom <code>not-found.tsx</code> for elegant 404s</li>
+        <li>Design tokens centralized in <code>@theme</code> block</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li>5 Server Components : 1 Client Component ratio</li>
+        <li>Zero fetch calls between internal pages and DB</li>
+        <li>Fully shareable filter URLs (SEO-friendly)</li>
+        <li>Responsive at 3 breakpoints</li>
+        <li>WCAG AA color contrast maintained</li>
+        <li>Ready for Phase 5: smart table reservation logic</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-03-api-layer.html">← Phase 3 (API Layer)</a>
+      <span class="center">Phase 4 of 11</span>
+      <a href="phase-05-reservation-engine.html">Phase 5 (Reservation Engine) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

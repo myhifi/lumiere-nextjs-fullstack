@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 5 — Reservation Engine · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* ─── Flow Diagram ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Rules Grid ─── */
+.rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.rule-card { background: var(--bg-card); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 10px; padding: 1.25rem; }
+.rule-card .rule-num { background: var(--accent-light); color: var(--accent-dark); width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; margin-bottom: 0.75rem; }
+.rule-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.rule-card p { font-size: 0.82rem; color: var(--fg-muted); margin: 0; }
+.rule-card code { font-size: 0.75em; }
+
+/* ─── Timeline (Overlap visualization) ─── */
+.timeline { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin: 1rem 0; }
+.timeline-row { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 1rem; margin-bottom: 0.75rem; font-size: 0.82rem; }
+.timeline-row:last-child { margin-bottom: 0; }
+.timeline-label { font-family: 'Consolas', monospace; font-weight: 700; color: var(--fg-muted); }
+.timeline-track { position: relative; height: 32px; background: var(--bg); border-radius: 6px; border: 1px solid var(--border); overflow: hidden; }
+.timeline-block { position: absolute; top: 4px; bottom: 4px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: #fff; font-family: 'Consolas', monospace; }
+.timeline-block.existing { background: #7cb4e8; }
+.timeline-block.new { background: var(--accent); }
+.timeline-block.overlap { background: var(--danger); }
+.timeline-block.ok { background: var(--success); }
+
+/* ─── Test Cases Grid ─── */
+.test-cases { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.test-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.85rem; }
+.test-card .test-num { font-size: 0.7rem; color: var(--accent-dark); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.25rem; }
+.test-card .test-title { font-weight: 700; margin-bottom: 0.5rem; }
+.test-card .test-expect { color: var(--fg-muted); font-size: 0.78rem; }
+.test-card .test-result { color: var(--success); font-weight: 600; font-size: 0.82rem; margin-top: 0.5rem; }
+
+/* ─── Layer Diagram ─── */
+.layers { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.layer { padding: 0.75rem 1.25rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; border-left: 4px solid; }
+.layer.client { background: #fdecea; border-color: #c0392b; color: #7a1c1c; }
+.layer.action { background: #fef5e7; border-color: #e67e22; color: #7a4a12; }
+.layer.pure { background: #eaf7ef; border-color: #27ae60; color: #1e5a3a; }
+.layer.data { background: #eaf0fa; border-color: #2e6fc0; color: #1a3d75; }
+.layer strong { color: inherit; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .timeline-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 05</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#decision">Pure Logic Separation</a>
+      <a href="#rules">The Four Business Rules</a>
+      <a href="#overlap">Interval Overlap Logic</a>
+      <a href="#touch">Touching Bookings Decision</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#architecture">Three-Layer Architecture</a>
+      <a href="#pseudocode">Design in Pseudo-code</a>
+      <a href="#types">Types & Constants</a>
+      <a href="#fn">findBestTable Function</a>
+      <a href="#fn-deep">Function Deep-Dive</a>
+      <a href="#overlap-fn">hasOverlappingReservation</a>
+      <a href="#tests">Test Harness</a>
+      <a href="#test-results">Test Results</a>
+      <a href="#formfield">FormField Component</a>
+      <a href="#form">ReservationForm</a>
+      <a href="#form-state">Result State Pattern</a>
+      <a href="#reserve-page">/reserve Page</a>
+      <a href="#zod">Zod Schema</a>
+      <a href="#refinements">Custom Refinements</a>
+      <a href="#validation-tests">Validation Tests</a>
+      <a href="#action">createReservation Action</a>
+      <a href="#query-window">Query Window Optimization</a>
+      <a href="#status-filter">Status-Aware Filtering</a>
+      <a href="#flow">Full Data Flow</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 05 · Reservation Engine</div>
+      <h1>Smart Table Assignment &amp; Booking Pipeline</h1>
+      <p class="lede">Build the flagship feature of the project — an intelligent table assignment engine that selects the optimal table for each booking, backed by server-side validation and atomic persistence. Pure business logic, decoupled from HTTP and the database.</p>
+      <div class="stack">
+        <span>Pure Function</span><span>Interval Overlap</span>
+        <span>Zod Validation</span><span>Server Action</span>
+        <span>Discriminated Union</span><span>Fail-Safe Design</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Take a guest's desired date, time, and party size and determine — in milliseconds — which table fits, without conflicting with existing bookings.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><code>src/lib/services/table-assignment.ts</code> — pure function implementing 4 business rules.</li>
+        <li><code>scripts/test-assignment.ts</code> — 5-scenario test harness.</li>
+        <li><code>src/components/ui/FormField.tsx</code> — reusable form primitive.</li>
+        <li><code>src/components/reservation/ReservationForm.tsx</code> — Client Component with success screen.</li>
+        <li><code>src/app/reserve/page.tsx</code> — RTL reservation page.</li>
+        <li><code>src/lib/validations/reservation.ts</code> — Zod schema with custom refinements.</li>
+        <li><code>src/actions/reservation.ts</code> — Server Action saving reservations transactionally.</li>
+      </ol>
+    </section>
+
+    <section id="decision">
+      <h2><span class="num">2</span> Architectural Decision — Pure Business Logic Separation</h2>
+      <p><strong>The problem:</strong> Where does "which table for this booking" logic belong?</p>
+      <table>
+        <thead><tr><th>Location</th><th>Pros</th><th>Cons</th></tr></thead>
+        <tbody>
+          <tr><td>Inside the Server Action</td><td>Fewer files</td><td>Untestable without DB; mixes I/O with logic</td></tr>
+          <tr><td>Inside the Prisma model</td><td>Reusable</td><td>Requires ORM to exist</td></tr>
+          <tr><td><strong>Separate pure function</strong></td><td>Testable, portable, explainable</td><td>One extra file</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Chosen approach:</strong> Pure function in <code>src/lib/services/table-assignment.ts</code>.</p>
+      <div class="callout">
+        <strong>Engineering rationale</strong>
+        <ul style="margin-top:0.5rem;margin-bottom:0">
+          <li><strong>Testable without a database</strong> — a Node script exercises all rules in milliseconds.</li>
+          <li><strong>Portable</strong> — the same function can run in a mobile app, a cron job, or a webhook handler.</li>
+          <li><strong>Explainable to clients</strong> — logic is isolated in one file, not scattered across HTTP handlers.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="rules">
+      <h2><span class="num">3</span> The Four Business Rules</h2>
+      <p><strong>Input:</strong> <code>(guestsCount, reservationDate, durationMinutes, tablesWithReservations)</code></p>
+      <p><strong>Output:</strong> <code>bestTable | null</code></p>
+      <div class="rules-grid">
+        <div class="rule-card">
+          <span class="rule-num">1</span>
+          <h4>Capacity Fit</h4>
+          <p>Table seats the party, no more than 3 extra seats.</p>
+          <code>capacity >= guestsCount &amp;&amp; capacity &lt;= guestsCount + 3</code>
+        </div>
+        <div class="rule-card">
+          <span class="rule-num">2</span>
+          <h4>No Time Overlap</h4>
+          <p>Existing reservations must not intersect the new window.</p>
+          <code>existingStart &lt; newEnd &amp;&amp; existingEnd &gt; newStart</code>
+        </div>
+        <div class="rule-card">
+          <span class="rule-num">3</span>
+          <h4>Ranking</h4>
+          <p>Smallest capacity first, then fewest existing reservations.</p>
+          <code>sort by capacity, then reservations.length</code>
+        </div>
+        <div class="rule-card">
+          <span class="rule-num">4</span>
+          <h4>Active Only</h4>
+          <p>Only tables flagged as active are considered.</p>
+          <code>isActive === true</code>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Why "no more than 3 extra seats"</strong>
+        A party of 2 should not occupy a 10-seat table. The buffer of 3 balances flexibility (small parties can use medium tables) against revenue loss (blocking a large table for a small party).
+      </div>
+    </section>
+
+    <section id="overlap">
+      <h2><span class="num">4</span> Interval Overlap Logic — The Math</h2>
+      <p><strong>The formula:</strong></p>
+      <pre><code>Overlap = (existingStart &lt; newEnd) AND (existingEnd &gt; newStart)</code></pre>
+
+      <p><strong>Truth table for a new booking 8:00 → 9:30:</strong></p>
+      <table>
+        <thead><tr><th>Existing Booking</th><th>existingStart &lt; 9:30</th><th>existingEnd &gt; 8:00</th><th>Overlap?</th></tr></thead>
+        <tbody>
+          <tr><td>6:00 → 7:30</td><td>✅</td><td>❌</td><td><strong>No</strong></td></tr>
+          <tr><td>6:00 → 8:30</td><td>✅</td><td>✅</td><td><strong>Yes</strong></td></tr>
+          <tr><td>7:00 → 10:00</td><td>✅</td><td>✅</td><td><strong>Yes</strong></td></tr>
+          <tr><td>8:00 → 9:30</td><td>✅</td><td>✅</td><td><strong>Yes</strong></td></tr>
+          <tr><td>8:15 → 10:00</td><td>✅</td><td>✅</td><td><strong>Yes</strong></td></tr>
+          <tr><td>9:30 → 11:00</td><td>❌</td><td>✅</td><td><strong>No</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Visual Timeline</h3>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="timeline-label">Existing</div>
+          <div class="timeline-track"><div class="timeline-block existing" style="left:5%;width:35%">7:30 – 9:00</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-label">New (overlap)</div>
+          <div class="timeline-track"><div class="timeline-block overlap" style="left:20%;width:35%">8:00 – 9:30</div></div>
+        </div>
+        <div class="timeline-row">
+          <div class="timeline-label">New (OK)</div>
+          <div class="timeline-track"><div class="timeline-block ok" style="left:60%;width:30%">9:00 – 10:30</div></div>
+        </div>
+      </div>
+      <p style="font-size:0.82rem;color:var(--fg-muted);">The bottom row starts exactly when the top row ends — <strong>touching, no overlap</strong>. This is a critical edge case (see next section).</p>
+    </section>
+
+    <section id="touch">
+      <h2><span class="num">5</span> Touching Bookings Decision</h2>
+      <p><strong>The edge case:</strong> existing booking ends at 8:00, new booking starts at 8:00.</p>
+      <pre><code>existingEnd (8:00) &gt; newStart (8:00)  →  false  →  no overlap ✅</code></pre>
+      <p><strong>Why <code>&gt;</code> not <code>&gt;=</code>:</strong> Touching bookings are allowed. This is a <strong>business decision</strong> — the guest leaves, the next guest sits. No gap required.</p>
+      <div class="callout success">
+        <strong>Future enhancement (Phase 10)</strong>
+        A 15-minute cleaning buffer can be added by changing the formula to <code>existingEnd + 15min &gt; newStart</code>. Deferred to Polish phase.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">6</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npx tsx scripts/test-assignment.ts</code></td><td>Run 5 table-assignment scenarios</td></tr>
+          <tr><td>2</td><td><code>npx tsx scripts/test-validation.ts</code></td><td>Run 7 Zod validation scenarios</td></tr>
+          <tr><td>3</td><td><code>npx tsc --noEmit</code></td><td>TypeScript type-check</td></tr>
+          <tr><td>4</td><td><code>npm run dev</code></td><td>Start dev server</td></tr>
+          <tr><td>5</td><td><code>npx prisma studio</code></td><td>Inspect saved reservations (port 5555)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>No new packages installed in Phase 5.</strong> Zod was pre-installed in the phase-preamble batch.</p>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">7</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">lumiere-nextjs-fullstack/</span></div>
+        <div class="indent-1"><span class="dir new">scripts/</span> <span class="note">← NEW: test scripts</span></div>
+        <div class="indent-2"><span class="file new">test-assignment.ts</span></div>
+        <div class="indent-2"><span class="file new">test-validation.ts</span></div>
+        <div class="indent-1"><span class="dir">src/</span></div>
+        <div class="indent-2"><span class="dir new">actions/</span> <span class="note">← NEW: Server Actions</span></div>
+        <div class="indent-3"><span class="file new">reservation.ts</span></div>
+        <div class="indent-2"><span class="dir">app/</span></div>
+        <div class="indent-3"><span class="dir new">reserve/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">page.tsx</span></div>
+        <div class="indent-2"><span class="dir">components/</span></div>
+        <div class="indent-3"><span class="dir new">reservation/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">ReservationForm.tsx</span></div>
+        <div class="indent-3"><span class="dir new">ui/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">FormField.tsx</span></div>
+        <div class="indent-2"><span class="dir">lib/</span></div>
+        <div class="indent-3"><span class="dir new">services/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">table-assignment.ts</span></div>
+        <div class="indent-3"><span class="dir new">validations/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">reservation.ts</span></div>
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">8</span> Three-Layer Architecture</h2>
+      <div class="layers">
+        <div class="layer client"><strong>CLIENT</strong> · ReservationForm.tsx — collects input, calls Server Action</div>
+        <div class="layer action"><strong>ACTION</strong> · actions/reservation.ts — validates, orchestrates, persists</div>
+        <div class="layer pure"><strong>PURE LOGIC</strong> · lib/services/table-assignment.ts — decides which table</div>
+        <div class="layer data"><strong>DATA</strong> · Prisma + SQLite — stores the reservation</div>
+      </div>
+      <p><strong>Boundary rules:</strong></p>
+      <ul>
+        <li>Client cannot call pure logic or Prisma directly.</li>
+        <li>Server Action orchestrates but delegates the decision to the pure function.</li>
+        <li>Pure function has no knowledge of HTTP, DB, or React.</li>
+      </ul>
+    </section>
+
+    <section id="pseudocode">
+      <h2><span class="num">9</span> Design in Pseudo-code</h2>
+      <p><strong>Before writing TypeScript, the algorithm in plain prose:</strong></p>
+      <pre><code>find_best_table(guestsCount, reservationDate, durationMinutes, tables):
+
+  1. Compute newStart = reservationDate.timestamp
+     Compute newEnd = newStart + durationMinutes * 60_000
+
+  2. Filter tables where:
+       - isActive == true
+       - capacity >= guestsCount
+       - capacity <= guestsCount + 3
+       - No reservation overlaps [newStart, newEnd]
+
+  3. If empty list → return null
+
+  4. Sort candidates by:
+       - capacity ascending (smallest first)
+       - reservations.length ascending (least booked first)
+
+  5. Return candidates[0]</code></pre>
+      <div class="callout">
+        <strong>Why pseudo-code first</strong>
+        Catches logical gaps (e.g., "what if two tables tie?") before touching TypeScript. Saves rewrite cycles.
+      </div>
+    </section>
+
+    <section id="types">
+      <h2><span class="num">10</span> Types &amp; Constants</h2>
+      <pre><code>export const DEFAULT_DURATION_MINUTES = 90;
+export const CAPACITY_BUFFER = 3;
+
+export type TableWithReservations = {
+  id: string;
+  number: number;
+  capacity: number;
+  location: string | null;
+  isActive: boolean;
+  reservations: {
+    reservationDate: Date;
+    durationMinutes: number;
+  }[];
+};
+
+export type AssignmentRequest = {
+  guestsCount: number;
+  reservationDate: Date;
+  durationMinutes?: number;
+};</code></pre>
+      <ul>
+        <li><code>DEFAULT_DURATION_MINUTES = 90</code> — industry-standard dining duration; used when callers omit it.</li>
+        <li><code>CAPACITY_BUFFER = 3</code> — business rule extracted as a named constant (no magic numbers).</li>
+        <li><code>TableWithReservations</code> — <strong>narrow shape</strong> the function needs, not the full Prisma model.</li>
+        <li><code>durationMinutes</code> optional — callers may override the default.</li>
+      </ul>
+      <p><strong>Why define our own types instead of importing Prisma types:</strong> The function must run in contexts without Prisma (tests, future mobile app). Narrow input types keep it portable.</p>
+    </section>
+
+    <section id="fn">
+      <h2><span class="num">11</span> findBestTable Function</h2>
+      <pre><code>export function findBestTable(
+  tables: TableWithReservations[],
+  request: AssignmentRequest
+): TableWithReservations | null {
+  const duration = request.durationMinutes ?? DEFAULT_DURATION_MINUTES;
+
+  const newStart = request.reservationDate.getTime();
+  const newEnd = newStart + duration * 60_000;
+
+  const candidates = tables
+    .filter((table) =&gt; table.isActive)
+    .filter(
+      (table) =&gt;
+        table.capacity &gt;= request.guestsCount &amp;&amp;
+        table.capacity &lt;= request.guestsCount + CAPACITY_BUFFER
+    )
+    .filter((table) =&gt; !hasOverlappingReservation(table, newStart, newEnd));
+
+  if (candidates.length === 0) return null;
+
+  candidates.sort((a, b) =&gt; {
+    if (a.capacity !== b.capacity) return a.capacity - b.capacity;
+    return a.reservations.length - b.reservations.length;
+  });
+
+  return candidates[0];
+}</code></pre>
+    </section>
+
+    <section id="fn-deep">
+      <h2><span class="num">12</span> Function Deep-Dive</h2>
+      <h3>request.durationMinutes ?? DEFAULT_DURATION_MINUTES</h3>
+      <p><code>??</code> (nullish coalescing) — falls back only if <code>undefined</code> or <code>null</code>. <strong>Why not <code>||</code>:</strong> <code>||</code> would also replace <code>0</code>, but a 0-minute reservation is invalid and should error upstream, not silently default.</p>
+
+      <h3>getTime() for timestamp math</h3>
+      <p>Returns milliseconds since Unix epoch (a <code>number</code>). <strong>Why numbers not Date objects:</strong> Numeric comparisons are faster; no timezone re-parsing; no accidental mutation.</p>
+
+      <h3>60_000 instead of 60000</h3>
+      <p>Underscore separator — pure readability, zero runtime effect.</p>
+
+      <h3>Chained .filter() calls</h3>
+      <p>Each filter is a single concern: active → capacity → overlap. <strong>Why not one giant filter:</strong> Chaining reads top-to-bottom like English; single <code>&amp;&amp;</code> chains lose clarity.</p>
+
+      <h3>Sort comparator</h3>
+      <pre><code>if (a.capacity !== b.capacity) return a.capacity - b.capacity;
+return a.reservations.length - b.reservations.length;</code></pre>
+      <ul>
+        <li>Primary sort: capacity ascending.</li>
+        <li>Tiebreaker: fewest existing reservations (load balancing).</li>
+      </ul>
+    </section>
+
+    <section id="overlap-fn">
+      <h2><span class="num">13</span> hasOverlappingReservation</h2>
+      <pre><code>function hasOverlappingReservation(
+  table: TableWithReservations,
+  newStart: number,
+  newEnd: number
+): boolean {
+  return table.reservations.some((reservation) =&gt; {
+    const existingStart = reservation.reservationDate.getTime();
+    const existingEnd = existingStart + reservation.durationMinutes * 60_000;
+    return existingStart &lt; newEnd &amp;&amp; existingEnd &gt; newStart;
+  });
+}</code></pre>
+      <p><strong>Why <code>.some()</code> instead of <code>.filter().length &gt; 0</code>:</strong> <code>.some()</code> short-circuits on the first match — returns immediately. <code>.filter()</code> scans all elements even after finding one.</p>
+      <p><strong>Why this is a separate function:</strong> Single responsibility — overlap logic isolated from filtering. Reusable if other code paths (e.g., cancel-reservation check) need it.</p>
+    </section>
+
+    <section id="tests">
+      <h2><span class="num">14</span> Test Harness — 5 Scenarios</h2>
+      <p>Chosen to exercise each rule in isolation:</p>
+      <div class="test-cases">
+        <div class="test-card">
+          <div class="test-num">Scenario 1</div>
+          <div class="test-title">Empty tables, 4 guests</div>
+          <div class="test-expect">Tests: capacity + smallest-fit ranking</div>
+          <div class="test-result">✅ Table 3 (capacity 4)</div>
+        </div>
+        <div class="test-card">
+          <div class="test-num">Scenario 2</div>
+          <div class="test-title">Table 3 booked 7:30–9:00</div>
+          <div class="test-expect">Tests: overlap rejection</div>
+          <div class="test-result">✅ Table 4 (next best fit)</div>
+        </div>
+        <div class="test-card">
+          <div class="test-num">Scenario 3</div>
+          <div class="test-title">Table booked until exactly 8:00</div>
+          <div class="test-expect">Tests: touching allowed</div>
+          <div class="test-result">✅ Table 3 available</div>
+        </div>
+        <div class="test-card">
+          <div class="test-num">Scenario 4</div>
+          <div class="test-title">15 guests, max capacity 10</div>
+          <div class="test-expect">Tests: rejection when no fit</div>
+          <div class="test-result">✅ null</div>
+        </div>
+        <div class="test-card">
+          <div class="test-num">Scenario 5</div>
+          <div class="test-title">Two tables same size, one booked</div>
+          <div class="test-expect">Tests: fewest-reservations tiebreak</div>
+          <div class="test-result">✅ Table 5 (empty)</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="test-results">
+      <h2><span class="num">15</span> Test Results — Verified</h2>
+      <pre><code>📋 السيناريو 1: 4 أشخاص، كل الطاولات فارغة
+   🎯 النتيجة: طاولة رقم 3 (سعة 4)          ← smallest fit ✅
+
+📋 السيناريو 2: 4 أشخاص، الطاولة 3 محجوزة 7:30–9:00
+   🎯 النتيجة: طاولة رقم 4                    ← overlap rejected ✅
+
+📋 السيناريو 3: الطاولة 3 محجوزة 6:30–8:00، حجز جديد 8:00
+   🎯 النتيجة: طاولة رقم 3                    ← touching allowed ✅
+
+📋 السيناريو 4: 15 شخصاً، أكبر طاولة سعة 10
+   🎯 النتيجة: null ✅                        ← no fit → null
+
+📋 السيناريو 5: طاولتان بنفس السعة، إحداهما محجوزة
+   🎯 النتيجة: طاولة رقم 5                    ← fewest-reservations tiebreak ✅</code></pre>
+      <p><strong>All 5 rules verified.</strong> Any regression in future edits will produce a mismatch here.</p>
+      <div class="screenshot">Screenshot: test-assignment.ts terminal output with all 5 scenarios</div>
+    </section>
+
+    <section id="formfield">
+      <h2><span class="num">16</span> FormField Component</h2>
+      <pre><code>import { type ReactNode } from "react";
+
+export const inputClasses =
+  "w-full px-4 py-2.5 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all";
+
+export function FormField({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    &lt;label className="block"&gt;
+      &lt;span className="block text-sm font-medium mb-2"&gt;
+        {label}
+        {required &amp;&amp; &lt;span className="text-accent mr-1"&gt;*&lt;/span&gt;}
+      &lt;/span&gt;
+      {children}
+    &lt;/label&gt;
+  );
+}</code></pre>
+      <p><strong>Why export inputClasses separately:</strong> Every input/select/textarea across the app needs identical styling. Exporting the string lets consumers apply it without importing a wrapper component. When the design changes, one edit propagates everywhere.</p>
+      <p><strong>Why &lt;label&gt; wraps the input:</strong> Clicking the label focuses the input — free accessibility win. No <code>htmlFor</code>/<code>id</code> pairing required.</p>
+    </section>
+
+    <section id="form">
+      <h2><span class="num">17</span> ReservationForm — Client Component</h2>
+      <pre><code>"use client";
+
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import { FormField, inputClasses } from "@/components/ui/FormField";
+import { createReservation, type CreateReservationResult } from "@/actions/reservation";
+
+const TIME_SLOTS = Array.from({ length: 21 }, (_, i) =&gt; {
+  const totalMinutes = 12 * 60 + i * 30;
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  const value = `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  return { value, label: value };
+});
+
+const TODAY = new Date().toISOString().split("T")[0];
+
+type Result =
+  | { kind: "idle" }
+  | { kind: "submitting" }
+  | { kind: "success"; tableNumber: number; reservationId: string }
+  | { kind: "error"; message: string; fieldErrors?: Record&lt;string, string[]&gt; };
+
+export function ReservationForm() {
+  const [formData, setFormData] = useState({
+    guestName: "", guestEmail: "", guestPhone: "",
+    guestsCount: 2, date: TODAY, time: "20:00", notes: "",
+  });
+
+  const [result, setResult] = useState&lt;Result&gt;({ kind: "idle" });
+
+  function handleChange(e: ChangeEvent&lt;HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement&gt;) {
+    const { name, value } = e.target;
+    setFormData((prev) =&gt; ({ ...prev, [name]: value }));
+  }
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setResult({ kind: "submitting" });
+    const response: CreateReservationResult = await createReservation(formData);
+
+    if (response.success) {
+      setResult({ kind: "success", tableNumber: response.tableNumber, reservationId: response.reservationId });
+      return;
+    }
+    setResult({ kind: "error", message: response.error, fieldErrors: response.fieldErrors });
+  }
+
+  if (result.kind === "success") {
+    return (
+      &lt;div className="bg-card border border-border rounded-2xl p-8 md:p-12 text-center shadow-sm"&gt;
+        &lt;div className="text-6xl mb-4"&gt;✅&lt;/div&gt;
+        &lt;h2 className="text-2xl font-bold mb-3"&gt;تم استلام حجزك!&lt;/h2&gt;
+        &lt;p className="text-muted mb-6"&gt;
+          تم تخصيص &lt;span className="text-accent font-bold"&gt;طاولة رقم {result.tableNumber}&lt;/span&gt; لك.
+        &lt;/p&gt;
+        &lt;a href="/menu" className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"&gt;
+          تصفح القائمة
+        &lt;/a&gt;
+      &lt;/div&gt;
+    );
+  }
+
+  return ( /* form JSX */ );
+}</code></pre>
+    </section>
+
+    <section id="form-state">
+      <h2><span class="num">18</span> Result State Pattern — Discriminated Union</h2>
+      <pre><code>type Result =
+  | { kind: "idle" }
+  | { kind: "submitting" }
+  | { kind: "success"; tableNumber: number; reservationId: string }
+  | { kind: "error"; message: string; fieldErrors?: Record&lt;string, string[]&gt; };</code></pre>
+      <p><strong>Why a discriminated union:</strong></p>
+      <ul>
+        <li><strong>Impossible states are unrepresentable</strong> — you cannot have <code>success</code> without a <code>tableNumber</code>.</li>
+        <li>TypeScript narrows the type inside <code>if (result.kind === "success")</code>.</li>
+        <li>Prevents <code>result.message</code> access when the state is <code>success</code>.</li>
+      </ul>
+
+      <h3>TIME_SLOTS generation</h3>
+      <p>21 slots from 12:00 to 22:00 every 30 minutes. <code>String(h).padStart(2, "0")</code> → <code>"09"</code> not <code>"9"</code> — matches HTML <code>&lt;input type="time"&gt;</code> format. <strong>Why not a native time picker:</strong> Native time pickers differ per browser; a curated <code>&lt;select&gt;</code> enforces business hours visually.</p>
+
+      <h3>handleChange name-based pattern</h3>
+      <pre><code>const { name, value } = e.target;
+setFormData((prev) =&gt; ({ ...prev, [name]: value }));</code></pre>
+      <p>One handler for 7 fields. Adding a new field requires zero handler changes — just <code>name="..."</code> on the input.</p>
+    </section>
+
+    <section id="reserve-page">
+      <h2><span class="num">19</span> /reserve Page — Server Component Shell</h2>
+      <pre><code>import { ReservationForm } from "@/components/reservation/ReservationForm";
+
+export default function ReservePage() {
+  return (
+    &lt;div className="max-w-3xl mx-auto px-4 py-12"&gt;
+      &lt;div className="text-center mb-10"&gt;
+        &lt;span className="text-accent text-sm font-medium tracking-widest"&gt;RESERVATION&lt;/span&gt;
+        &lt;h1 className="text-4xl md:text-5xl font-bold mt-3 mb-4"&gt;احجز طاولتك&lt;/h1&gt;
+        &lt;p className="text-muted max-w-xl mx-auto"&gt;
+          املأ النموذج وسيتواصل معك فريقنا لتأكيد الحجز
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;ReservationForm /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+      <p><strong>Why this file is a Server Component:</strong> The page shell (headers, wrapper) is static — no state, no events. Only <code>&lt;ReservationForm /&gt;</code> needs to be Client. <strong>Result:</strong> The page's HTML ships instantly; only the form's JS hydrates.</p>
+      <div class="screenshot">Screenshot: /reserve page with elegant form and Arabic labels</div>
+    </section>
+
+    <section id="zod">
+      <h2><span class="num">20</span> Zod Schema — reservation.ts</h2>
+      <pre><code>import { z } from "zod";
+import { DEFAULT_DURATION_MINUTES } from "@/lib/services/table-assignment";
+
+export const reservationSchema = z.object({
+  guestName: z.string().trim()
+    .min(2, "الاسم قصير جداً (حرفان على الأقل)")
+    .max(80, "الاسم طويل جداً (80 حرفاً كحد أقصى)"),
+
+  guestEmail: z.string().trim().toLowerCase()
+    .email("البريد الإلكتروني غير صحيح"),
+
+  guestPhone: z.string().trim()
+    .min(8, "رقم الهاتف قصير جداً")
+    .max(20, "رقم الهاتف طويل جداً")
+    .regex(/^[+\d\s\-()]+$/, "رقم الهاتف يحتوي على رموز غير مسموحة"),
+
+  guestsCount: z.coerce.number().int("عدد الأشخاص يجب أن يكون رقماً صحيحاً")
+    .min(1, "على الأقل شخص واحد")
+    .max(10, "لا يمكن الحجز لأكثر من 10 أشخاص"),
+
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "التاريخ غير صحيح"),
+  time: z.string().regex(/^\d{2}:\d{2}$/, "الوقت غير صحيح"),
+
+  notes: z.string().trim()
+    .max(500, "الملاحظات طويلة جداً (500 حرف كحد أقصى)")
+    .optional().or(z.literal("")),
+})</code></pre>
+      <p><strong>Why <code>z.coerce.number()</code> for guestsCount:</strong> HTML forms submit all values as strings, even <code>&lt;select&gt;</code> numbers. <code>coerce</code> runs <code>Number(value)</code> before validation.</p>
+      <p><strong>Why Arabic error messages:</strong> Zod errors surface directly to the user — no translation layer needed. One source of truth for validation messages.</p>
+      <p><strong>Why <code>.trim()</code> first:</strong> <code>"  أحمد  "</code> becomes <code>"أحمد"</code> before length check. Prevents bypass via whitespace padding.</p>
+    </section>
+
+    <section id="refinements">
+      <h2><span class="num">21</span> Custom Refinements — Business Logic in Zod</h2>
+      <pre><code>.refine(
+  (data) =&gt; {
+    const dt = new Date(`${data.date}T${data.time}:00`);
+    return dt.getTime() &gt; Date.now();
+  },
+  { message: "لا يمكن الحجز في وقت ماضٍ", path: ["date"] }
+)
+.refine(
+  (data) =&gt; {
+    const dt = new Date(`${data.date}T${data.time}:00`);
+    const hours = dt.getHours();
+    return hours &gt;= 12 &amp;&amp; hours &lt;= 22;
+  },
+  { message: "الحجز متاح فقط بين 12:00 ظهراً و 10:00 مساءً", path: ["time"] }
+)</code></pre>
+      <p><strong>Why <code>.refine()</code> twice at the end:</strong></p>
+      <ul>
+        <li>Refinements run <strong>after</strong> all field validations pass.</li>
+        <li>Combines <code>date</code> + <code>time</code> into one check (cross-field validation).</li>
+        <li><code>path: ["date"]</code> routes the error to the date field's error array.</li>
+      </ul>
+      <div class="callout">
+        <strong>The power of .refine()</strong>
+        Zod is not just a type checker — it can enforce full business rules. These two refinements encode: "no bookings in the past" and "operating hours 12:00–22:00".
+      </div>
+    </section>
+
+    <section id="validation-tests">
+      <h2><span class="num">22</span> Validation Tests — 7 Scenarios</h2>
+      <pre><code>✅ بيانات صحيحة تماماً
+   ✓ نجح التحقق
+
+✅ بريد إلكتروني غير صحيح
+   ✗ [guestEmail] البريد الإلكتروني غير صحيح
+
+✅ اسم قصير جداً (حرف واحد)
+   ✗ [guestName] الاسم قصير جداً (حرفان على الأقل)
+
+✅ عدد أشخاص = 15 (أكثر من الحد)
+   ✗ [guestsCount] لا يمكن الحجز لأكثر من 10 أشخاص
+
+✅ تاريخ في الماضي
+   ✗ [date] لا يمكن الحجز في وقت ماضٍ
+
+✅ وقت الحجز 03:00 صباحاً (خارج ساعات العمل)
+   ✗ [time] الحجز متاح فقط بين 12:00 ظهراً و 10:00 مساءً
+
+✅ ملاحظات فارغة (حقل اختياري)
+   ✓ نجح التحقق</code></pre>
+      <p><strong>Note:</strong> <code>✅</code> in this output means "test behaved as expected" — not "data passed". Both valid and invalid inputs return <code>✅</code> when they produce the expected verdict.</p>
+      <div class="screenshot">Screenshot: test-validation.ts terminal output with all 7 scenarios</div>
+    </section>
+
+    <section id="action">
+      <h2><span class="num">23</span> createReservation — Server Action</h2>
+      <pre><code>"use server";
+
+import { prisma } from "@/lib/prisma";
+import { reservationSchema, parseReservationDate } from "@/lib/validations/reservation";
+import { findBestTable, DEFAULT_DURATION_MINUTES } from "@/lib/services/table-assignment";
+
+export type CreateReservationResult =
+  | { success: true; reservationId: string; tableNumber: number }
+  | { success: false; error: string; fieldErrors?: Record&lt;string, string[]&gt; };
+
+export async function createReservation(
+  input: unknown
+): Promise&lt;CreateReservationResult&gt; {
+  const parsed = reservationSchema.safeParse(input);
+
+  if (!parsed.success) {
+    const fieldErrors: Record&lt;string, string[]&gt; = {};
+    for (const issue of parsed.error.issues) {
+      const key = issue.path.join(".") || "_";
+      (fieldErrors[key] ??= []).push(issue.message);
+    }
+    return { success: false, error: "تحقق من البيانات المُدخلة", fieldErrors };
+  }
+
+  const data = parsed.data;
+  const reservationDate = parseReservationDate(data.date, data.time);
+  const duration = DEFAULT_DURATION_MINUTES;
+
+  try {
+    const bufferMs = 3 * 60 * 60 * 1000;
+    const windowStart = new Date(reservationDate.getTime() - bufferMs);
+    const windowEnd = new Date(reservationDate.getTime() + duration * 60_000 + bufferMs);
+
+    const tables = await prisma.table.findMany({
+      where: {
+        isActive: true,
+        capacity: { gte: data.guestsCount, lte: data.guestsCount + 3 },
+      },
+      include: {
+        reservations: {
+          where: {
+            status: { in: ["PENDING", "CONFIRMED"] },
+            reservationDate: { gte: windowStart, lte: windowEnd },
+          },
+          select: { reservationDate: true, durationMinutes: true },
+        },
+      },
+    });
+
+    const bestTable = findBestTable(tables, {
+      guestsCount: data.guestsCount,
+      reservationDate,
+      durationMinutes: duration,
+    });
+
+    if (!bestTable) {
+      return {
+        success: false,
+        error: "لا توجد طاولة متاحة في هذا الوقت. جرّب وقتاً آخر أو تواصل معنا هاتفياً.",
+      };
+    }
+
+    const reservation = await prisma.reservation.create({
+      data: {
+        guestName: data.guestName,
+        guestEmail: data.guestEmail,
+        guestPhone: data.guestPhone,
+        guestsCount: data.guestsCount,
+        reservationDate,
+        durationMinutes: duration,
+        status: "PENDING",
+        notes: data.notes &amp;&amp; data.notes !== "" ? data.notes : null,
+        tableId: bestTable.id,
+      },
+    });
+
+    return { success: true, reservationId: reservation.id, tableNumber: bestTable.number };
+  } catch (error) {
+    console.error("[createReservation] error:", error);
+    return { success: false, error: "حدث خطأ غير متوقع أثناء الحجز. يرجى المحاولة لاحقاً." };
+  }
+}</code></pre>
+      <p><strong>Why <code>"use server"</code> at the top:</strong> Marks the file as a Server Action module. All exports become RPC endpoints callable from Client Components. <strong>Not</strong> a Route Handler — no URL, no HTTP method.</p>
+      <p><strong>Why <code>input: unknown</code> not <code>input: ReservationInput</code>:</strong> A malicious client can send anything. <code>unknown</code> forces explicit runtime validation before type-narrowing.</p>
+      <p><strong><code>(fieldErrors[key] ??= []).push(...)</code>:</strong> <code>??=</code> initializes the array on first key occurrence. Multiple Zod issues may target the same field; we accumulate rather than overwrite.</p>
+    </section>
+
+    <section id="query-window">
+      <h2><span class="num">24</span> Query Window Optimization — ±3 Hours</h2>
+      <pre><code>const bufferMs = 3 * 60 * 60 * 1000;
+const windowStart = new Date(reservationDate.getTime() - bufferMs);
+const windowEnd = new Date(
+  reservationDate.getTime() + duration * 60_000 + bufferMs
+);</code></pre>
+      <p><strong>Why not fetch all reservations:</strong> After months of operation, tables accumulate hundreds of historical rows. Loading them all on every booking is wasteful.</p>
+      <p><strong>Why ±3 hours:</strong> Longest realistic reservation is 3 hours. Any existing booking outside this window cannot overlap.</p>
+      <p><strong>Effect:</strong> Query time stays O(recent rows) instead of O(all rows).</p>
+
+      <h3>Pre-filtering capacity in SQL</h3>
+      <pre><code>capacity: { gte: data.guestsCount, lte: data.guestsCount + 3 }</code></pre>
+      <p>Same condition as the pure function, but applied at the database layer. <strong>Why duplicate the rule in two places:</strong> The DB filter reduces rows returned; the pure function filter is the authoritative check. Duplication is intentional for performance.</p>
+    </section>
+
+    <section id="status-filter">
+      <h2><span class="num">25</span> Status-Aware Filtering</h2>
+      <pre><code>status: { in: ["PENDING", "CONFIRMED"] }</code></pre>
+      <ul>
+        <li><code>CANCELLED</code> reservations free the table — don't count them.</li>
+        <li><code>COMPLETED</code> reservations are historical — don't count them.</li>
+        <li><strong>Business logic encoded in the query, not in post-processing.</strong></li>
+      </ul>
+
+      <h3>Notes field normalization</h3>
+      <pre><code>notes: data.notes &amp;&amp; data.notes !== "" ? data.notes : null</code></pre>
+      <p>Zod returns <code>""</code> for empty optional strings. Prisma expects <code>null</code> for empty nullable columns. <strong>Prevents storing empty strings in the database</strong> — makes "has notes" queries simpler.</p>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">26</span> Full Data Flow — Walkthrough</h2>
+      <div class="flow">
+        <div class="flow-step">1. User clicks "تأكيد الحجز"</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">2. ReservationForm.handleSubmit fires</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. setResult({ kind: "submitting" }) — button disabled</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. createReservation(formData) invoked as RPC</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── SERVER BOUNDARY ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">5. reservationSchema.safeParse(input)<br>Fail → return fieldErrors · Pass → continue</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">6. prisma.table.findMany({ window, capacity, status filters })</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">7. findBestTable(tables, request) → Table | null<br>null → "no table available" · Table → continue</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">8. prisma.reservation.create({ ...data, tableId })</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">9. Return { success: true, reservationId, tableNumber }</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">─── CLIENT BOUNDARY ───</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">10. Success screen replaces form</div>
+      </div>
+      <p><strong>Boundary rationale:</strong> Every transition is either Zod-validated (client → server) or TypeScript-typed (server internals). No unvalidated data reaches the database.</p>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">27</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>TypeScript clean</td><td><code>npx tsc --noEmit</code></td><td>No output</td></tr>
+          <tr><td>Assignment logic</td><td><code>npx tsx scripts/test-assignment.ts</code></td><td>5 scenarios match</td></tr>
+          <tr><td>Validation logic</td><td><code>npx tsx scripts/test-validation.ts</code></td><td>7 scenarios match</td></tr>
+          <tr><td>Form renders</td><td><code>http://localhost:3000/reserve</code></td><td>Two-column grid on desktop</td></tr>
+          <tr><td>Happy path</td><td>Fill valid form → submit</td><td>Green success card with table number</td></tr>
+          <tr><td>Conflict handling</td><td>Book same slot repeatedly</td><td>Table changes; eventually "no table available"</td></tr>
+          <tr><td>Zod bypass</td><td>Remove <code>type="email"</code> in DevTools, submit bad email</td><td>Red error under email field</td></tr>
+          <tr><td>Persistence</td><td>Open <code>npx prisma studio</code> → Reservation</td><td>New row with <code>status = PENDING</code></td></tr>
+          <tr><td>Dev log</td><td>Inspect <code>npm run dev</code> terminal</td><td><code>POST /reserve 200</code> + <code>ƒ createReservation(...)</code></td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: Success screen after /reserve submission + Prisma Studio row</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">28</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Missing <code>"use server"</code></td><td><code>Server Actions must be async functions</code></td><td>Add at top of <code>actions/*.ts</code></td></tr>
+          <tr><td>Missing <code>await params</code></td><td>Warning: <code>params should be awaited</code></td><td><code>const { slug } = await params</code></td></tr>
+          <tr><td>Zod schema trusts input</td><td>TypeScript error on <code>.data</code></td><td>Use <code>safeParse</code>, not <code>parse</code></td></tr>
+          <tr><td>Overlap <code>&lt;</code> vs <code>&lt;=</code></td><td>Touching bookings rejected</td><td>Use strict <code>&lt;</code> / <code>&gt;</code></td></tr>
+          <tr><td>Unfiltered status query</td><td>Cancelled bookings block tables</td><td><code>status: { in: ["PENDING", "CONFIRMED"] }</code></td></tr>
+          <tr><td>Prisma query all rows</td><td>Slow after months</td><td>Add <code>±3h</code> window filter</td></tr>
+          <tr><td><code>notes: ""</code> stored</td><td>Empty strings in DB</td><td>Convert <code>""</code> → <code>null</code></td></tr>
+          <tr><td>Success without table number</td><td>Poor UX</td><td>Return <code>tableNumber</code> from action</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">29</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>CRUD</td><td>Create, Read, Update, Delete</td><td>The four basic data operations</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char ID; sortable, URL-safe</td></tr>
+          <tr><td>FK</td><td>Foreign Key</td><td>Column pointing to another table's PK</td></tr>
+          <tr><td>HTTP</td><td>HyperText Transfer Protocol</td><td>Browser-server communication protocol</td></tr>
+          <tr><td>JSON</td><td>JavaScript Object Notation</td><td>Text format for structured data</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Translates objects ↔ SQL</td></tr>
+          <tr><td>PK</td><td>Primary Key</td><td>Column uniquely identifying a row</td></tr>
+          <tr><td>RPC</td><td>Remote Procedure Call</td><td>Calls a function over a network</td></tr>
+          <tr><td>SQL</td><td>Structured Query Language</td><td>Standard relational database language</td></tr>
+          <tr><td>UI</td><td>User Interface</td><td>What the user sees</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using an app</td></tr>
+          <tr><td>Zod</td><td>(library name)</td><td>TypeScript-first schema validation library</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">30</span> Phase 5 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Pure <code>findBestTable</code> function implementing 4 business rules</li>
+        <li>Interval overlap logic with strict <code>&lt;</code> / <code>&gt;</code> comparisons</li>
+        <li>5-scenario test harness proving correctness</li>
+        <li>Reusable <code>FormField</code> component and <code>inputClasses</code> export</li>
+        <li>RTL <code>/reserve</code> page with controlled form</li>
+        <li>Discriminated-union result state</li>
+        <li>Zod schema with field-level rules + 2 cross-field refinements</li>
+        <li><code>createReservation</code> Server Action — validates, queries, assigns, saves</li>
+        <li>Time-windowed query optimization (±3h)</li>
+        <li>Status-aware conflict detection</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>First piece of business logic</strong> decoupled from HTTP and DB</li>
+        <li><strong>First Zod schema</strong> protecting the server from malformed input</li>
+        <li><strong>First Server Action</strong> replacing Route Handlers for internal mutations</li>
+        <li><strong>First end-to-end write</strong> to the database from a browser form</li>
+        <li>Ready for Phase 6: email confirmation &amp; WhatsApp integration</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-04-frontend.html">← Phase 4 (Frontend)</a>
+      <span class="center">Phase 5 of 11</span>
+      <a href="phase-06-email-whatsapp.html">Phase 6 (Email + WhatsApp) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

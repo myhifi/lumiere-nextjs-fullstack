@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 3 — API Layer · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree (CSS-based) ─── */
+.filetree {
+  background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem;
+  border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem;
+  line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0;
+}
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* ─── Flow Diagram (vertical) ─── */
+.flow {
+  display: flex; flex-direction: column; align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0;
+}
+.flow-step {
+  background: var(--bg); border: 2px solid var(--accent);
+  border-radius: 8px; padding: 0.65rem 1.25rem;
+  font-size: 0.85rem; font-family: 'Consolas', monospace;
+  text-align: center; min-width: 280px; color: var(--fg);
+}
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after {
+  content: ""; position: absolute; bottom: -1px; left: -5px;
+  border-left: 6px solid transparent; border-right: 6px solid transparent;
+  border-top: 8px solid var(--accent);
+}
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Route Mapping Table (visual) ─── */
+.route-map {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 0.75rem 1.5rem; align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; margin: 1rem 0;
+  font-family: 'Consolas', monospace; font-size: 0.82rem;
+}
+.route-map .file { background: var(--bg); padding: 0.5rem 0.75rem; border-radius: 6px; border-left: 3px solid var(--accent); }
+.route-map .arrow { color: var(--accent); font-weight: 700; font-size: 1.2rem; }
+.route-map .url { background: var(--bg-code); color: #7cb4e8; padding: 0.5rem 0.75rem; border-radius: 6px; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .route-map { grid-template-columns: 1fr; gap: 0.5rem; }
+  .route-map .arrow { transform: rotate(90deg); justify-self: center; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 03</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#decision">Route Handler vs Server Action</a>
+      <a href="#routing">File-Based Routing</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#singleton">Prisma Singleton</a>
+      <a href="#pathbug">The Path Resolution Bug</a>
+      <a href="#categories">GET /categories</a>
+      <a href="#query-select">select, _count, orderBy</a>
+      <a href="#items">GET /items with Filters</a>
+      <a href="#spread">Spread Conditions</a>
+      <a href="#matrix">Filter Test Matrix</a>
+      <a href="#slug">GET /items/[slug]</a>
+      <a href="#notfound">404 Handling</a>
+      <a href="#status">HTTP Status Discipline</a>
+      <a href="#envelope">Response Envelope</a>
+      <a href="#flow">Request Data Flow</a>
+      <a href="#nofetch">Why Not fetch() Internally</a>
+      <a href="#boundary">Server/Client Boundary</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 03 · API Layer</div>
+      <h1>Route Handlers, Prisma Singleton &amp; Dynamic Routes</h1>
+      <p class="lede">Build the HTTP API layer that exposes the database to any external consumer — mobile app, Postman, third-party integration — using Next.js Route Handlers with a consistent JSON envelope and discipline around HTTP status codes.</p>
+      <div class="stack">
+        <span>Route Handlers</span><span>Prisma Singleton</span>
+        <span>Dynamic Routes</span><span>REST API</span><span>HTTP Status Codes</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Expose the seeded database through HTTP endpoints that any external consumer can use — without coupling them to the frontend.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><code>src/lib/prisma.ts</code> — Prisma Client singleton (hot-reload safe, absolute SQLite path).</li>
+        <li><code>GET /api/menu/categories</code> — returns all categories with item counts.</li>
+        <li><code>GET /api/menu/items</code> — returns all items with <code>?category=</code>, <code>?featured=</code>, <code>?limit=</code> filters.</li>
+        <li><code>GET /api/menu/items/[slug]</code> — returns a single item by slug, or 404.</li>
+        <li>Consistent JSON envelope: <code>{ success, data }</code> or <code>{ success, error }</code>.</li>
+      </ol>
+    </section>
+
+    <section id="decision">
+      <h2><span class="num">2</span> Route Handler vs Server Action vs Server Component</h2>
+      <table>
+        <thead><tr><th>Style</th><th>Use Case</th><th>Chosen For</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Route Handlers</strong> (<code>app/api/**/route.ts</code>)</td><td>External HTTP consumers, webhooks, mobile apps</td><td>✅ Menu endpoints</td></tr>
+          <tr><td><strong>Server Actions</strong> (<code>"use server"</code>)</td><td>Internal form submissions from React components</td><td>Phase 5 (reservations)</td></tr>
+          <tr><td><strong>Server Components</strong></td><td>Direct DB access from page components</td><td>Phase 4 (menu UI)</td></tr>
+          <tr><td>Legacy API Routes (<code>pages/api/</code>)</td><td>Next.js &lt; 13 pattern</td><td>❌ Deprecated</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Engineering rationale</strong>
+        Route Handlers are the only API style producing a stable public URL. Server Actions are opaque RPC endpoints — not shareable, not testable via Postman, not consumable by a mobile app. The menu must be consumable by external systems, so Route Handlers win.
+      </div>
+    </section>
+
+    <section id="routing">
+      <h2><span class="num">3</span> File-Based Routing Mental Model</h2>
+      <p><strong>No central router file.</strong> Directories ARE the URL.</p>
+      <div class="route-map">
+        <div class="file">src/app/api/menu/categories/route.ts</div>
+        <div class="arrow">→</div>
+        <div class="url">/api/menu/categories</div>
+
+        <div class="file">src/app/api/menu/items/route.ts</div>
+        <div class="arrow">→</div>
+        <div class="url">/api/menu/items</div>
+
+        <div class="file">src/app/api/menu/items/[slug]/route.ts</div>
+        <div class="arrow">→</div>
+        <div class="url">/api/menu/items/&lt;any-slug&gt;</div>
+
+        <div class="file">src/app/api/reservations/route.ts</div>
+        <div class="arrow">→</div>
+        <div class="url">/api/reservations</div>
+      </div>
+
+      <h3>Comparison to Django</h3>
+      <table>
+        <thead><tr><th>Concept</th><th>Django</th><th>Next.js App Router</th></tr></thead>
+        <tbody>
+          <tr><td>Route registry</td><td><code>urls.py</code> (central)</td><td>Folder names (distributed)</td></tr>
+          <tr><td>View function</td><td><code>views.py</code></td><td><code>route.ts</code> (named exports)</td></tr>
+          <tr><td>URL parameters</td><td><code>&lt;slug:slug&gt;</code> in path</td><td><code>[slug]</code> folder name</td></tr>
+          <tr><td>Query strings</td><td><code>request.GET</code></td><td><code>new URL(request.url).searchParams</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">4</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npx tsc --noEmit</code></td><td>TypeScript check — verifies singleton compiles</td></tr>
+          <tr><td>2</td><td><code>npm run dev</code></td><td>Start dev server (default port 3000)</td></tr>
+          <tr><td>3</td><td><code>curl http://localhost:3000/api/menu/categories</code></td><td>Test endpoint from CLI (alternative to browser)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>No new packages required in Phase 3.</strong> Everything ships with Next.js and Prisma.</p>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">5</span> Target Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">src/</span></div>
+        <div class="indent-1"><span class="dir">app/</span></div>
+        <div class="indent-2"><span class="dir new">api/</span> <span class="note">← NEW: API routes live here</span></div>
+        <div class="indent-3"><span class="dir">menu/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="dir">categories/</span></div>
+        <div class="indent-3" style="padding-left:6.25rem"><span class="file new">route.ts</span> <span class="note">← GET /api/menu/categories</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="dir">items/</span></div>
+        <div class="indent-3" style="padding-left:6.25rem"><span class="file new">route.ts</span> <span class="note">← GET /api/menu/items</span></div>
+        <div class="indent-3" style="padding-left:6.25rem"><span class="dir">[slug]/</span></div>
+        <div class="indent-3" style="padding-left:7.5rem"><span class="file new">route.ts</span> <span class="note">← GET /api/menu/items/:slug</span></div>
+        <div class="indent-1"><span class="dir">lib/</span></div>
+        <div class="indent-2"><span class="file new">prisma.ts</span> <span class="note">← NEW: Prisma singleton</span></div>
+        <div class="indent-1"><span class="dir">generated/prisma/</span> <span class="note">← from Phase 2</span></div>
+      </div>
+      <div class="callout warn">
+        <strong>Rule enforced</strong>
+        No <code>components/</code> or <code>lib/</code> may live inside <code>app/</code>. App Router treats every subfolder as a URL segment — a stray <code>components/</code> inside <code>app/</code> would create a phantom <code>/components/...</code> route.
+      </div>
+    </section>
+
+    <section id="singleton">
+      <h2><span class="num">6</span> Why a Prisma Singleton?</h2>
+      <h3>The hot-reload problem</h3>
+      <ol>
+        <li>Developer saves a file.</li>
+        <li>Next.js dev server reloads the module graph (HMR).</li>
+        <li>Every reload executes <code>new PrismaClient()</code> again.</li>
+        <li>Each client opens a new database connection pool.</li>
+        <li>After ~20 saves, the pool exceeds SQLite/Postgres limits.</li>
+        <li>Errors: <code>Too many clients</code>, <code>SQLITE_BUSY</code>, or silent hangs.</li>
+      </ol>
+      <p><strong>The Singleton fix:</strong> Store one <code>PrismaClient</code> instance on <code>globalThis</code>. On reload, reuse it.</p>
+
+      <h3>src/lib/prisma.ts — Full File</h3>
+      <pre><code>import path from 'node:path'
+import { PrismaClient } from '../generated/prisma/client'
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
+
+const sqlitePath = path
+  .join(process.cwd(), 'prisma', 'dev.db')
+  .replace(/\\/g, '/')
+
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient({
+    datasourceUrl: `file:${sqlitePath}`,
+    log: ['error', 'warn'],
+  })
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+}</code></pre>
+
+      <h3>Line-by-line rationale</h3>
+      <ul>
+        <li><code>import path from 'node:path'</code> — Node's path utility; the <code>node:</code> prefix is ESM best practice.</li>
+        <li><code>globalThis as unknown as {...}</code> — TypeScript cast so <code>globalThis.prisma</code> is type-safe.</li>
+        <li><code>path.join(process.cwd(), 'prisma', 'dev.db')</code> — builds an absolute path from the project root.</li>
+        <li><code>.replace(/\\/g, '/')</code> — normalizes Windows backslashes to forward slashes for URI format.</li>
+        <li><code>??</code> (nullish coalescing) — reuse existing instance if present, else create new.</li>
+        <li><code>datasourceUrl</code> — overrides the <code>.env</code> value at runtime (fixes the path resolution bug — see next section).</li>
+        <li><code>NODE_ENV !== 'production'</code> — only cache globally in dev (production has no HMR).</li>
+      </ul>
+    </section>
+
+    <section id="pathbug">
+      <h2><span class="num">7</span> The SQLite Path Resolution Bug &amp; Fix</h2>
+      <div class="callout danger">
+        <strong>Symptom encountered</strong>
+        <code>Error querying the database: Error code 14: Unable to open the database file</code>
+        <code>GET /api/menu/categories 500 in 10.2s</code>
+      </div>
+      <p><strong>Root cause:</strong> <code>DATABASE_URL="file:./dev.db"</code> in <code>.env</code> is <strong>relative</strong>. Its meaning depends on who reads it:</p>
+      <table>
+        <thead><tr><th>Consumer</th><th>Working Directory</th><th>Resolves To</th><th>Works?</th></tr></thead>
+        <tbody>
+          <tr><td><code>prisma migrate</code></td><td><code>prisma/</code></td><td><code>prisma/dev.db</code></td><td>✅</td></tr>
+          <tr><td><code>prisma studio</code></td><td><code>prisma/</code></td><td><code>prisma/dev.db</code></td><td>✅</td></tr>
+          <tr><td><code>prisma db seed</code></td><td><code>prisma/</code></td><td><code>prisma/dev.db</code></td><td>✅</td></tr>
+          <tr><td><strong><code>next dev</code> runtime</strong></td><td>project root</td><td><code>./dev.db</code> (wrong!)</td><td>❌</td></tr>
+        </tbody>
+      </table>
+      <p><strong>The fix:</strong> In <code>src/lib/prisma.ts</code>, compute an absolute path at runtime:</p>
+      <pre><code>const sqlitePath = path.join(process.cwd(), 'prisma', 'dev.db')</code></pre>
+      <p><strong>WHY this is portable:</strong></p>
+      <ul>
+        <li><code>process.cwd()</code> always returns the project root when Next.js runs.</li>
+        <li>No hardcoded <code>D:\...</code> paths — works on any machine.</li>
+        <li>CLI tools keep using <code>.env</code> (relative) — no change needed there.</li>
+      </ul>
+      <p><strong>Production note:</strong> When migrating to PostgreSQL (Phase 9), <code>datasourceUrl</code> will be removed and <code>.env</code> will hold the hosted URL directly (no relative path issue exists for network URLs).</p>
+    </section>
+
+    <section id="categories">
+      <h2><span class="num">8</span> GET /api/menu/categories</h2>
+      <pre><code>import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function GET() {
+  try {
+    const categories = await prisma.category.findMany({
+      orderBy: { displayOrder: 'asc' },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        description: true,
+        _count: {
+          select: { items: true },
+        },
+      },
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: categories,
+    })
+  } catch (error) {
+    console.error('[GET /api/menu/categories]', error)
+    return NextResponse.json(
+      { success: false, error: 'فشل تحميل التصنيفات' },
+      { status: 500 }
+    )
+  }
+}</code></pre>
+      <p><strong>HOW:</strong> Named export <code>GET</code> matches the HTTP method. Next.js invokes it for <code>GET /api/menu/categories</code>.</p>
+      <p><strong>WHY this shape:</strong> Consistent <code>{ success, data }</code> envelope lets clients branch on <code>success</code> without parsing HTTP status text.</p>
+    </section>
+
+    <section id="query-select">
+      <h2><span class="num">9</span> Query Deep-Dive — select, _count, orderBy</h2>
+      <h3>orderBy: { displayOrder: 'asc' }</h3>
+      <p>Sorts categories by the numeric <code>displayOrder</code> column. <strong>WHY:</strong> Admin controls menu order without editing code.</p>
+
+      <h3>select: { id, name, slug, description }</h3>
+      <p>Returns only the listed fields. <strong>WHY:</strong> Reduces payload size; prevents leaking future sensitive fields (e.g., <code>internalNotes</code>).</p>
+
+      <h3>_count: { select: { items: true } }</h3>
+      <p>Prisma's relation-count aggregation. Generates <code>SELECT COUNT(*) FROM menu_items WHERE categoryId = ...</code> per row. <strong>WHY:</strong> The UI shows "3 items" per category without a second query. One request, zero N+1.</p>
+
+      <h3>Example response</h3>
+      <pre><code>{
+  "success": true,
+  "data": [
+    {
+      "id": "cmu...",
+      "name": "مقبلات",
+      "slug": "appetizers",
+      "description": "أطباق خفيفة...",
+      "_count": { "items": 3 }
+    }
+  ]
+}</code></pre>
+      <div class="screenshot">Screenshot: /api/menu/categories JSON response in browser</div>
+    </section>
+
+    <section id="items">
+      <h2><span class="num">10</span> GET /api/menu/items with Filters</h2>
+      <pre><code>import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const categorySlug = searchParams.get('category')
+    const featured = searchParams.get('featured')
+    const limit = searchParams.get('limit')
+
+    const items = await prisma.menuItem.findMany({
+      where: {
+        isAvailable: true,
+        ...(categorySlug && { category: { slug: categorySlug } }),
+        ...(featured === 'true' && { isFeatured: true }),
+      },
+      orderBy: [{ isFeatured: 'desc' }, { name: 'asc' }],
+      take: limit ? parseInt(limit, 10) : undefined,
+      include: {
+        category: {
+          select: { id: true, name: true, slug: true },
+        },
+      },
+    })
+
+    return NextResponse.json({ success: true, data: items })
+  } catch (error) {
+    console.error('[GET /api/menu/items]', error)
+    return NextResponse.json(
+      { success: false, error: 'فشل تحميل الأطباق' },
+      { status: 500 }
+    )
+  }
+}</code></pre>
+    </section>
+
+    <section id="spread">
+      <h2><span class="num">11</span> Query Deep-Dive — Spread Conditions &amp; include</h2>
+      <h3>The spread-condition pattern</h3>
+      <pre><code>...(categorySlug && { category: { slug: categorySlug } })</code></pre>
+      <p><strong>How it works:</strong></p>
+      <ul>
+        <li>If <code>categorySlug</code> is truthy → spreads <code>{ category: { slug: '...' } }</code> into <code>where</code>.</li>
+        <li>If <code>categorySlug</code> is <code>null</code> → spreads <code>false</code> (Prisma ignores non-objects).</li>
+      </ul>
+      <p><strong>WHY instead of if/else:</strong> Keeps the query as a single expression. Composable: add more filters without nested branches.</p>
+
+      <h3>include vs select</h3>
+      <table>
+        <thead><tr><th>Keyword</th><th>Behavior</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><code>select</code></td><td>Returns only the listed fields</td><td>You know exactly what you need</td></tr>
+          <tr><td><code>include</code></td><td>Returns all scalar fields + relations</td><td>You want everything plus relation data</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Here:</strong> <code>include</code> returns all item fields + a trimmed category object.</p>
+    </section>
+
+    <section id="matrix">
+      <h2><span class="num">12</span> Filter Test Matrix</h2>
+      <table>
+        <thead><tr><th>#</th><th>URL</th><th>Expected Result</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>/api/menu/items</code></td><td>12 items (all available)</td></tr>
+          <tr><td>2</td><td><code>/api/menu/items?category=appetizers</code></td><td>3 items (only appetizers)</td></tr>
+          <tr><td>3</td><td><code>/api/menu/items?featured=true</code></td><td>4 items (hummus, kebab, knafeh, coffee)</td></tr>
+          <tr><td>4</td><td><code>/api/menu/items?category=desserts&amp;featured=true</code></td><td>1 item (knafeh only)</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Observed in dev logs:</strong></p>
+      <pre><code>GET /api/menu/items 200
+GET /api/menu/items?category=appetizers 200
+GET /api/menu/items?featured=true 200
+GET /api/menu/items?category=desserts&amp;featured=true 200</code></pre>
+      <p><strong>WHY this matters:</strong> Proves <code>searchParams</code> parsing, conditional spread, and combined filters all compose correctly.</p>
+    </section>
+
+    <section id="slug">
+      <h2><span class="num">13</span> GET /api/menu/items/[slug] (Dynamic Route)</h2>
+      <pre><code>import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+type RouteParams = {
+  params: Promise<{ slug: string }>
+}
+
+export async function GET(request: NextRequest, { params }: RouteParams) {
+  try {
+    const { slug } = await params
+
+    const item = await prisma.menuItem.findUnique({
+      where: { slug },
+      include: {
+        category: {
+          select: { id: true, name: true, slug: true },
+        },
+      },
+    })
+
+    if (!item) {
+      return NextResponse.json(
+        { success: false, error: 'الطبق غير موجود' },
+        { status: 404 }
+      )
+    }
+
+    return NextResponse.json({ success: true, data: item })
+  } catch (error) {
+    console.error('[GET /api/menu/items/[slug]]', error)
+    return NextResponse.json(
+      { success: false, error: 'فشل تحميل الطبق' },
+      { status: 500 }
+    )
+  }
+}</code></pre>
+      <p><strong>HOW:</strong> Folder <code>[slug]</code> captures any URL segment as a string.</p>
+      <p><strong>WHY <code>params: Promise&lt;...&gt;</code>:</strong> Next.js 15+ made route params async to support streaming metadata. <code>await params</code> is mandatory.</p>
+    </section>
+
+    <section id="notfound">
+      <h2><span class="num">14</span> Query Deep-Dive — findUnique and 404 Handling</h2>
+      <h3>findUnique({ where: { slug } })</h3>
+      <ul>
+        <li>Compiles to <code>SELECT * FROM menu_items WHERE slug = ? LIMIT 1</code>.</li>
+        <li>Requires <code>slug</code> to have a <code>@unique</code> constraint (it does — Phase 2).</li>
+        <li><strong>WHY findUnique not findFirst:</strong> <code>findUnique</code> uses the DB index directly; <code>findFirst</code> scans. Faster + guarantees zero ambiguity.</li>
+      </ul>
+
+      <h3>404 handling</h3>
+      <pre><code>if (!item) {
+  return NextResponse.json(
+    { success: false, error: 'الطبق غير موجود' },
+    { status: 404 }
+  )
+}</code></pre>
+      <p><strong>WHY explicit 404 instead of throwing:</strong></p>
+      <ul>
+        <li>Throwing produces a generic 500.</li>
+        <li>Clients must distinguish "resource missing" (404, do not retry) from "server broken" (500, retry).</li>
+        <li>Browser DevTools confirms via <code>Failed to load resource: 404</code>.</li>
+      </ul>
+    </section>
+
+    <section id="status">
+      <h2><span class="num">15</span> HTTP Status Code Discipline</h2>
+      <table>
+        <thead><tr><th>Status</th><th>Meaning</th><th>Used In</th></tr></thead>
+        <tbody>
+          <tr><td><strong>200</strong></td><td>Success</td><td>All GET routes on success</td></tr>
+          <tr><td><strong>400</strong></td><td>Bad Request — malformed input</td><td>Phase 5: Zod failures</td></tr>
+          <tr><td><strong>404</strong></td><td>Not Found — resource missing</td><td><code>/items/[slug]</code> no match</td></tr>
+          <tr><td><strong>500</strong></td><td>Server Error — unexpected</td><td>Any caught exception</td></tr>
+        </tbody>
+      </table>
+      <p><strong>WHY explicit codes matter:</strong></p>
+      <ul>
+        <li>CDNs, load balancers, and monitoring tools route on status.</li>
+        <li>404 responses are not cached the same way 200 responses are.</li>
+        <li>Mobile apps can apply retry logic only for 5xx.</li>
+      </ul>
+      <div class="callout warn">
+        <strong>Anti-pattern avoided</strong>
+        Returning 200 for "not found" with <code>{ success: false }</code> — breaks HTTP semantics and confuses clients.
+      </div>
+    </section>
+
+    <section id="envelope">
+      <h2><span class="num">16</span> Response Envelope Design</h2>
+      <h3>Success</h3>
+      <pre><code>{ "success": true, "data": &lt;payload&gt; }</code></pre>
+      <h3>Failure</h3>
+      <pre><code>{ "success": false, "error": "رسالة عربية واضحة" }</code></pre>
+      <p><strong>WHY this contract:</strong></p>
+      <ul>
+        <li>Single branching point: <code>if (response.success) { ... } else { show(response.error) }</code>.</li>
+        <li>Arabic error messages are ready to display directly.</li>
+        <li>Future extensibility: add <code>meta: { pagination }</code> alongside <code>data</code> without breaking clients.</li>
+      </ul>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">17</span> Request Data Flow — Trace a Single Call</h2>
+      <p><strong>Flow for <code>GET /api/menu/items?category=desserts</code>:</strong></p>
+      <div class="flow">
+        <div class="flow-step">1. Browser → GET /api/menu/items?category=desserts</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">2. Next.js router matches → app/api/menu/items/route.ts → GET()</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3a. new URL(request.url) → extracts searchParams<br>3b. searchParams.get('category') → "desserts"<br>3c. Spreads { category: { slug: 'desserts' } } into where</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. Prisma → SQL:<br>SELECT ... FROM menu_items<br>WHERE isAvailable = 1 AND categoryId IN (...)<br>ORDER BY isFeatured DESC, name ASC</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">5. SQLite engine executes → returns rows</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">6. Prisma deserializes → TypeScript objects</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step">7. NextResponse.json → serializes to JSON string</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">8. Response: 200, Content-Type: application/json</div>
+      </div>
+      <p><strong>Boundary rationale:</strong> Each transition (URL → object → SQL → JSON) validates shape. Any mismatch fails loudly and early.</p>
+    </section>
+
+    <section id="nofetch">
+      <h2><span class="num">18</span> Why Not fetch() Between Server Components and API?</h2>
+      <p><strong>Question:</strong> Now that we have <code>/api/menu/items</code>, should the menu page fetch it?</p>
+      <p><strong>Answer:</strong> No — the menu page queries <code>prisma</code> directly.</p>
+      <table>
+        <thead><tr><th>Approach</th><th>Network hops</th><th>Serialization</th><th>Latency</th></tr></thead>
+        <tbody>
+          <tr><td>Page → <code>fetch('/api/menu/items')</code> → Server → DB</td><td>2 (loopback + DB)</td><td>JSON twice</td><td>High</td></tr>
+          <tr><td>Page → <code>prisma.menuItem.findMany()</code> → DB</td><td>1 (DB only)</td><td>None</td><td>Minimal</td></tr>
+        </tbody>
+      </table>
+      <p><strong>WHY keep both:</strong></p>
+      <ul>
+        <li><strong>Route Handlers exist for external consumers:</strong> mobile apps, partners, webhooks, Postman.</li>
+        <li><strong>Server Components consume the database directly:</strong> internal, zero network, zero JSON.</li>
+      </ul>
+      <div class="callout success">
+        <strong>This is the core value of Next.js Full-Stack</strong>
+        The internal API layer is optional, not mandatory.
+      </div>
+    </section>
+
+    <section id="boundary">
+      <h2><span class="num">19</span> Request Lifecycle — Server vs Client Boundaries</h2>
+      <div class="flow">
+        <div class="flow-step code" style="background:#fdecea;color:#c0392b;border-color:#c0392b;">CLIENT (Browser)<br>• HTML, CSS, minimal JS<br>• No Prisma, no DATABASE_URL, no secrets</div>
+        <div class="flow-label">HTTP (JSON over TLS in production)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code" style="background:#eaf7ef;color:#1e7e45;border-color:#27ae60;">SERVER (Node.js on Vercel / localhost)<br>• Route Handler executes here<br>• Prisma Client instantiated here<br>• dev.db / Postgres accessed here</div>
+      </div>
+      <p><strong>Boundary rationale:</strong> The client never touches the database. Every byte of data crossing the boundary is explicitly shaped by <code>NextResponse.json()</code>. Secrets never leak.</p>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">20</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>TypeScript clean</td><td><code>npx tsc --noEmit</code></td><td>No output</td></tr>
+          <tr><td>Categories endpoint</td><td><code>http://localhost:3000/api/menu/categories</code></td><td>4 categories with <code>_count.items</code></td></tr>
+          <tr><td>All items</td><td><code>/api/menu/items</code></td><td>12 items</td></tr>
+          <tr><td>Filter by category</td><td><code>/api/menu/items?category=appetizers</code></td><td>3 items</td></tr>
+          <tr><td>Filter featured</td><td><code>/api/menu/items?featured=true</code></td><td>4 items</td></tr>
+          <tr><td>Combined filters</td><td><code>/api/menu/items?category=desserts&amp;featured=true</code></td><td>1 item</td></tr>
+          <tr><td>Single item (valid)</td><td><code>/api/menu/items/hummus</code></td><td>Full object</td></tr>
+          <tr><td>Single item (invalid)</td><td><code>/api/menu/items/pizza</code></td><td>404 + error JSON</td></tr>
+          <tr><td>DevTools check</td><td>Network tab</td><td>Status codes 200/404 correct</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: /api/menu/items/hummus JSON response with full object</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">21</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Wrong filename</td><td>404 on route</td><td>File must be <code>route.ts</code> (not <code>.tsx</code>, not <code>index.ts</code>)</td></tr>
+          <tr><td>Missing <code>export</code></td><td>404 on route</td><td><code>export async function GET()</code> — <code>export</code> mandatory</td></tr>
+          <tr><td>Wrong path for <code>lib/</code></td><td><code>Cannot find module '@/lib/prisma'</code></td><td><code>src/lib/prisma.ts</code> (not under <code>app/</code>)</td></tr>
+          <tr><td>Missing <code>.env</code> load</td><td><code>Environment variable not found</code></td><td>Runtime uses absolute path in <code>lib/prisma.ts</code></td></tr>
+          <tr><td><code>searchParams</code> sync read</td><td>TypeScript error</td><td><code>new URL(request.url).searchParams</code></td></tr>
+          <tr><td><code>params</code> not awaited</td><td>Runtime warning in Next.js 15+</td><td><code>const { slug } = await params</code></td></tr>
+          <tr><td>Cached response</td><td>Stale data after DB update</td><td>Add <code>export const dynamic = 'force-dynamic'</code> if needed</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">22</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>CDN</td><td>Content Delivery Network</td><td>Geographically distributed cache servers</td></tr>
+          <tr><td>CLI</td><td>Command-Line Interface</td><td>Program operated by typing commands</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char ID; sortable, URL-safe</td></tr>
+          <tr><td>ESM</td><td>ECMAScript Modules</td><td>Standard <code>import</code>/<code>export</code> syntax</td></tr>
+          <tr><td>FK</td><td>Foreign Key</td><td>Column referencing another table's PK</td></tr>
+          <tr><td>HMR</td><td>Hot Module Replacement</td><td>Live code updates without full reload</td></tr>
+          <tr><td>HTTP</td><td>HyperText Transfer Protocol</td><td>Protocol browsers use to talk to servers</td></tr>
+          <tr><td>JSON</td><td>JavaScript Object Notation</td><td>Text format for structured data</td></tr>
+          <tr><td>N+1</td><td>N-plus-1 Query Problem</td><td>1 query + N follow-ups; inefficient</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Code layer translating objects ↔ SQL</td></tr>
+          <tr><td>PK</td><td>Primary Key</td><td>Column uniquely identifying a row</td></tr>
+          <tr><td>REST</td><td>Representational State Transfer</td><td>Style of APIs using HTTP verbs + URLs</td></tr>
+          <tr><td>RPC</td><td>Remote Procedure Call</td><td>Style of APIs calling functions over network</td></tr>
+          <tr><td>SQL</td><td>Structured Query Language</td><td>Standard language for relational databases</td></tr>
+          <tr><td>TLS</td><td>Transport Layer Security</td><td>Encryption for network traffic</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">23</span> Phase 3 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Prisma Client singleton with hot-reload safety and absolute SQLite path</li>
+        <li>3 HTTP endpoints implemented as Route Handlers</li>
+        <li>4 filter combinations verified</li>
+        <li>404 + 500 error handling with Arabic messages</li>
+        <li>Consistent <code>{ success, data }</code> response envelope</li>
+        <li>TypeScript compiles with zero errors</li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li>Stable API contract for external consumers</li>
+        <li>Path resolution bug (relative <code>.env</code> URL) permanently fixed</li>
+        <li>Composable query patterns (<code>searchParams</code>, spread conditions, <code>_count</code>)</li>
+        <li>Clear HTTP status code discipline</li>
+        <li>Ready for Phase 4: public-facing UI</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-02-data-modeling.html">← Phase 2 (Data Modeling)</a>
+      <span class="center">Phase 3 of 11</span>
+      <a href="phase-04-frontend.html">Phase 4 (Frontend) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

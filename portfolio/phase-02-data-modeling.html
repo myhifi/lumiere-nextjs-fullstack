@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 2 — Data Modeling · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px;
+}
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a {
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s;
+}
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge {
+  display: inline-block; background: var(--accent); color: var(--bg-dark);
+  font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem;
+  border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px;
+}
+.hero {
+  padding: 4rem 3rem 3rem;
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span {
+  background: var(--accent-light); color: var(--accent-dark);
+  font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px;
+}
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num {
+  background: var(--accent); color: #fff; font-size: 0.85rem;
+  width: 32px; height: 32px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
+}
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre {
+  background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem;
+  border-radius: 8px; overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.82rem; line-height: 1.55; margin: 1rem 0;
+  border-left: 3px solid var(--accent);
+}
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.88em; background: rgba(201,169,97,0.12);
+  color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px;
+}
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+  font-size: 0.88rem; background: var(--bg-card);
+  border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+}
+th {
+  background: var(--bg); text-align: left; padding: 0.75rem 1rem;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border);
+}
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot {
+  border: 2px dashed var(--border); border-radius: 8px; padding: 2rem;
+  text-align: center; color: var(--fg-muted); font-size: 0.85rem;
+  margin: 1rem 0; background: var(--bg-card);
+}
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.diagram {
+  background: var(--bg-code); color: #e8e8e8; padding: 1.5rem;
+  border-radius: 8px; overflow-x: auto; font-family: 'Consolas', monospace;
+  font-size: 0.78rem; line-height: 1.5; border-left: 3px solid var(--accent);
+  margin: 1rem 0;
+}
+.footer-nav {
+  padding: 2rem 3rem; display: flex; justify-content: space-between;
+  align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem;
+}
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+/* ─── ERD Diagram (CSS-based) ─── */
+.erd-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem 0;
+}
+.erd-pair {
+  display: contents;
+}
+.erd-entity {
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: 'Consolas', monospace;
+  font-size: 0.8rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.erd-entity .erd-header {
+  background: var(--accent);
+  color: #fff;
+  padding: 0.5rem 0.75rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+.erd-entity .erd-field {
+  padding: 0.35rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--fg);
+}
+.erd-entity .erd-field:last-child { border-bottom: none; }
+.erd-entity .erd-field.erd-pk {
+  background: rgba(201,169,97,0.1);
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.erd-entity .erd-field.erd-fk {
+  background: rgba(39, 174, 96, 0.08);
+  font-weight: 600;
+  color: #1e7e45;
+}
+.erd-relation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  min-width: 120px;
+}
+.erd-relation .erd-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent-dark);
+}
+.erd-relation .erd-line {
+  width: 100%;
+  height: 2px;
+  background: var(--accent);
+  position: relative;
+}
+.erd-relation .erd-line::before,
+.erd-relation .erd-line::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.erd-relation .erd-line::before { left: 0; }
+.erd-relation .erd-line::after { right: 0; }
+.erd-relation .erd-caption {
+  font-size: 0.7rem;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+@media (max-width: 700px) {
+  .erd-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .erd-relation { flex-direction: row; min-width: auto; }
+  .erd-relation .erd-line { width: 40px; }
+  .erd-relation .erd-labels { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 02</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#decision">Architectural Decision</a>
+      <a href="#entities">Domain Model</a>
+      <a href="#erd">Entity-Relationship</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#models-1">Step 1: Category + MenuItem</a>
+      <a href="#modifiers">Field Modifiers</a>
+      <a href="#relation">Relation Semantics</a>
+      <a href="#migration1">Migration #1</a>
+      <a href="#studio">Prisma Studio</a>
+      <a href="#models-2">Step 2: Table + Reservation</a>
+      <a href="#status">Status Field Design</a>
+      <a href="#migration2">Migration #2</a>
+      <a href="#seed-strategy">Seed Strategy</a>
+      <a href="#seed-files">Seed Data Files</a>
+      <a href="#seed-orchestrator">seed.ts Orchestrator</a>
+      <a href="#tsx">Why tsx?</a>
+      <a href="#dotenv">dotenv Fix</a>
+      <a href="#gitignore">.gitignore Update</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#flow">Data Flow</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 02 · Data Modeling</div>
+      <h1>Prisma Schema, Migrations &amp; Seed Data</h1>
+      <p class="lede">Design and implement the complete relational data model for a restaurant system: menu hierarchy, physical tables, and reservations. Populate it with realistic Arabic seed data that exercises every rule the business will rely on.</p>
+      <div class="stack">
+        <span>Prisma 6</span><span>SQLite</span><span>Migrations</span>
+        <span>Seed Scripts</span><span>tsx</span><span>CUID</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Turn the empty Prisma schema from Phase 1 into a complete, migrated, seeded relational database that every subsequent phase queries against.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li>Four Prisma models: <code>Category</code>, <code>MenuItem</code>, <code>Table</code>, <code>Reservation</code>.</li>
+        <li>Two applied migrations in <code>prisma/migrations/</code>.</li>
+        <li>A live SQLite database (<code>prisma/dev.db</code>) with all four tables.</li>
+        <li>A modular seed system: <code>prisma/data/</code> modules + <code>prisma/seed.ts</code> orchestrator.</li>
+        <li>4 categories, 12 menu items, 10 tables populated.</li>
+        <li>Visual confirmation in Prisma Studio at <code>localhost:5555</code>.</li>
+      </ol>
+    </section>
+
+    <section id="decision">
+      <h2><span class="num">2</span> Architectural Decision — Single Source of Truth</h2>
+      <p>Why one declarative <code>schema.prisma</code> instead of separate SQL, ORM models, and migrations?</p>
+      <table>
+        <thead><tr><th>Concern</th><th>Alternative</th><th>Chosen (single schema.prisma)</th></tr></thead>
+        <tbody>
+          <tr><td>Data definition</td><td>SQL DDL + ORM + migrations separately</td><td>One file generates all three</td></tr>
+          <tr><td>Type generation</td><td>Manual TypeScript interfaces</td><td>Auto-generated PrismaClient types</td></tr>
+          <tr><td>Migrations</td><td>Hand-written SQL</td><td><code>prisma migrate dev</code> diffs + writes SQL</td></tr>
+          <tr><td>IDE support</td><td>Manual type annotations</td><td>Full autocomplete on every query</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Engineering rationale</strong>
+        One declarative file eliminates drift between database, application types, and documentation. Any change begins in <code>schema.prisma</code> and cascades down automatically.
+      </div>
+    </section>
+
+    <section id="entities">
+      <h2><span class="num">3</span> The Four Entities — Domain Model</h2>
+      <table>
+        <thead><tr><th>Entity</th><th>Represents</th><th>Business Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>Category</code></td><td>Menu classification</td><td>Groups items (Appetizers, Main Courses, Desserts, Beverages)</td></tr>
+          <tr><td><code>MenuItem</code></td><td>A dish</td><td>Name, slug, price, image, availability flag</td></tr>
+          <tr><td><code>Table</code></td><td>Physical restaurant table</td><td>Number, seating capacity, location, active flag</td></tr>
+          <tr><td><code>Reservation</code></td><td>A booking</td><td>Guest info, date, party size, assigned table, status</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Real-world mapping:</strong> Customer browses <code>MenuItem</code> → submits <code>Reservation</code> → system assigns <code>Table</code> based on <code>capacity</code> and time overlap.</p>
+    </section>
+
+    <section id="erd">
+      <h2><span class="num">4</span> Entity-Relationship Diagram</h2>
+
+      <!-- Relation 1: Category 1 → * MenuItem -->
+      <div class="erd-grid">
+        <div class="erd-entity">
+          <div class="erd-header">Category</div>
+          <div class="erd-field erd-pk">id · PK</div>
+          <div class="erd-field">name</div>
+          <div class="erd-field">slug</div>
+          <div class="erd-field">displayOrder</div>
+          <div class="erd-field">items · MenuItem[]</div>
+        </div>
+
+        <div class="erd-relation">
+          <div class="erd-labels"><span>1</span><span>*</span></div>
+          <div class="erd-line"></div>
+          <div class="erd-caption">has many</div>
+        </div>
+
+        <div class="erd-entity">
+          <div class="erd-header">MenuItem</div>
+          <div class="erd-field erd-pk">id · PK</div>
+          <div class="erd-field">name</div>
+          <div class="erd-field">slug</div>
+          <div class="erd-field">price</div>
+          <div class="erd-field erd-fk">categoryId · FK</div>
+          <div class="erd-field">isAvailable</div>
+        </div>
+      </div>
+
+      <!-- Relation 2: Table 1 → * Reservation -->
+      <div class="erd-grid">
+        <div class="erd-entity">
+          <div class="erd-header">Table</div>
+          <div class="erd-field erd-pk">id · PK</div>
+          <div class="erd-field">number</div>
+          <div class="erd-field">capacity</div>
+          <div class="erd-field">isActive</div>
+          <div class="erd-field">reservations · Reservation[]</div>
+        </div>
+
+        <div class="erd-relation">
+          <div class="erd-labels"><span>1</span><span>*</span></div>
+          <div class="erd-line"></div>
+          <div class="erd-caption">has many</div>
+        </div>
+
+        <div class="erd-entity">
+          <div class="erd-header">Reservation</div>
+          <div class="erd-field erd-pk">id · PK</div>
+          <div class="erd-field">guestName</div>
+          <div class="erd-field">reservationDate</div>
+          <div class="erd-field">guestsCount</div>
+          <div class="erd-field erd-fk">tableId · FK</div>
+          <div class="erd-field">status</div>
+        </div>
+      </div>
+
+      <p><strong>Cardinality:</strong> Both are 1-to-Many. One Category has many MenuItems. One Table has many Reservations across time. No many-to-many relations in this phase.</p>
+      <p style="font-size:0.85rem;color:var(--fg-muted);"><strong>Legend:</strong> <span style="background:rgba(201,169,97,0.1);padding:0.1rem 0.4rem;border-radius:3px;color:var(--accent-dark);font-weight:700;">PK</span> = Primary Key · <span style="background:rgba(39,174,96,0.08);padding:0.1rem 0.4rem;border-radius:3px;color:#1e7e45;font-weight:700;">FK</span> = Foreign Key</p>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">5</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npx prisma migrate dev --name init_menu_models</code></td><td>Create + apply migration #1</td></tr>
+          <tr><td>2</td><td><code>npx prisma studio</code></td><td>Visual database browser on port 5555</td></tr>
+          <tr><td>3</td><td><code>npx prisma migrate dev --name add_table_and_reservation</code></td><td>Create + apply migration #2</td></tr>
+          <tr><td>4</td><td><code>npm install tsx --save-dev</code></td><td>TypeScript executor for seed script</td></tr>
+          <tr><td>5</td><td><code>npm run db:seed</code></td><td>Execute seed script</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>Ignore this suggestion when it appears</strong>
+        <code>npm i prisma@latest</code> would install unstable v8 RC. Stay on 6.19.3.
+      </div>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">6</span> Target Folder Structure</h2>
+      <pre><code>lumiere-nextjs-fullstack/
+├── prisma/
+│   ├── data/                    ← NEW: seed data modules
+│   │   ├── categories.ts
+│   │   ├── menu-items.ts
+│   │   └── tables.ts
+│   ├── migrations/              ← NEW: SQL migration history
+│   │   ├── 2026..._init_menu_models/
+│   │   │   └── migration.sql
+│   │   └── 2026..._add_table_and_reservation/
+│   │       └── migration.sql
+│   ├── dev.db                   ← SQLite database file
+│   ├── schema.prisma            ← UPDATED: 4 models
+│   └── seed.ts                  ← NEW: seed orchestrator
+├── prisma.config.ts
+├── src/generated/prisma/        ← Auto-generated Prisma Client
+├── .gitignore                   ← UPDATED: ignore src/generated/
+└── package.json                 ← UPDATED: db:seed script</code></pre>
+    </section>
+
+    <section id="models-1">
+      <h2><span class="num">7</span> Step 1 — Category &amp; MenuItem Models</h2>
+      <pre><code>model Category {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  slug         String     @unique
+  description  String?
+  displayOrder Int        @default(0)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  items        MenuItem[]
+
+  @@map("categories")
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Float
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@map("menu_items")
+}</code></pre>
+      <p><strong>HOW:</strong> Declares two related tables. <code>Category</code> owns <code>MenuItem</code> via a foreign key.</p>
+      <p><strong>WHY:</strong> Separating categories from items allows filterable menus (<code>/menu?category=desserts</code>) without duplicating category names in every row.</p>
+    </section>
+
+    <section id="modifiers">
+      <h2><span class="num">8</span> Prisma Field Modifiers Reference</h2>
+      <table>
+        <thead><tr><th>Modifier</th><th>Meaning</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td><code>@id</code></td><td>Primary key</td><td>Unique row identifier</td></tr>
+          <tr><td><code>@default(cuid())</code></td><td>Auto-generated unique ID</td><td>Collision-resistant across distributed systems</td></tr>
+          <tr><td><code>@default(now())</code></td><td>Server timestamp on insert</td><td>Audit trail without application code</td></tr>
+          <tr><td><code>@updatedAt</code></td><td>Auto-updates on write</td><td>Zero-maintenance last-modified tracking</td></tr>
+          <tr><td><code>@unique</code></td><td>Unique index</td><td>Prevents duplicate slugs/names</td></tr>
+          <tr><td><code>String?</code></td><td>Nullable field</td><td>Optional data (descriptions, image URLs)</td></tr>
+          <tr><td><code>@default(true)</code></td><td>Boolean default</td><td>New rows favor availability</td></tr>
+          <tr><td><code>@default(0)</code></td><td>Numeric default</td><td>Safe sort key for display order</td></tr>
+          <tr><td><code>@@map("...")</code></td><td>Physical table name</td><td>Keeps DB names snake_case</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="relation">
+      <h2><span class="num">9</span> Relation Semantics — @relation Explained</h2>
+      <pre><code>categoryId  String
+category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)</code></pre>
+      <ul>
+        <li><code>categoryId String</code> — the foreign key column stored in <code>menu_items</code>.</li>
+        <li><code>category Category</code> — the TypeScript accessor for the related row (<code>item.category.name</code>).</li>
+        <li><code>fields: [categoryId]</code> — which local column holds the FK value.</li>
+        <li><code>references: [id]</code> — which column in the parent table it points to.</li>
+        <li><code>onDelete: Cascade</code> — deleting a category deletes all its items.</li>
+      </ul>
+      <div class="callout">
+        <strong>Why Cascade here</strong>
+        Orphaned menu items (pointing to a deleted category) break queries and confuse admins. Cascade enforces referential integrity without manual cleanup.
+      </div>
+    </section>
+
+    <section id="migration1">
+      <h2><span class="num">10</span> Migration #1 Execution</h2>
+      <pre><code>npx prisma migrate dev --name init_menu_models
+
+SQLite database dev.db created at file:./dev.db
+Applying migration `20260915071026_init_menu_models`
+Your database is now in sync with your schema.
+✔ Generated Prisma Client (6.19.3) to .\src\generated\prisma in 174ms</code></pre>
+      <p><strong>HOW:</strong> Prisma diffs <code>schema.prisma</code> against the current DB state, writes SQL to <code>migrations/</code>, applies it, then regenerates the client.</p>
+      <p><strong>WHY:</strong> Versioned migrations give a reproducible path from empty DB to current schema — critical for team onboarding and production deploys.</p>
+    </section>
+
+    <section id="studio">
+      <h2><span class="num">11</span> Verifying via Prisma Studio</h2>
+      <pre><code>npx prisma studio
+Prisma Studio is up on http://localhost:5555</code></pre>
+      <p><strong>Verification:</strong> Left sidebar shows <code>Category</code> and <code>MenuItem</code> models. Both tables show "There are no rows in this table" (expected — no seed yet). Column headers match <code>schema.prisma</code> fields.</p>
+      <p><strong>HOW:</strong> Prisma Studio is a Node.js process reading <code>dev.db</code> directly via the query engine.</p>
+      <p><strong>WHY:</strong> Visual confirmation that migrations created real, queryable tables before we build on top.</p>
+      <div class="screenshot">Screenshot: Prisma Studio showing Category + MenuItem empty tables</div>
+    </section>
+
+    <section id="models-2">
+      <h2><span class="num">12</span> Step 2 — Table &amp; Reservation Models</h2>
+      <pre><code>model Table {
+  id           String   @id @default(cuid())
+  number       Int      @unique
+  capacity     Int
+  location     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  reservations Reservation[]
+
+  @@map("tables")
+}
+
+model Reservation {
+  id              String   @id @default(cuid())
+  guestName       String
+  guestEmail      String
+  guestPhone      String
+  guestsCount     Int
+  reservationDate DateTime
+  durationMinutes Int      @default(90)
+  status          String   @default("PENDING")
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  tableId String
+  table   Table  @relation(fields: [tableId], references: [id])
+
+  @@map("reservations")
+}</code></pre>
+      <p><strong>HOW:</strong> <code>Reservation</code> links to <code>Table</code> via <code>tableId</code>. No <code>onDelete: Cascade</code>.</p>
+      <p><strong>WHY No Cascade:</strong> Deleting a table must not destroy historical reservation records — those are financial/legal artifacts.</p>
+    </section>
+
+    <section id="status">
+      <h2><span class="num">13</span> Design Decision — Status Field &amp; SQLite Enum Limitation</h2>
+      <p><strong>Approach:</strong> Use <code>String</code> with <code>@default("PENDING")</code> rather than a native <code>enum</code>.</p>
+      <h3>Valid statuses (application convention)</h3>
+      <ul>
+        <li><code>PENDING</code> — created, awaiting staff confirmation</li>
+        <li><code>CONFIRMED</code> — staff-approved</li>
+        <li><code>CANCELLED</code> — cancelled by guest or staff</li>
+        <li><code>COMPLETED</code> — guest dined, record closed</li>
+      </ul>
+      <p><strong>HOW:</strong> Prisma supports enums natively <em>except on SQLite</em>, which lacks the <code>ENUM</code> type.</p>
+      <p><strong>WHY String for now:</strong> Keeping <code>String</code> allows the same schema to run on SQLite (dev) and PostgreSQL (prod, Phase 9) without edits. At migration time to Postgres, this field converts to a native enum in one line.</p>
+    </section>
+
+    <section id="migration2">
+      <h2><span class="num">14</span> Migration #2 Execution</h2>
+      <pre><code>npx prisma migrate dev --name add_table_and_reservation
+
+Applying migration `20260915145315_add_table_and_reservation`
+Your database is now in sync with your schema.
+✔ Generated Prisma Client (6.19.3) to .\src\generated\prisma in 254ms</code></pre>
+      <p><strong>Verification in Prisma Studio:</strong> 4 tables visible: <code>Category</code>, <code>MenuItem</code>, <code>Table</code>, <code>Reservation</code>. All empty.</p>
+      <p><strong>HOW:</strong> Incremental migration — only the diff (two new tables) is applied.</p>
+      <p><strong>WHY Two Migrations instead of one:</strong> Each migration is atomic and named for its intent. If the second migration fails, the first remains intact.</p>
+    </section>
+
+    <section id="seed-strategy">
+      <h2><span class="num">15</span> Step 3 — Seed Data Strategy</h2>
+      <h3>Why seed data matters</h3>
+      <ul>
+        <li>Empty DB → empty UI → nothing to test.</li>
+        <li>Realistic data (Arabic names, realistic prices) validates Arabic rendering and RTL flow.</li>
+        <li>Repeatable: <code>npm run db:seed</code> wipes and re-populates deterministically.</li>
+      </ul>
+      <h3>Modular structure chosen</h3>
+      <pre><code>prisma/
+├── data/
+│   ├── categories.ts    ← static arrays
+│   ├── menu-items.ts
+│   └── tables.ts
+└── seed.ts              ← orchestrator (imports data, writes to DB)</code></pre>
+      <p><strong>Engineering rationale:</strong> Separating data (<code>data/</code>) from logic (<code>seed.ts</code>) means non-developers can adjust menus without touching orchestration code.</p>
+    </section>
+
+    <section id="seed-files">
+      <h2><span class="num">16</span> Seed Data Files</h2>
+
+      <h3>prisma/data/categories.ts</h3>
+      <pre><code>export const categories = [
+  { name: 'مقبلات', slug: 'appetizers',
+    description: 'أطباق خفيفة لبدء الوجبة', displayOrder: 1 },
+  { name: 'أطباق رئيسية', slug: 'main-courses',
+    description: 'الأطباق الرئيسية الشهية', displayOrder: 2 },
+  { name: 'حلويات', slug: 'desserts',
+    description: 'تحلية ختام الوجبة', displayOrder: 3 },
+  { name: 'مشروبات', slug: 'beverages',
+    description: 'مشروبات ساخنة وباردة', displayOrder: 4 },
+]</code></pre>
+
+      <h3>prisma/data/menu-items.ts (excerpt — 12 items total)</h3>
+      <pre><code>export const menuItems = [
+  // ─── مقبلات ───
+  { name: 'شوربة العدس', slug: 'lentil-soup',
+    description: 'شوربة عدس تقليدية مع الكمون والليمون',
+    price: 45, isFeatured: false, categorySlug: 'appetizers' },
+  { name: 'حمص بالطحينة', slug: 'hummus',
+    description: 'حمص كريمي مع زيت الزيتون والصنوبر',
+    price: 55, isFeatured: true, categorySlug: 'appetizers' },
+  // ... (10 more items across 4 categories)
+]</code></pre>
+      <p><strong>HOW:</strong> Each item carries <code>categorySlug</code> (not <code>categoryId</code>) — human-readable, decoupled from DB IDs.</p>
+      <p><strong>WHY:</strong> The seed script resolves <code>categorySlug → category.id</code> at runtime, so IDs can be regenerated freely.</p>
+
+      <h3>prisma/data/tables.ts</h3>
+      <pre><code>export const tables = [
+  { number: 1,  capacity: 2,  location: 'Window' },
+  { number: 2,  capacity: 2,  location: 'Window' },
+  { number: 3,  capacity: 4,  location: 'Indoor' },
+  { number: 4,  capacity: 4,  location: 'Indoor' },
+  { number: 5,  capacity: 4,  location: 'Indoor' },
+  { number: 6,  capacity: 6,  location: 'Indoor' },
+  { number: 7,  capacity: 6,  location: 'Outdoor' },
+  { number: 8,  capacity: 6,  location: 'Outdoor' },
+  { number: 9,  capacity: 8,  location: 'VIP' },
+  { number: 10, capacity: 10, location: 'VIP' },
+]</code></pre>
+      <p><strong>WHY This Distribution:</strong> Realistic mix — few 2-seaters (couples), many 4-seaters (families), limited 8–10 capacity (groups/events). This exercises the table-assignment algorithm in Phase 5.</p>
+    </section>
+
+    <section id="seed-orchestrator">
+      <h2><span class="num">17</span> prisma/seed.ts — Orchestrator</h2>
+      <pre><code>import 'dotenv/config'
+import { PrismaClient } from '../src/generated/prisma/client'
+import { categories } from './data/categories'
+import { menuItems } from './data/menu-items'
+import { tables } from './data/tables'
+
+const prisma = new PrismaClient()
+
+async function main() {
+  console.log('🌱 بدء زرع البيانات...')
+
+  await prisma.reservation.deleteMany()
+  await prisma.menuItem.deleteMany()
+  await prisma.category.deleteMany()
+  await prisma.table.deleteMany()
+  console.log('🧹 تم تنظيف الجداول')
+
+  for (const category of categories) {
+    await prisma.category.create({ data: category })
+  }
+  console.log(`📂 تم إنشاء ${categories.length} تصنيفات`)
+
+  for (const item of menuItems) {
+    const { categorySlug, ...itemData } = item
+    const category = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+    })
+    if (!category) throw new Error(`❌ التصنيف "${categorySlug}" غير موجود`)
+    await prisma.menuItem.create({
+      data: { ...itemData, categoryId: category.id },
+    })
+  }
+  console.log(`🍽️  تم إنشاء ${menuItems.length} أطباق`)
+
+  for (const table of tables) {
+    await prisma.table.create({ data: table })
+  }
+  console.log(`🪑 تم إنشاء ${tables.length} طاولات`)
+
+  console.log('✨ اكتمل زرع البيانات بنجاح!')
+}
+
+main()
+  .catch((error) => { console.error('❌ خطأ أثناء الزرع:', error); process.exit(1) })
+  .finally(async () => { await prisma.$disconnect() })</code></pre>
+      <h3>Line-by-line rationale</h3>
+      <ul>
+        <li><code>import 'dotenv/config'</code> — loads <code>.env</code> BEFORE Prisma Client initializes (critical — see Slide 20).</li>
+        <li><code>deleteMany()</code> order — child tables first to avoid FK violations.</li>
+        <li><code>const { categorySlug, ...itemData }</code> — destructures out the helper field, keeping the DB payload clean.</li>
+        <li><code>findUnique({ where: { slug } })</code> — resolves category FK by slug, avoiding hardcoded CUIDs.</li>
+        <li><code>main().catch(...).finally(...)</code> — guarantees connection cleanup and non-zero exit on failure.</li>
+      </ul>
+    </section>
+
+    <section id="tsx">
+      <h2><span class="num">18</span> Why tsx? — The TypeScript Executor</h2>
+      <pre><code>npm install tsx --save-dev</code></pre>
+      <p><strong>What tsx does:</strong> Accepts <code>.ts</code> file → transpiles on the fly → runs on Node.js. Uses esbuild (Go-based) for transpilation. Handles both CommonJS and ESM seamlessly.</p>
+      <p><strong>WHY needed here:</strong></p>
+      <ul>
+        <li>Node.js cannot run <code>.ts</code> natively (as of Node 24 without experimental flags).</li>
+        <li><code>seed.ts</code> imports from <code>src/generated/prisma/client</code> — a TypeScript module.</li>
+        <li>No compile step, no output directory, no <code>tsconfig</code> target confusion.</li>
+      </ul>
+      <h3>Alternatives rejected</h3>
+      <ul>
+        <li><code>ts-node</code> — slower, ESM friction.</li>
+        <li><code>esbuild-register</code> — less maintained.</li>
+        <li>Compile to <code>.js</code> first — extra step, stale files.</li>
+      </ul>
+    </section>
+
+    <section id="dotenv">
+      <h2><span class="num">19</span> The dotenv Loading Failure &amp; Fix</h2>
+      <div class="callout danger">
+        <strong>Symptom</strong>
+        <code>PrismaClientInitializationError: error: Environment variable not found: DATABASE_URL.</code>
+      </div>
+      <p><strong>Root cause:</strong> <code>tsx</code> does NOT auto-load <code>.env</code>. Running <code>tsx prisma/seed.ts</code> starts Node.js, which reads <code>process.env</code> — but <code>.env</code> was never parsed.</p>
+      <h3>Tool-by-tool .env behavior</h3>
+      <table>
+        <thead><tr><th>Tool</th><th>Auto-loads .env?</th></tr></thead>
+        <tbody>
+          <tr><td><code>next dev</code></td><td>Yes (Next.js handles it)</td></tr>
+          <tr><td><code>prisma migrate</code></td><td>Yes (via <code>prisma.config.ts</code>)</td></tr>
+          <tr><td><code>tsx prisma/seed.ts</code></td><td><strong>No</strong> ← here's the problem</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Fix (one line at top of <code>seed.ts</code>):</strong></p>
+      <pre><code>import 'dotenv/config'</code></pre>
+      <p><strong>HOW:</strong> <code>dotenv/config</code> reads <code>.env</code> and merges into <code>process.env</code> at import time — before <code>new PrismaClient()</code> executes.</p>
+      <p><strong>WHY the top of the file:</strong> ES module imports execute in declaration order. Placing the dotenv import first guarantees <code>.env</code> is populated before Prisma's engine initialization.</p>
+    </section>
+
+    <section id="gitignore">
+      <h2><span class="num">20</span> .gitignore Update</h2>
+      <pre><code># Prisma generated client
+/src/generated/prisma</code></pre>
+      <p><strong>HOW:</strong> Excludes the entire generated client directory from Git.</p>
+      <p><strong>WHY:</strong> <code>src/generated/prisma/</code> contains a 21 MB Windows binary (<code>query_engine-windows.dll.node</code>) and machine-specific code. Committing it would:</p>
+      <ul>
+        <li>Inflate the repo by hundreds of MB per platform.</li>
+        <li>Cause merge conflicts between Windows/macOS/Linux developers.</li>
+        <li>Be regenerated automatically by <code>prisma generate</code> on every install.</li>
+      </ul>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">21</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Command</th><th>Expected Result</th></tr></thead>
+        <tbody>
+          <tr><td>Database file exists</td><td><code>dir prisma\dev.db</code></td><td>File listed, size &gt; 0 KB</td></tr>
+          <tr><td>Migration history</td><td><code>dir prisma\migrations</code></td><td>Two timestamped folders</td></tr>
+          <tr><td>Prisma Client generated</td><td><code>dir src\generated\prisma</code></td><td><code>client.ts</code>, <code>models/</code>, <code>internal/</code></td></tr>
+          <tr><td>Seed runs clean</td><td><code>npm run db:seed</code></td><td>✨ اكتمل زرع البيانات بنجاح!</td></tr>
+          <tr><td>Categories count</td><td>Prisma Studio → Category</td><td>4 rows</td></tr>
+          <tr><td>MenuItem count</td><td>Prisma Studio → MenuItem</td><td>12 rows</td></tr>
+          <tr><td>Table count</td><td>Prisma Studio → Table</td><td>10 rows</td></tr>
+          <tr><td>Reservation count</td><td>Prisma Studio → Reservation</td><td>0 rows (expected)</td></tr>
+          <tr><td>TypeScript types OK</td><td><code>npx tsc --noEmit</code></td><td>No output (success)</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: Prisma Studio with 4 categories, 12 menu items, 10 tables</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">22</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>tsx</code> seed fails</td><td><code>Environment variable not found: DATABASE_URL</code></td><td>Add <code>import 'dotenv/config'</code> at top</td></tr>
+          <tr><td>Cascade delete order</td><td><code>Foreign key constraint failed</code></td><td>Delete Reservation → MenuItem → Category → Table</td></tr>
+          <tr><td>Prisma 8 RC prompt</td><td><code>Update available 6.19.3 -&gt; 8.0.0-rc.15</code></td><td><strong>Ignore</strong> — never upgrade majors mid-project</td></tr>
+          <tr><td><code>schema.prisma</code> typo</td><td><code>npx prisma validate</code> fails</td><td>Read error — Prisma points to exact line</td></tr>
+          <tr><td>Seed re-run duplicates</td><td>Duplicate slug error</td><td>Ensure <code>deleteMany()</code> runs first</td></tr>
+          <tr><td><code>.env</code> not found</td><td><code>file:./dev.db</code> resolves wrong</td><td>Absolute path fix comes in Phase 3</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">23</span> Data Flow (Phase 2 Scope)</h2>
+      <p>Phase 2 introduces no HTTP endpoints, but establishes the write path used by every subsequent phase:</p>
+      <div class="diagram">Developer terminal
+    ↓
+npm run db:seed → tsx loads .env → Prisma Client
+    ↓
+Prisma Client → SQLite engine (query_engine-windows.dll.node)
+    ↓
+dev.db (single file on disk)
+    ↓
+prisma/migrations/ records the schema diff
+    ↓
+src/generated/prisma/ exposes typed API for future use</div>
+      <p><strong>Boundary rationale:</strong> Data flows one direction only during seeding — developer intent → disk. No browser involvement, no HTTP layer, no serialization cost.</p>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">24</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>25-char ID; sortable, URL-safe, collision-free</td></tr>
+          <tr><td>DDL</td><td>Data Definition Language</td><td>SQL statements that create/alter tables</td></tr>
+          <tr><td>ESM</td><td>ECMAScript Modules</td><td>Standard <code>import</code>/<code>export</code> syntax</td></tr>
+          <tr><td>FK</td><td>Foreign Key</td><td>Column referencing another table's primary key</td></tr>
+          <tr><td>ID</td><td>Identifier</td><td>Unique key for a row</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Code layer translating objects ↔ SQL</td></tr>
+          <tr><td>PK</td><td>Primary Key</td><td>Column uniquely identifying a row</td></tr>
+          <tr><td>RC</td><td>Release Candidate</td><td>Near-final build, not production-hardened</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>SEO</td><td>Search Engine Optimization</td><td>Practices making pages rank well in search</td></tr>
+          <tr><td>SQL</td><td>Structured Query Language</td><td>Standard language for relational databases</td></tr>
+          <tr><td>tsx</td><td>TypeScript Execute</td><td>Fast Node.js TypeScript runner</td></tr>
+          <tr><td>UUID</td><td>Universally Unique Identifier</td><td>36-char ID standard (Prisma prefers CUID)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">25</span> Phase 2 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>4 Prisma models defined with relations, indexes, and cascade rules</li>
+        <li>2 versioned migrations applied (<code>init_menu_models</code>, <code>add_table_and_reservation</code>)</li>
+        <li>SQLite database at <code>prisma/dev.db</code> with 4 tables</li>
+        <li>Modular seed system (<code>prisma/data/</code> + <code>prisma/seed.ts</code>)</li>
+        <li>4 categories, 12 menu items, 10 tables populated</li>
+        <li><code>db:seed</code> npm script wired with <code>tsx</code></li>
+        <li><code>dotenv/config</code> loading fixed</li>
+        <li><code>src/generated/</code> added to <code>.gitignore</code></li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li>Single source of truth for schema</li>
+        <li>Reproducible migrations for team/prod deployment</li>
+        <li>Data module decoupled from orchestration code</li>
+        <li>Cascade and non-cascade relations chosen for business correctness</li>
+        <li>Ready for Phase 3: HTTP API Layer</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-01-foundation.html">← Phase 1 (Foundation)</a>
+      <span class="center">Phase 2 of 11</span>
+      <a href="phase-03-api-layer.html">Phase 3 (API Layer) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 — Foundation · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px;
+}
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar {
+  background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a {
+  color: rgba(255,255,255,0.7); text-decoration: none;
+  padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s;
+}
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge {
+  display: inline-block; background: var(--accent); color: var(--bg-dark);
+  font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem;
+  border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px;
+}
+.hero {
+  padding: 4rem 3rem 3rem;
+  background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.hero .kicker {
+  color: var(--accent-dark); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span {
+  background: var(--accent-light); color: var(--accent-dark);
+  font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px;
+}
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num {
+  background: var(--accent); color: #fff; font-size: 0.85rem;
+  width: 32px; height: 32px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
+}
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre {
+  background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem;
+  border-radius: 8px; overflow-x: auto;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.82rem; line-height: 1.55; margin: 1rem 0;
+  border-left: 3px solid var(--accent);
+}
+code {
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.88em; background: rgba(201,169,97,0.12);
+  color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px;
+}
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table {
+  width: 100%; border-collapse: collapse; margin: 1rem 0;
+  font-size: 0.88rem; background: var(--bg-card);
+  border-radius: 8px; overflow: hidden; border: 1px solid var(--border);
+}
+th {
+  background: var(--bg); text-align: left; padding: 0.75rem 1rem;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border);
+}
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout {
+  padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0;
+  border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem;
+}
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot {
+  border: 2px dashed var(--border); border-radius: 8px; padding: 2rem;
+  text-align: center; color: var(--fg-muted); font-size: 0.85rem;
+  margin: 1rem 0; background: var(--bg-card);
+}
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav {
+  padding: 2rem 3rem; display: flex; justify-content: space-between;
+  align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem;
+}
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .disabled { opacity: 0.35; }
+.footer-nav .center {
+  color: rgba(255,255,255,0.5); font-size: 0.75rem;
+  letter-spacing: 1.5px; text-transform: uppercase;
+}
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 01</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Architectural Decision</a>
+      <a href="#prerequisites">Prerequisites</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#step1">Node.js Verification</a>
+      <a href="#step2">Next.js Scaffolding</a>
+      <a href="#step3">Structure Check</a>
+      <a href="#step4">Dev Server</a>
+      <a href="#step5">Prisma Setup</a>
+      <a href="#configs">Config Files</a>
+      <a href="#flow">Request Flow</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 01 · Foundation</div>
+      <h1>Project Foundation &amp; Environment Setup</h1>
+      <p class="lede">Establish a production-grade foundation for a single-codebase full-stack restaurant application. This phase configures Next.js 16, TypeScript, Tailwind CSS, Prisma 6, and a local SQLite database — all without a single paid service or credit card.</p>
+      <div class="stack">
+        <span>Next.js 16</span><span>TypeScript 5</span><span>Prisma 6</span>
+        <span>SQLite</span><span>Tailwind CSS 4</span><span>Node.js 24</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Move from an empty directory to a working Next.js application with a validated Prisma schema pointing at a local database — the foundation every subsequent phase builds on.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li>A working Next.js 16 application served on <code>http://localhost:3000</code>.</li>
+        <li>A stable, pinned Prisma 6 installation — not the RC branch.</li>
+        <li>A committed, validated <code>schema.prisma</code> with SQLite datasource.</li>
+        <li>A clean <code>package.json</code> free of experimental <code>postinstall</code> hooks.</li>
+        <li><code>npx prisma validate</code> returns success.</li>
+      </ol>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">2</span> Architectural Decision</h2>
+      <p>Why a single Next.js codebase instead of keeping Django as a separate backend?</p>
+      <table>
+        <thead><tr><th>Concern</th><th>Two-Server (Django + Next.js)</th><th>Single-Codebase (Next.js)</th></tr></thead>
+        <tbody>
+          <tr><td>Languages</td><td>Python + TypeScript</td><td>TypeScript only</td></tr>
+          <tr><td>Deployments</td><td>2 servers, 2 CI pipelines</td><td>1 Vercel project</td></tr>
+          <tr><td>API boundary</td><td>HTTP round-trip between servers</td><td>Direct function call in same process</td></tr>
+          <tr><td>Database clients</td><td>Django ORM + Prisma</td><td>Prisma only</td></tr>
+          <tr><td>Type safety</td><td>Not end-to-end</td><td>End-to-end (Zod + TS + Prisma)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Engineering rationale</strong>
+        Eliminating the network boundary between frontend and backend removes serialization cost, CORS configuration, and duplicated authentication logic. Server Components query Prisma in the same Node process.
+      </div>
+    </section>
+
+    <section id="prerequisites">
+      <h2><span class="num">3</span> Environment Prerequisites</h2>
+      <table>
+        <thead><tr><th>Requirement</th><th>Minimum</th><th>Verified Version</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Node.js</td><td>18.17+</td><td><strong>v24.12.0</strong></td><td>Next.js 16 requires Node ≥18.17 for native ESM and Web APIs</td></tr>
+          <tr><td>npm</td><td>9+</td><td><strong>11.15.0</strong></td><td>Needed for <code>npx</code> and workspace-aware installs</td></tr>
+          <tr><td>OS</td><td>Windows 10</td><td>Windows 10</td><td>Target development environment</td></tr>
+          <tr><td>Disk</td><td>~1 GB</td><td>—</td><td><code>node_modules</code> + <code>.next/</code> cache</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">4</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>node -v</code></td><td>Verify Node.js installed</td></tr>
+          <tr><td>2</td><td><code>npm -v</code></td><td>Verify npm installed</td></tr>
+          <tr><td>3</td><td><code>npx create-next-app@latest lumiere-nextjs-fullstack</code></td><td>Scaffold Next.js project</td></tr>
+          <tr><td>4</td><td><code>cd lumiere-nextjs-fullstack</code></td><td>Enter project directory</td></tr>
+          <tr><td>5</td><td><code>dir</code> / <code>dir src</code> / <code>dir src\app</code></td><td>Verify structure</td></tr>
+          <tr><td>6</td><td><code>npm run dev</code></td><td>Start dev server on port 3000</td></tr>
+          <tr><td>7</td><td><code>npm uninstall prisma @prisma/client</code></td><td>Remove unstable RC Prisma 8</td></tr>
+          <tr><td>8</td><td><code>Remove-Item -Recurse -Force .claude, .cursor, .agents, .devin</code></td><td>Delete AI-agent folders from RC init</td></tr>
+          <tr><td>9</td><td><code>del prisma.config.ts</code></td><td>Delete RC config file</td></tr>
+          <tr><td>10</td><td><code>npm install prisma@6 --save-dev</code></td><td>Install pinned stable Prisma 6</td></tr>
+          <tr><td>11</td><td><code>npm install @prisma/client@6</code></td><td>Install matching Prisma Client</td></tr>
+          <tr><td>12</td><td><code>npx prisma init --datasource-provider sqlite</code></td><td>Initialize Prisma in SQLite mode</td></tr>
+          <tr><td>13</td><td><code>npm install dotenv --save-dev</code></td><td>Required by <code>prisma.config.ts</code></td></tr>
+          <tr><td>14</td><td><code>npx prisma validate</code></td><td>Validate schema correctness</td></tr>
+          <tr><td>15</td><td><code>npx prisma --version</code></td><td>Confirm installed engine versions</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>PowerShell vs CMD</strong>
+        <code>rmdir /s /q</code> fails in PowerShell. Use <code>Remove-Item -Recurse -Force</code>.
+      </div>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">5</span> Target Folder Structure</h2>
+      <pre><code>lumiere-nextjs-fullstack/
+├── .env                          ← DATABASE_URL secret
+├── .gitignore                    ← excludes .env, /src/generated/
+├── next.config.ts
+├── package.json
+├── prisma/
+│   ├── schema.prisma             ← data model blueprint
+│   └── (migrations/)             ← empty until Phase 2
+├── prisma.config.ts              ← Prisma 6 config
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   └── generated/
+│       └── prisma/               ← Prisma Client output (gitignored)
+└── tsconfig.json</code></pre>
+    </section>
+
+    <section id="step1">
+      <h2><span class="num">6</span> Step 1 — Node.js Verification</h2>
+      <pre><code>$ node -v
+v24.12.0
+$ npm -v
+11.15.0</code></pre>
+      <p><strong>HOW:</strong> Queries the Node binary for its version tag.</p>
+      <p><strong>WHY:</strong> Next.js 16 hard-requires Node ≥18.17. Running on an older runtime causes cryptic ESM and <code>fetch</code> errors during build, not at install.</p>
+    </section>
+
+    <section id="step2">
+      <h2><span class="num">7</span> Step 2 — Next.js Scaffolding</h2>
+      <pre><code>npx create-next-app@latest lumiere-nextjs-fullstack</code></pre>
+      <p><strong>HOW:</strong> <code>npx</code> downloads <code>create-next-app</code> transiently and executes it. npm forces the project name to be lowercase with hyphens.</p>
+      <p><strong>WHY:</strong> The official scaffolder ensures up-to-date Next.js defaults, correct TypeScript config, and a working App Router skeleton.</p>
+      <h3>Prompt Answers</h3>
+      <table>
+        <thead><tr><th>Prompt</th><th>Answer</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Use recommended defaults?</td><td>No, customize</td><td>Explicit control over structure</td></tr>
+          <tr><td>TypeScript?</td><td>Yes</td><td>End-to-end type safety</td></tr>
+          <tr><td>Which linter?</td><td>ESLint</td><td>Catches bugs before runtime</td></tr>
+          <tr><td>React Compiler?</td><td>No</td><td>Still experimental</td></tr>
+          <tr><td>Tailwind CSS?</td><td>Yes</td><td>Utility-first styling</td></tr>
+          <tr><td>Code inside <code>src/</code>?</td><td>Yes</td><td>Cleaner root directory</td></tr>
+          <tr><td>App Router?</td><td>Yes</td><td>Required for Server Components</td></tr>
+          <tr><td>Customize import alias?</td><td>No</td><td>Keep default <code>@/*</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="step3">
+      <h2><span class="num">8</span> Step 3 — Structure Verification</h2>
+      <pre><code>cd lumiere-nextjs-fullstack
+dir
+dir src
+dir src\app</code></pre>
+      <p><strong>Expected <code>src/app/</code>:</strong> <code>favicon.ico</code>, <code>globals.css</code>, <code>layout.tsx</code>, <code>page.tsx</code>.</p>
+      <p><strong>WHY:</strong> Verify <code>src/</code> and App Router exist — all future Route Handlers and Server Components depend on this path.</p>
+    </section>
+
+    <section id="step4">
+      <h2><span class="num">9</span> Step 4 — Dev Server Verification</h2>
+      <pre><code>npm run dev
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+✓ Ready in 5.0s
+GET / 200 in 9.7s</code></pre>
+      <p><strong>HOW:</strong> <code>next dev</code> boots Turbopack on port 3000 and compiles pages on-demand.</p>
+      <p><strong>WHY:</strong> Confirms the toolchain works before adding Prisma. A 200 status guarantees routing, React rendering, and HTTP stack all function.</p>
+      <div class="screenshot">Screenshot: Dev server running + Next.js welcome page in browser</div>
+    </section>
+
+    <section id="step5">
+      <h2><span class="num">10</span> Step 5 — Prisma Setup (with RC Downgrade)</h2>
+      <div class="callout danger">
+        <strong>Critical Fix</strong>
+        <code>npx prisma init</code> initially installed <code>prisma@8.0.0-rc.15</code>, which created unexpected folders (<code>.claude/</code>, <code>.cursor/</code>, <code>.agents/</code>, <code>.devin/</code>) and failed to generate <code>schema.prisma</code>. This is an unstable pre-release.
+      </div>
+      <h3>Downgrade &amp; Reinitialize</h3>
+      <pre><code>npm uninstall prisma @prisma/client
+Remove-Item -Recurse -Force .claude, .cursor, .agents, .devin
+del prisma.config.ts
+npm install prisma@6 --save-dev
+npm install @prisma/client@6
+npx prisma init --datasource-provider sqlite
+npm install dotenv --save-dev
+npx prisma validate</code></pre>
+      <p><strong>HOW:</strong> Removes experimental dependencies and their side-effect artifacts, then reinstalls the current stable major (6.x).</p>
+      <p><strong>WHY:</strong> RC = Release Candidate = feature-frozen but not production-hardened. RC APIs change without notice; stable versions have documented behavior and community support.</p>
+      <pre><code>The schema at prisma\schema.prisma is valid 🚀</code></pre>
+    </section>
+
+    <section id="configs">
+      <h2><span class="num">11</span> Configuration Files</h2>
+
+      <h3>prisma/schema.prisma</h3>
+      <pre><code>generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}</code></pre>
+      <ul>
+        <li><code>output</code> places the generated client inside <code>src/</code>, not <code>node_modules</code> — makes it visible in the repo tree, allows IDE navigation.</li>
+        <li><code>provider = "sqlite"</code> — file-based, zero-install, perfect for development.</li>
+        <li><code>url = env(...)</code> — injects the connection string from <code>.env</code>, keeping secrets out of source.</li>
+      </ul>
+
+      <h3>.env</h3>
+      <pre><code>DATABASE_URL="file:./dev.db"</code></pre>
+      <p><strong>HOW:</strong> Prisma CLI resolves <code>./dev.db</code> relative to <code>prisma/</code> directory → creates <code>prisma/dev.db</code>.</p>
+      <p><strong>WHY:</strong> The <code>prisma/</code> folder is the natural home for local database files. One line replaces this with a hosted PostgreSQL URL at deploy time.</p>
+      <div class="callout warn">
+        <strong>Runtime caveat</strong>
+        Next.js resolves <code>./</code> relative to the project root, not <code>prisma/</code>. This mismatch is fixed in Phase 2 inside <code>src/lib/prisma.ts</code> using an absolute path.
+      </div>
+
+      <h3>prisma.config.ts</h3>
+      <pre><code>import "dotenv/config";
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: { path: "prisma/migrations" },
+  engine: "classic",
+  datasource: { url: env("DATABASE_URL") },
+});</code></pre>
+      <ul>
+        <li><code>import "dotenv/config"</code> — loads <code>.env</code> before Prisma reads it. Mandatory in Prisma 6.</li>
+        <li><code>defineConfig</code> — typed configuration helper; enables IDE autocomplete.</li>
+        <li><code>engine: "classic"</code> — uses the Node-API query engine for max performance on Windows.</li>
+      </ul>
+
+      <h3>package.json — Final State</h3>
+      <pre><code>{
+  "name": "lumiere-nextjs-fullstack",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "next": "16.3.5",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.5",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}</code></pre>
+      <p><strong>Cleanup:</strong> A <code>postinstall</code> script injected by the Prisma RC (<code>"prisma skills sync || exit 0"</code>) was removed — it referenced commands that don't exist in stable Prisma 6.</p>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">12</span> Request Data Flow (Phase 1 Scope)</h2>
+      <p>Phase 1 introduces no HTTP endpoints, but establishes the runtime dependency chain:</p>
+      <pre><code>Browser → Next.js Dev Server (port 3000)
+             ↓
+             Reads .env → DATABASE_URL
+             ↓
+             Instantiates Prisma Client (generated in src/generated/prisma)
+             ↓
+             Connects to prisma/dev.db (SQLite)</code></pre>
+      <p><strong>Boundary rationale:</strong> Secrets flow one direction only — from <code>.env</code> into server processes. Nothing reaches the browser.</p>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">13</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Command</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>Node version</td><td><code>node -v</code></td><td>18.17+</td></tr>
+          <tr><td>npm version</td><td><code>npm -v</code></td><td>9+</td></tr>
+          <tr><td>Dev server boots</td><td><code>npm run dev</code></td><td>Ready in Xs + GET / 200</td></tr>
+          <tr><td>Prisma version</td><td><code>npx prisma --version</code></td><td>6.19.3</td></tr>
+          <tr><td>Schema valid</td><td><code>npx prisma validate</code></td><td>valid 🚀</td></tr>
+          <tr><td>File tree</td><td><code>dir prisma</code></td><td>schema.prisma present</td></tr>
+          <tr><td>package.json clean</td><td>Search for <code>postinstall</code></td><td>Not found</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">14</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Uppercase project name</td><td><code>name can no longer contain capital letters</code></td><td>Use lowercase + hyphens</td></tr>
+          <tr><td>Prisma RC installed</td><td><code>prisma.config.ts</code> creates AI-agent folders</td><td>Pin <code>prisma@6</code></td></tr>
+          <tr><td><code>rmdir</code> in PowerShell</td><td><code>Positional parameter '/q'</code></td><td>Use <code>Remove-Item -Recurse -Force</code></td></tr>
+          <tr><td>Missing <code>dotenv</code></td><td><code>Environment variable not found: DATABASE_URL</code></td><td><code>npm install dotenv --save-dev</code></td></tr>
+          <tr><td><code>postinstall</code> leftover</td><td><code>prisma skills sync</code> not found</td><td>Delete line from <code>package.json</code></td></tr>
+          <tr><td>Update prompt to v8 RC</td><td><code>Update available 6.19.3 -&gt; 8.0.0-rc.15</code></td><td>Ignore — never jump majors on live projects</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">15</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for how programs talk</td></tr>
+          <tr><td>CLI</td><td>Command-Line Interface</td><td>Programs you run by typing commands</td></tr>
+          <tr><td>CUID</td><td>Collision-resistant Unique Identifier</td><td>ID string that won't collide (Phase 2)</td></tr>
+          <tr><td>DevDeps</td><td>Development Dependencies</td><td>Packages only needed while building</td></tr>
+          <tr><td>ESM</td><td>ECMAScript Modules</td><td>Modern <code>import</code>/<code>export</code> syntax</td></tr>
+          <tr><td>HMR</td><td>Hot Module Replacement</td><td>Live code updates without reload</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Translates objects ↔ SQL</td></tr>
+          <tr><td>RC</td><td>Release Candidate</td><td>Near-final, not production-hardened</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>URI/URL</td><td>Uniform Resource Identifier / Locator</td><td>Address string for a resource</td></tr>
+          <tr><td>WASM</td><td>WebAssembly</td><td>Binary format runnable in browsers + Node</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">16</span> Phase 1 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Node.js 24.12.0 + npm 11.15.0 verified</li>
+        <li>Next.js 16.3.5 scaffolded with TypeScript + Tailwind + App Router + <code>src/</code></li>
+        <li>Prisma downgraded from RC 8 to stable 6.19.3</li>
+        <li>Schema, <code>.env</code>, and <code>prisma.config.ts</code> in place</li>
+        <li><code>dotenv</code> installed; <code>postinstall</code> RC artifact removed</li>
+        <li><code>npx prisma validate</code> → valid</li>
+        <li>Dev server verified on <code>localhost:3000</code></li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li>Zero-network-boundary architecture validated</li>
+        <li>Stable dependency versions pinned</li>
+        <li>Environment secrets kept out of version control</li>
+        <li>Foundation ready for Phase 2 (data modeling)</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <span class="disabled">← Phase 0 (Planning)</span>
+      <span class="center">Phase 1 of 11</span>
+      <a href="phase-02-data-modeling.html">Phase 2 (Data Modeling) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
