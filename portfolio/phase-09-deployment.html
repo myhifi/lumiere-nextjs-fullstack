@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 9 — Deployment · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+  --neon: #00e599; --vercel: #000000; --github: #181717;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+.hero .live-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: rgba(39,174,96,0.15); color: #1e7e45;
+  padding: 0.5rem 1rem; border-radius: 999px;
+  font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem;
+  border: 1px solid rgba(39,174,96,0.3);
+}
+.hero .live-badge::before {
+  content: ""; width: 8px; height: 8px; background: #27ae60; border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* ─── Three Pillars (GitHub/Vercel/Neon) ─── */
+.pillars { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.pillar { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; text-align: center; }
+.pillar .pillar-logo { width: 56px; height: 56px; border-radius: 12px; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 0.75rem; }
+.pillar .pillar-logo.github { background: #f5f5f5; color: #181717; }
+.pillar .pillar-logo.vercel { background: #000; color: #fff; }
+.pillar .pillar-logo.neon { background: linear-gradient(135deg, #00e599 0%, #00b377 100%); color: #fff; }
+.pillar h4 { font-size: 1rem; margin-bottom: 0.25rem; }
+.pillar .pillar-role { font-size: 0.75rem; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+.pillar p { font-size: 0.8rem; color: var(--fg-muted); margin: 0; }
+.pillar .pillar-free { display: inline-block; background: rgba(39,174,96,0.15); color: #1e7e45; padding: 0.15rem 0.6rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; margin-top: 0.5rem; }
+
+/* ─── Flow ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 340px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-step.warn { border-color: var(--warning); background: #fef5e7; color: #7a4a12; }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Error Timeline ─── */
+.error-journey { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.error-journey::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%); }
+.error-item { position: relative; margin-bottom: 1.5rem; }
+.error-item::before { content: ""; position: absolute; left: -2rem; top: 8px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); }
+.error-item.fixed::before { background: var(--danger); }
+.error-item.investigating::before { background: var(--warning); }
+.error-item.solved::before { background: var(--success); }
+.error-item h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.error-item .error-msg { background: var(--bg-code); color: #ff9b8a; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.75rem; margin: 0.5rem 0; border-left: 3px solid var(--danger); }
+.error-item .error-fix { background: #eaf7ef; color: #1e5a3a; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; border-left: 3px solid var(--success); }
+.error-item .error-fix strong { color: #1e7e45; }
+
+/* ─── Terminal ─── */
+.terminal { background: #0d1117; color: #c9d1d9; border-radius: 10px; overflow: hidden; margin: 1rem 0; font-family: 'Consolas', monospace; font-size: 0.8rem; border: 1px solid #30363d; }
+.terminal-bar { background: #161b22; padding: 0.5rem 0.75rem; display: flex; gap: 0.4rem; border-bottom: 1px solid #30363d; }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; } .terminal-dot.yellow { background: #ffbd2e; } .terminal-dot.green { background: #27c93f; }
+.terminal-body { padding: 1rem 1.25rem; line-height: 1.7; }
+.terminal-body .cmd { color: #79c0ff; }
+.terminal-body .out { color: #c9d1d9; }
+.terminal-body .ok { color: #7ee787; }
+.terminal-body .warn { color: #ffa657; }
+.terminal-body .dim { color: #8b949e; }
+.terminal-body .accent { color: #d2a8ff; }
+.terminal-body .err { color: #ff7b72; }
+
+/* ─── Live URL Box ─── */
+.live-url {
+  display: flex; align-items: center; gap: 1rem;
+  background: linear-gradient(135deg, rgba(39,174,96,0.1) 0%, rgba(39,174,96,0.05) 100%);
+  border: 2px solid var(--success); border-radius: 12px;
+  padding: 1.25rem 1.5rem; margin: 1.5rem 0;
+}
+.live-url .url-icon { font-size: 1.8rem; }
+.live-url .url-content { flex: 1; }
+.live-url .url-label { font-size: 0.75rem; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 1px; }
+.live-url .url-value { font-family: 'Consolas', monospace; font-size: 0.9rem; color: #1e7e45; font-weight: 700; word-break: break-all; }
+.live-url .url-badge { background: var(--success); color: #fff; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; }
+
+/* ─── Config Grid ─── */
+.config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.config-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem; }
+.config-card .config-key { font-family: 'Consolas', monospace; font-size: 0.75rem; color: var(--accent-dark); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem; }
+.config-card .config-value { font-family: 'Consolas', monospace; font-size: 0.8rem; color: var(--fg); word-break: break-all; background: var(--bg); padding: 0.5rem; border-radius: 4px; }
+.config-card .config-note { font-size: 0.72rem; color: var(--fg-muted); margin-top: 0.5rem; }
+
+/* ─── Screenshot Grid ─── */
+.shot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .error-journey { padding-left: 1.5rem; }
+  .error-item::before { left: -1.5rem; }
+  .live-url { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 09</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#live">Live URL</a>
+      <a href="#stack">The Three Pillars</a>
+      <a href="#architecture">Deployment Architecture</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#git-setup">Step 1: Git Setup</a>
+      <a href="#github-push">Step 2: GitHub Push</a>
+      <a href="#neon">Step 3: Neon Database</a>
+      <a href="#migration">Step 4: SQLite → PostgreSQL</a>
+      <a href="#vercel-connect">Step 5: Vercel Connect</a>
+      <a href="#env-vars">Step 6: Environment Variables</a>
+      <a href="#first-deploy">Step 7: First Deploy</a>
+      <a href="#errors">The 5 Errors Journey</a>
+      <a href="#error-1">Error 1: force-dynamic</a>
+      <a href="#error-2">Error 2: TypeScript Declaration</a>
+      <a href="#error-3">Error 3: Turbopack vs Webpack</a>
+      <a href="#error-4">Error 4: Query Engine Missing</a>
+      <a href="#error-5">Error 5: Pooler Failure</a>
+      <a href="#final-config">Final Configuration</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#polish">Polish Contributions</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 09 · Deployment</div>
+      <div class="live-badge"><a href="https://lumiere-nextjs-fullstack.vercel.app/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">
+        LIVE IN PRODUCTION
+      </a></div>
+      <h1>From Local Machine to the Global Internet</h1>
+      <p class="lede">Take the complete full-stack application from a local development environment to a live, HTTPS-secured, globally distributed production URL. This phase covered Git initialization, GitHub repository management, Neon PostgreSQL provisioning, Prisma adapter migration, and Vercel serverless deployment — including five distinct production errors that were diagnosed and permanently resolved.</p>
+      <div class="stack">
+        <span>Git</span><span>GitHub</span><span>Vercel</span>
+        <span>Neon PostgreSQL</span><span>Prisma Client</span>
+        <span>Webpack</span><span>Serverless</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Deploy the complete Lumière application — database, backend, frontend, and authentication — to a public URL with HTTPS, using only free-tier services and zero credit card requirements.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Git repository</strong> initialized with a clean <code>.gitignore</code> and committed to GitHub.</li>
+        <li><strong>Neon PostgreSQL database</strong> provisioned on the free tier with a separate <code>lumiere_db</code> inside the existing project.</li>
+        <li><strong>SQLite → PostgreSQL migration</strong> with updated Prisma schema and regenerated migrations.</li>
+        <li><strong>Vercel deployment</strong> connected to the GitHub repository with auto-deploy on every push.</li>
+        <li><strong>Environment variables</strong> configured for <code>DATABASE_URL</code>, <code>DIRECT_URL</code>, <code>AUTH_SECRET</code>, and <code>EMAIL_PROVIDER</code>.</li>
+        <li><strong>Production URL live</strong> at <code>lumiere-nextjs-fullstack.vercel.app</code>.</li>
+        <li><strong>Five production errors diagnosed</strong> and resolved with permanent fixes.</li>
+      </ol>
+    </section>
+
+    <section id="live">
+      <h2><span class="num">2</span> Live Deployment</h2>
+      <div class="live-url">
+        <div class="url-icon">🌍</div>
+        <div class="url-content">
+          <div class="url-label">Production URL</div>
+          <div class="url-value">https://lumiere-nextjs-fullstack.vercel.app</div>
+        </div>
+        <div class="url-badge">LIVE</div>
+      </div>
+      <p><strong>Features working in production:</strong></p>
+      <ul>
+        <li>Homepage with hero section and featured dishes from Neon.</li>
+        <li>Full menu with 12 items, category filtering, and RTL Arabic layout.</li>
+        <li>Item detail pages with dynamic routing.</li>
+        <li>Reservation form with smart table assignment and database persistence.</li>
+        <li>Complete admin dashboard with CRUD for reservations, menu, categories, tables, and users.</li>
+        <li>Auth.js authentication with role-based access control.</li>
+        <li>Email notifications (console provider in production).</li>
+        <li>Floating WhatsApp button.</li>
+      </ul>
+      <div class="screenshot">Screenshot: Live production URL in browser showing the Lumière homepage</div>
+    </section>
+
+    <section id="stack">
+      <h2><span class="num">3</span> The Three Pillars</h2>
+      <p>Three free services working together to host Lumière on the internet.</p>
+      <div class="pillars">
+        <div class="pillar">
+          <div class="pillar-logo github">🐙</div>
+          <h4>GitHub</h4>
+          <div class="pillar-role">Source of Truth</div>
+          <p>Version control and public repository. Vercel pulls from here on every push.</p>
+          <div class="pillar-free">Free forever</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-logo vercel">▲</div>
+          <h4>Vercel</h4>
+          <div class="pillar-role">Hosting &amp; CDN</div>
+          <p>Serverless platform by the creators of Next.js. Auto-deploy on git push.</p>
+          <div class="pillar-free">Hobby tier · No card</div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-logo neon">◈</div>
+          <h4>Neon</h4>
+          <div class="pillar-role">PostgreSQL Database</div>
+          <p>Serverless PostgreSQL with auto-scaling compute and instant branching.</p>
+          <div class="pillar-free">Free tier · No card</div>
+        </div>
+      </div>
+      <div class="callout success">
+        <strong>Zero cost guarantee</strong>
+        All three services used here are 100% free without any credit card requirement. This was a hard constraint throughout the entire project.
+      </div>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">4</span> Deployment Architecture</h2>
+      <div class="flow">
+        <div class="flow-step">Local Machine · VS Code · npm run dev</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">git push</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">GitHub · myhifi/lumiere-nextjs-fullstack</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">Auto-deploy webhook</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">Vercel Build · next build --webpack</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">postinstall → prisma generate</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">Production · lumiere-nextjs-fullstack.vercel.app</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">Prisma query · Direct URL</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">Neon PostgreSQL · lumiere_db</div>
+      </div>
+      <p><strong>Every layer is automated:</strong> a single <code>git push</code> triggers the entire pipeline from code commit to live deployment in under 90 seconds.</p>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">5</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>git --version</code></td><td>Verify Git installation</td></tr>
+          <tr><td>2</td><td><code>git remote -v</code></td><td>Check existing remote configuration</td></tr>
+          <tr><td>3</td><td><code>git branch -M main</code></td><td>Rename master → main</td></tr>
+          <tr><td>4</td><td><code>git remote add origin &lt;url&gt;</code></td><td>Connect local repo to GitHub</td></tr>
+          <tr><td>5</td><td><code>git add -A</code></td><td>Stage all changes</td></tr>
+          <tr><td>6</td><td><code>git commit -m "..."</code></td><td>Save with descriptive message</td></tr>
+          <tr><td>7</td><td><code>git push -u origin main</code></td><td>Upload and set upstream tracking</td></tr>
+          <tr><td>8</td><td><code>npx prisma migrate dev --name init_postgres</code></td><td>Create PostgreSQL migrations</td></tr>
+          <tr><td>9</td><td><code>npm run db:seed</code></td><td>Seed the Neon database</td></tr>
+          <tr><td>10</td><td><code>npm run db:admin</code></td><td>Create the first admin user</td></tr>
+          <tr><td>11</td><td><code>npm install @prisma/adapter-neon @neondatabase/serverless</code></td><td>(Attempted) Neon serverless adapter — later reverted</td></tr>
+          <tr><td>12</td><td><code>npx prisma generate</code></td><td>Regenerate Prisma Client after schema changes</td></tr>
+          <tr><td>13</td><td><code>npm run dev -- --webpack</code></td><td>Run dev server with webpack</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="git-setup">
+      <h2><span class="num">6</span> Step 1: Git Setup</h2>
+      <p><strong>Verify Git is installed:</strong></p>
+      <pre><code>git --version
+# git version 2.48.1.windows.1</code></pre>
+      <p><strong>Check the .gitignore file</strong> — critical for keeping secrets out of the repository:</p>
+      <pre><code># .gitignore (relevant entries)
+/node_modules
+.env*
+/src/generated/prisma
+email-preview.html
+prisma/dev.db
+prisma/dev.db-journal</code></pre>
+      <div class="callout danger">
+        <strong>Security verification</strong>
+        Before any commit, run <code>git check-ignore .env</code>. If it returns <code>.env</code>, the file is safely excluded. If it returns nothing, STOP — the file would be uploaded and secrets would leak.
+      </div>
+      <p><strong>Rename branch and connect to GitHub:</strong></p>
+      <pre><code>git branch -M main
+git remote add origin https://github.com/myhifi/lumiere-nextjs-fullstack.git
+git remote -v</code></pre>
+    </section>
+
+    <section id="github-push">
+      <h2><span class="num">7</span> Step 2: GitHub Push</h2>
+      <p><strong>First commit includes 104 files across the entire project:</strong></p>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+        <div class="terminal-body">
+          <div class="out"><span class="cmd">&gt;</span> git add -A</div>
+          <div class="out"><span class="cmd">&gt;</span> git commit -m "Phase 1-8: Full-stack Lumière"</div>
+          <div class="out">[main 675428b] Phase 1-8: Full-stack Lumière...</div>
+          <div class="out"> 104 files changed, 15632 insertions(+), 189 deletions(-)</div>
+          <div class="out">&nbsp;</div>
+          <div class="out"><span class="cmd">&gt;</span> git push -u origin main</div>
+          <div class="out">Writing objects: 100% (185/185), <span class="ok">261.41 KiB</span> | 605.00 KiB/s</div>
+          <div class="out">To https://github.com/myhifi/lumiere-nextjs-fullstack.git</div>
+          <div class="out"> * [new branch]      main -&gt; main</div>
+          <div class="out">branch 'main' set up to track 'origin/main'.</div>
+        </div>
+      </div>
+      <div class="callout success">
+        <strong>Only 261 KB uploaded</strong>
+        Because <code>.gitignore</code> correctly excluded <code>node_modules</code> (500+ MB) and <code>src/generated/prisma</code> (21 MB), the entire repository weighs less than a single high-resolution image. Mobile data bundles easily handle this.
+      </div>
+    </section>
+
+    <section id="neon">
+      <h2><span class="num">8</span> Step 3: Neon Database</h2>
+      <p><strong>Existing Neon project reused:</strong> Instead of consuming a new free-tier project slot, a new database was created inside the existing <code>neon-cordovan-basket</code> project.</p>
+      <h3>Why a separate database, not a separate project?</h3>
+      <table>
+        <thead><tr><th>Resource</th><th>Free tier limit</th><th>Our usage</th></tr></thead>
+        <tbody>
+          <tr><td>Projects per account</td><td>1</td><td>1 (existing)</td></tr>
+          <tr><td>Databases per project</td><td>10</td><td>2 (existing + <code>lumiere_db</code>)</td></tr>
+          <tr><td>Storage total</td><td>0.5 GB</td><td>~0.04 GB</td></tr>
+        </tbody>
+      </table>
+      <div class="callout info">
+        <strong>Portfolio architecture benefit</strong>
+        Additional portfolio projects can reuse the same Neon project, each with its own isolated database. This preserves the free tier for years of portfolio growth.
+      </div>
+      <h3>Connection string anatomy</h3>
+      <pre><code>postgresql://neondb_owner:YOUR_PASSWORD@
+  ep-delicate-queen-api0jkos.c-7.us-east-1.aws.neon.tech/
+  lumiere_db?sslmode=require&amp;connect_timeout=30
+                    ↑↑↑↑↑↑↑↑↑↑
+                    database name</code></pre>
+      <p><strong>Two connection endpoints matter:</strong></p>
+      <table>
+        <thead><tr><th>Endpoint</th><th>Hostname suffix</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Direct</td><td><code>.c-7.us-east-1.aws.neon.tech</code></td><td>Migrations · Local dev · Serverless runtime (chosen)</td></tr>
+          <tr><td>Pooled</td><td><code>-pooler.c-7.us-east-1.aws.neon.tech</code></td><td>Long-running servers with many connections (rejected)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="migration">
+      <h2><span class="num">9</span> Step 4: SQLite → PostgreSQL Migration</h2>
+      <p><strong>Three files changed, one migration regenerated:</strong></p>
+      <div class="filetree">
+        <div><span class="dir">prisma/</span></div>
+        <div class="indent-1"><span class="file upd">schema.prisma</span> <span class="note">← provider: sqlite → postgresql</span></div>
+        <div class="indent-1"><span class="dir">migrations/</span></div>
+        <div class="indent-2"><span class="file">20260924125523_init_postgres/migration.sql</span> <span class="note">← NEW</span></div>
+        <div><span class="dir">src/lib/</span></div>
+        <div class="indent-1"><span class="file upd">prisma.ts</span> <span class="note">← simplified, no SQLite path logic</span></div>
+        <div><span class="file upd">.env</span> <span class="note">← DATABASE_URL switched to Neon</span></div>
+      </div>
+      <h3>Schema change</h3>
+      <pre><code>datasource db {
+  provider  = "postgresql"    // was "sqlite"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"    // classic import path
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}</code></pre>
+      <h3>Prisma client simplification</h3>
+      <pre><code>// Before (SQLite — needed absolute path)
+import path from 'node:path';
+const sqlitePath = path.join(process.cwd(), 'prisma', 'dev.db');
+
+// After (PostgreSQL — direct URL from env)
+import { PrismaClient } from "@prisma/client";
+export const prisma = globalForPrisma.prisma ?? new PrismaClient();</code></pre>
+    </section>
+
+    <section id="vercel-connect">
+      <h2><span class="num">10</span> Step 5: Vercel Connect</h2>
+      <p><strong>Import flow from the Vercel dashboard:</strong></p>
+      <ol>
+        <li>Click <strong>Add New</strong> → <strong>Project</strong>.</li>
+        <li>Select the GitHub repository <code>lumiere-nextjs-fullstack</code>.</li>
+        <li>Confirm <strong>Framework Preset = Next.js</strong> (auto-detected).</li>
+        <li>Leave <strong>Root Directory</strong> as <code>./</code>.</li>
+        <li>Add the four environment variables before clicking Deploy.</li>
+        <li>Do <strong>not</strong> enable the Optional Integrations — they would override manual configuration.</li>
+      </ol>
+      <div class="callout warn">
+        <strong>Trap avoided</strong>
+        Vercel offers "Prisma Postgres" and "Resend email" integrations in the setup page. Both would create <em>new</em> accounts and override the manually configured values. Manual configuration gives full control.
+      </div>
+    </section>
+
+    <section id="env-vars">
+      <h2><span class="num">11</span> Step 6: Environment Variables</h2>
+      <p><strong>The four variables required on Vercel:</strong></p>
+      <div class="config-grid">
+        <div class="config-card">
+          <div class="config-key">DATABASE_URL</div>
+          <div class="config-value">postgresql://neondb_owner:••••@ep-delicate-queen-api0jkos.c-7.us-east-1.aws.neon.tech/lumiere_db?sslmode=require&amp;connect_timeout=30</div>
+          <div class="config-note">Direct endpoint — no -pooler</div>
+        </div>
+        <div class="config-card">
+          <div class="config-key">DIRECT_URL</div>
+          <div class="config-value">Same as DATABASE_URL</div>
+          <div class="config-note">For migrations (not used in serverless runtime)</div>
+        </div>
+        <div class="config-card">
+          <div class="config-key">AUTH_SECRET</div>
+          <div class="config-value">(64-char random string)</div>
+          <div class="config-note">Generated locally with crypto.randomBytes</div>
+        </div>
+        <div class="config-card">
+          <div class="config-key">EMAIL_PROVIDER</div>
+          <div class="config-value">console</div>
+          <div class="config-note">Logs to Vercel Functions logs</div>
+        </div>
+      </div>
+      <div class="callout danger">
+        <strong>Why direct URL and not pooler?</strong>
+        Vercel Serverless functions establish short-lived connections. Neon's PgBouncer pooler, designed for long-lived connections, was refusing these short-lived handshakes with <code>P1001</code>. Direct endpoint works flawlessly. For low-traffic portfolios, direct connections consume only 1–3 of the 100-connection limit.
+      </div>
+    </section>
+
+    <section id="first-deploy">
+      <h2><span class="num">12</span> Step 7: First Deploy</h2>
+      <p><strong>Package.json scripts that made it work:</strong></p>
+      <pre><code>"scripts": {
+  "dev":   "next dev --webpack",
+  "build": "next build --webpack",
+  "start": "next start",
+  "lint":  "eslint",
+  "postinstall": "prisma generate",
+  "db:seed":  "tsx prisma/seed.ts",
+  "db:admin": "tsx scripts/create-admin.ts"
+}</code></pre>
+      <h3>Why each flag matters</h3>
+      <table>
+        <thead><tr><th>Element</th><th>Reason</th></tr></thead>
+        <tbody>
+          <tr><td><code>--webpack</code> on <code>dev</code> and <code>build</code></td><td>Forces Next.js to use Webpack instead of Turbopack — required because <code>PrismaPlugin</code> only works with Webpack</td></tr>
+          <tr><td><code>postinstall: prisma generate</code></td><td>Ensures Prisma Client exists on Vercel after <code>npm install</code> — the <code>src/generated</code> folder is gitignored</td></tr>
+          <tr><td><code>binaryTargets: ["native", "rhel-openssl-3.0.x"]</code></td><td>Downloads both Windows and Linux engines — Linux engine is required on Vercel's Amazon Linux runtime</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="errors">
+      <h2><span class="num">13</span> The 5 Errors Journey</h2>
+      <p>Production deployment revealed <strong>five distinct errors</strong> — each requiring a different fix. This is the complete timeline.</p>
+      <div class="error-journey">
+        <div class="error-item solved">
+          <h4>🎯 Error 1: Missing force-dynamic</h4>
+          <div class="error-msg">Error occurred prerendering page "/" · Can't reach database server</div>
+          <div class="error-fix"><strong>Fix:</strong> Add <code>export const dynamic = "force-dynamic"</code> to DB-driven pages.</div>
+        </div>
+        <div class="error-item solved">
+          <h4>🎯 Error 2: TypeScript Declaration Missing</h4>
+          <div class="error-msg">Could not find a declaration file for module '@prisma/nextjs-monorepo-workaround-plugin'</div>
+          <div class="error-fix"><strong>Fix:</strong> Create <code>src/types/prisma-plugin.d.ts</code> with <code>declare module</code>.</div>
+        </div>
+        <div class="error-item solved">
+          <h4>🎯 Error 3: Turbopack vs Webpack Conflict</h4>
+          <div class="error-msg">This build is using Turbopack, with a `webpack` config and no `turbopack` config</div>
+          <div class="error-fix"><strong>Fix:</strong> Add <code>--webpack</code> flag to both dev and build scripts.</div>
+        </div>
+        <div class="error-item solved">
+          <h4>🎯 Error 4: Query Engine Missing on Vercel</h4>
+          <div class="error-msg">Prisma Client could not locate the Query Engine for runtime "rhel-openssl-3.0.x"</div>
+          <div class="error-fix"><strong>Fix:</strong> Switch from <code>prisma-client</code> to <code>prisma-client-js</code> generator.</div>
+        </div>
+        <div class="error-item solved">
+          <h4>🎯 Error 5: Pooler Failure</h4>
+          <div class="error-msg">Can't reach database server at `ep-delicate-queen-api0jkos-pooler.c-7.us-east-1.aws.neon.tech:5432`</div>
+          <div class="error-fix"><strong>Fix:</strong> Replace <code>-pooler</code> hostname with direct endpoint in Vercel env vars.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="error-1">
+      <h2><span class="num">14</span> Error 1: force-dynamic</h2>
+      <p><strong>Symptom:</strong></p>
+      <pre><code>⨯ Error [PrismaClientInitializationError]:
+  Can't reach database server at `ep-delicate-queen-api0jkos-pooler...`
+  at async i (src/app/(public)/page.tsx:7:25)
+Export encountered an error on /(public)/page: /, exiting the build.</code></pre>
+      <p><strong>Root cause:</strong> Next.js tried to prerender the homepage at build time — querying the database during deployment. Neon refused the connection because it was cold.</p>
+      <p><strong>Fix:</strong> Add <code>export const dynamic = "force-dynamic"</code> to every page that queries the database.</p>
+      <pre><code>// src/app/(public)/page.tsx
+import { prisma } from "@/lib/prisma";
+
+export const dynamic = "force-dynamic";    // ← added
+
+export default async function HomePage() {
+  const featuredItems = await prisma.menuItem.findMany(...);
+  ...
+}</code></pre>
+      <div class="callout success">
+        <strong>Result</strong>
+        Pages render on-demand instead of at build. First visitor triggers the DB query; subsequent visitors hit cached HTML.
+      </div>
+    </section>
+
+    <section id="error-2">
+      <h2><span class="num">15</span> Error 2: TypeScript Declaration</h2>
+      <p><strong>Symptom:</strong></p>
+      <pre><code>Could not find a declaration file for module 
+'@prisma/nextjs-monorepo-workaround-plugin'.</code></pre>
+      <p><strong>Root cause:</strong> The plugin has no TypeScript type definitions, so the import statement failed during <code>next build</code>'s type check.</p>
+      <p><strong>Fix:</strong> Create a declaration file.</p>
+      <pre><code>// src/types/prisma-plugin.d.ts
+declare module "@prisma/nextjs-monorepo-workaround-plugin";</code></pre>
+      <div class="callout">
+        <strong>Pattern for future use</strong>
+        Whenever a third-party library lacks types, create a one-line <code>.d.ts</code> file under <code>src/types/</code> with <code>declare module "library-name"</code>.
+      </div>
+    </section>
+
+    <section id="error-3">
+      <h2><span class="num">16</span> Error 3: Turbopack vs Webpack</h2>
+      <p><strong>Symptom:</strong></p>
+      <pre><code>⨯ ERROR: This build is using Turbopack, with a `webpack` config 
+   and no `turbopack` config.
+   This may be a mistake.</code></pre>
+      <p><strong>Root cause:</strong> Next.js 16 defaults to Turbopack. Turbopack cannot use the <code>webpack()</code> function from <code>next.config.ts</code> where <code>PrismaPlugin</code> is injected. The two build systems are fundamentally incompatible.</p>
+      <p><strong>Fix:</strong> Force Webpack in both dev and production.</p>
+      <pre><code>"scripts": {
+  "dev":   "next dev --webpack",
+  "build": "next build --webpack"
+}</code></pre>
+      <div class="callout warn">
+        <strong>Trade-off</strong>
+        Webpack builds are ~10–15 seconds slower than Turbopack but are the only way to run custom <code>webpack()</code> configuration — required for <code>PrismaPlugin</code>.
+      </div>
+    </section>
+
+    <section id="error-4">
+      <h2><span class="num">17</span> Error 4: Query Engine Missing</h2>
+      <p><strong>Symptom:</strong></p>
+      <pre><code>Prisma Client could not locate the Query Engine for runtime "rhel-openssl-3.0.x".
+...
+Ensure that "libquery_engine-rhel-openssl-3.0.x.so.node" 
+has been copied to ".next/server/chunks".
+
+The following locations have been searched:
+  /var/task/.next/server/chunks
+  /vercel/path0/src/generated/prisma
+  /tmp/prisma-engines</code></pre>
+      <p><strong>Root cause:</strong> The <code>prisma-client</code> generator (Prisma 6's newer style) outputs to a custom directory <code>src/generated/prisma/</code>. Next.js excludes this directory from build outputs because it's gitignored. The Linux <code>.so.node</code> binary never reached the Vercel runtime.</p>
+      <p><strong>Fix:</strong> Switch to the classic <code>prisma-client-js</code> generator, which outputs to <code>node_modules/@prisma/client/</code> — a directory Next.js automatically includes in builds.</p>
+      <table>
+        <thead><tr><th>Generator</th><th>Output</th><th>Vercel Bundle</th></tr></thead>
+        <tbody>
+          <tr><td><code>prisma-client</code></td><td><code>src/generated/prisma/</code> (gitignored)</td><td>❌ Missing engine</td></tr>
+          <tr><td><code>prisma-client-js</code></td><td><code>node_modules/.prisma/client/</code> (auto-bundled)</td><td>✅ Engine included</td></tr>
+        </tbody>
+      </table>
+      <pre><code>generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}</code></pre>
+      <h3>Required import changes</h3>
+      <p>All files that imported from <code>../generated/prisma/client</code> had to switch to <code>@prisma/client</code>:</p>
+      <ul>
+        <li><code>prisma/seed.ts</code></li>
+        <li><code>scripts/create-admin.ts</code></li>
+        <li><code>src/lib/prisma.ts</code></li>
+      </ul>
+    </section>
+
+    <section id="error-5">
+      <h2><span class="num">18</span> Error 5: Pooler Failure</h2>
+      <p><strong>Symptom (runtime, after successful build):</strong></p>
+      <pre><code>prisma:error 
+Invalid `prisma.menuItem.findMany()` invocation:
+
+Can't reach database server at 
+`ep-delicate-queen-api0jkos-pooler.c-7.us-east-1.aws.neon.tech:5432`</code></pre>
+      <p><strong>Root cause:</strong> The <code>-pooler</code> hostname uses PgBouncer, which is optimized for long-lived connections (traditional server deployments). Vercel Serverless opens and closes connections per request. PgBouncer rejects the rapid handshake sequence with a <code>P1001</code> timeout.</p>
+      <p><strong>Diagnostic confirmation:</strong></p>
+      <ul>
+        <li>Neon dashboard showed compute as <strong>ACTIVE</strong> — not a cold start.</li>
+        <li>Local development with direct URL worked perfectly.</li>
+        <li>Only Vercel (serverless) failed on the pooled endpoint.</li>
+      </ul>
+      <p><strong>Fix:</strong> Update Vercel's environment variables to use the direct endpoint.</p>
+      <div class="config-grid">
+        <div class="config-card">
+          <div class="config-key">❌ Broken (Pooled)</div>
+          <div class="config-value">ep-delicate-queen-api0jkos-pooler.c-7.us-east-1.aws.neon.tech</div>
+        </div>
+        <div class="config-card">
+          <div class="config-key">✅ Working (Direct)</div>
+          <div class="config-value">ep-delicate-queen-api0jkos.c-7.us-east-1.aws.neon.tech</div>
+        </div>
+      </div>
+      <div class="callout success">
+        <strong>Why this works for low-traffic portfolios</strong>
+        Direct connections consume 1–3 of Neon's 100-connection limit. For a portfolio site with occasional visitors, this is negligible. Pooler becomes necessary only at high concurrency.
+      </div>
+    </section>
+
+    <section id="final-config">
+      <h2><span class="num">19</span> Final Working Configuration</h2>
+      <h3>Local .env</h3>
+      <pre><code>DATABASE_URL="postgresql://neondb_owner:PASSWORD@ep-delicate-queen-api0jkos.c-7.us-east-1.aws.neon.tech/lumiere_db?sslmode=require&amp;connect_timeout=30"
+
+AUTH_SECRET="..."
+
+EMAIL_PROVIDER=console</code></pre>
+      <h3>Vercel Environment Variables</h3>
+      <pre><code>DATABASE_URL     → direct endpoint (same as local)
+DIRECT_URL       → direct endpoint
+AUTH_SECRET      → same as local
+EMAIL_PROVIDER   → console</code></pre>
+      <h3>package.json scripts</h3>
+      <pre><code>{
+  "scripts": {
+    "dev":         "next dev --webpack",
+    "build":       "next build --webpack",
+    "start":       "next start",
+    "lint":        "eslint",
+    "postinstall": "prisma generate",
+    "db:seed":     "tsx prisma/seed.ts",
+    "db:admin":    "tsx scripts/create-admin.ts"
+  }
+}</code></pre>
+      <h3>next.config.ts</h3>
+      <pre><code>import type { NextConfig } from "next";
+import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
+
+const nextConfig: NextConfig = {
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()];
+    }
+    return config;
+  },
+};
+
+export default nextConfig;</code></pre>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">20</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>GitHub repo</td><td>Visit <code>github.com/myhifi/lumiere-nextjs-fullstack</code></td><td>Public repo with 8 commits</td></tr>
+          <tr><td>Secrets excluded</td><td>Search repo for <code>.env</code></td><td>Not found</td></tr>
+          <tr><td>Neon database</td><td>Neon Console → Tables</td><td>5 tables with data</td></tr>
+          <tr><td>Vercel status</td><td>Deployments page</td><td>🟢 Ready · Production</td></tr>
+          <tr><td>Homepage</td><td><code>/</code></td><td>Hero + 3 featured dishes</td></tr>
+          <tr><td>Menu page</td><td><code>/menu</code></td><td>12 dishes with filters</td></tr>
+          <tr><td>Item detail</td><td><code>/menu/hummus</code></td><td>Full item page</td></tr>
+          <tr><td>Reservation</td><td><code>/reserve</code></td><td>Form submits and persists</td></tr>
+          <tr><td>Admin login</td><td><code>/admin</code> → login</td><td>Dashboard loads</td></tr>
+          <tr><td>HTTPS</td><td>Browser address bar</td><td>🔒 padlock</td></tr>
+          <tr><td>Auto-deploy</td><td>Push to main</td><td>New deployment in ~60s</td></tr>
+        </tbody>
+      </table>
+      <div class="screenshot">Screenshot: Vercel dashboard showing 🟢 Ready Production deployment</div>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">21</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Committing <code>.env</code></td><td>Secrets on public GitHub</td><td>Add to <code>.gitignore</code> before first commit</td></tr>
+          <tr><td>Committing <code>prisma/dev.db</code></td><td>Binary file bloats repo</td><td>Add <code>prisma/dev.db</code> to <code>.gitignore</code></td></tr>
+          <tr><td>Prerendered DB pages</td><td>Build fails: can't reach DB</td><td><code>export const dynamic = "force-dynamic"</code></td></tr>
+          <tr><td>Missing TypeScript declaration</td><td><code>Could not find declaration file</code></td><td>Create <code>src/types/plugin.d.ts</code></td></tr>
+          <tr><td>Turbopack + Webpack conflict</td><td>Build error immediately</td><td>Add <code>--webpack</code> flag to scripts</td></tr>
+          <tr><td><code>prisma-client</code> generator</td><td><code>Query Engine not found</code> on Vercel</td><td>Switch to <code>prisma-client-js</code></td></tr>
+          <tr><td>Pooled connection on serverless</td><td><code>P1001</code> at runtime</td><td>Use direct endpoint</td></tr>
+          <tr><td>Vercel integrations override config</td><td>Wrong DB URL, wrong email provider</td><td>Skip Optional Integrations</td></tr>
+          <tr><td>Neon compute suspended</td><td>First request slow or 500</td><td>Wait 5–8s or upgrade tier</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="polish">
+      <h2><span class="num">22</span> Polish Contributions</h2>
+      <p>Phase 9 adds these items to the accumulated Polish backlog:</p>
+      <ul>
+        <li><strong>UptimeRobot ping</strong> every 5 minutes to prevent Neon cold starts.</li>
+        <li><strong>Resend provider</strong> for real email delivery in production (replacing console).</li>
+        <li><strong>Custom domain</strong> (e.g., <code>lumiere-restaurant.com</code>) via Vercel domains.</li>
+        <li><strong>Migration to EU region</strong> (Frankfurt) for lower latency to Middle East users.</li>
+        <li><strong>Remove unused packages</strong> — <code>@prisma/adapter-neon</code> and <code>@neondatabase/serverless</code>.</li>
+        <li><strong>Delete <code>src/generated/prisma/</code></strong> — no longer used after switching to <code>prisma-client-js</code>.</li>
+        <li><strong>GitHub Actions CI</strong> — run <code>tsc --noEmit</code> on every pull request.</li>
+        <li><strong>Automatic deployment preview comments</strong> — screenshot the deployed page on PR.</li>
+      </ul>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">23</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>CDN</td><td>Content Delivery Network</td><td>Globally distributed cache servers</td></tr>
+          <tr><td>CI/CD</td><td>Continuous Integration / Deployment</td><td>Automated pipeline from commit to production</td></tr>
+          <tr><td>CLI</td><td>Command-Line Interface</td><td>Programs operated by typing commands</td></tr>
+          <tr><td>DNS</td><td>Domain Name System</td><td>Translates domain names to IP addresses</td></tr>
+          <tr><td>HTTPS</td><td>HTTP Secure</td><td>Encrypted HTTP via TLS</td></tr>
+          <tr><td>ORM</td><td>Object-Relational Mapper</td><td>Code layer translating objects ↔ SQL</td></tr>
+          <tr><td>PgBouncer</td><td>PostgreSQL Connection Pooler</td><td>Manages many client connections over fewer DB connections</td></tr>
+          <tr><td>RHEL</td><td>Red Hat Enterprise Linux</td><td>Base OS for Amazon Linux on Vercel</td></tr>
+          <tr><td>SSL/TLS</td><td>Secure Sockets Layer / Transport Layer Security</td><td>Encryption for network traffic</td></tr>
+          <tr><td>Serverless</td><td>—</td><td>Execution model where the provider manages servers</td></tr>
+          <tr><td>URL</td><td>Uniform Resource Locator</td><td>Web address</td></tr>
+          <tr><td>Vercel</td><td>—</td><td>Hosting platform created by the Next.js team</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">24</span> Phase 9 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Git repository initialized and pushed to GitHub (104 files, 261 KB)</li>
+        <li><code>.gitignore</code> hardened against <code>.env</code>, <code>dev.db</code>, and generated files</li>
+        <li>Neon database <code>lumiere_db</code> created inside existing project</li>
+        <li>SQLite → PostgreSQL migration applied with new migrations</li>
+        <li>Vercel project connected with auto-deploy from GitHub</li>
+        <li>Four environment variables configured</li>
+        <li>Five production errors diagnosed and fixed permanently</li>
+        <li>Live production URL: <code>lumiere-nextjs-fullstack.vercel.app</code></li>
+      </ul>
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Full CI/CD pipeline</strong> — one <code>git push</code> triggers build and deploy</li>
+        <li><strong>Zero cost deployment</strong> — all three pillars on free tiers without cards</li>
+        <li><strong>Production-grade Prisma configuration</strong> — <code>prisma-client-js</code> with correct binary targets</li>
+        <li><strong>Serverless-aware database connection</strong> — direct endpoint instead of pooler</li>
+        <li><strong>Force-dynamic rendering</strong> for DB-driven pages</li>
+        <li><strong>Webpack + PrismaPlugin integration</strong> verified in both dev and prod</li>
+        <li>Ready for Phase 10: Polishing (SEO, performance, UptimeRobot, Resend, custom domain)</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-08-admin-dashboard.html">← Phase 8 (Admin Dashboard)</a>
+      <span class="center">Phase 9 of 11</span>
+      <a href="phase-10-polishing.html">Phase 10 (Polishing) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
