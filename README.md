@@ -203,7 +203,7 @@ lumiere-nextjs-fullstack/
 │   ├── types/              # TypeScript augmentations
 │   ├── auth.config.ts      # Edge-safe Auth.js config
 │   ├── auth.ts             # Node-only Auth.js config
-│   └── middleware.ts       # Route protection
+│   └── proxy.ts           # Route protection
 └── package.json
 ```
 

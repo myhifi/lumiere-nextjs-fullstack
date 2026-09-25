@@ -3,7 +3,7 @@
 // ═══════════════════════════════════════════════════
 // هذا الملف آمن للعمل على Edge Runtime (لا Prisma، لا bcrypt).
 // يُستخدم من:
-//   • middleware.ts (Edge)
+//   • proxy.ts (Edge)
 //   • auth.ts (يوسّعه)
 //
 // ⚠️ لا تستورد هنا: prisma, bcrypt, node:*
@@ -43,7 +43,7 @@ export const authConfig: NextAuthConfig = {
     },
 
     // ─── authorized callback (يعمل على Edge) ───
-    // يُنفَّذ في middleware لمنع الوصول لـ /admin بدون تسجيل
+    // يُنفَّذ في proxy لمنع الوصول لـ /admin بدون تسجيل
     authorized({ auth, request }) {
       const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
       if (isOnAdmin) {
