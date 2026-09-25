@@ -28,3 +28,19 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-sans);
 }
+
+/* ═══════════════════════════════════════════════════
+   ✨ Skeleton Pulse — للصور أثناء التحميل
+   ═══════════════════════════════════════════════════ */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton-pulse {
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

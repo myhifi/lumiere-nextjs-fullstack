@@ -13,24 +13,26 @@ type MenuItemCardProps = {
     isFeatured: boolean;
     category: { name: string };
   };
+  priority?: boolean;
 };
 
-export function MenuItemCard({ item }: MenuItemCardProps) {
+export function MenuItemCard({ item, priority = false }: MenuItemCardProps) {
   return (
     <Link
       href={`/menu/${item.slug}`}
       className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col"
     >
       {/* الصورة أو البديل */}
-      <div className="relative aspect-4/3 bg-accent-light overflow-hidden">
+      <div className="relative aspect-4/3 bg-accent-light overflow-hidden skeleton-pulse">
         {item.imageUrl ? (
-          <Image
-            src={item.imageUrl}
-            alt={item.name}
-            fill
-            sizes="(max-width: 768px) 100vw, 33vw"
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
+        <Image
+          src={item.imageUrl}
+          alt={item.name}
+          fill
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+        />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-4xl text-accent/40">
             🍽️
