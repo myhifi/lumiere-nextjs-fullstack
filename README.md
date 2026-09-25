@@ -12,6 +12,7 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169e1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![CI](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml)
+
 ---
 
 ## 🌐 Live Demo
