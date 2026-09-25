@@ -1,6 +1,19 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { MenuItemCard } from "@/components/menu/MenuItemCard";
 import { CategoryFilter } from "@/components/menu/CategoryFilter";
+
+export const metadata: Metadata = {
+  title: "القائمة",
+  description:
+    "تصفح قائمة مطعم Lumière الكاملة — مقبلات، أطباق رئيسية، حلويات، ومشروبات. استخدم الفلاتر لتصفح ما يناسبك.",
+  openGraph: {
+    title: "القائمة | Lumière",
+    description:
+      "تصفح قائمة مطعم Lumière الكاملة — مقبلات، أطباق رئيسية، حلويات، ومشروبات.",
+    type: "website",
+  },
+};
 
 export const dynamic = "force-dynamic";
 

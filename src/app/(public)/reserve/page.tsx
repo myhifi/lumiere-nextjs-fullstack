@@ -1,4 +1,17 @@
+import type { Metadata } from "next";
 import { ReservationForm } from "@/components/reservation/ReservationForm";
+
+export const metadata: Metadata = {
+  title: "احجز طاولة",
+  description:
+    "احجز طاولتك في مطعم Lumière — نظام حجز ذكي يخصص لك الطاولة المثالية تلقائياً حسب عدد الأشخاص والوقت.",
+  openGraph: {
+    title: "احجز طاولة | Lumière",
+    description:
+      "نظام حجز ذكي يخصص لك الطاولة المثالية تلقائياً حسب عدد الأشخاص والوقت.",
+    type: "website",
+  },
+};
 
 export default function ReservePage() {
   return (

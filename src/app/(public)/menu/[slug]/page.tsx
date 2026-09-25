@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,6 +9,44 @@ type MenuItemPageProps = {
   params: Promise<{ slug: string }>;
 };
 
+// ═══════════════════════════════════════════════════
+// 🌐 Metadata ديناميكية لكل طبق
+// ═══════════════════════════════════════════════════
+export async function generateMetadata({
+  params,
+}: MenuItemPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  const item = await prisma.menuItem.findUnique({
+    where: { slug },
+    include: { category: { select: { name: true } } },
+  });
+
+  if (!item) {
+    return {
+      title: "الطبق غير موجود",
+      description: "الطبق الذي تبحث عنه غير متوفر في قائمتنا.",
+    };
+  }
+
+  const price = `${item.price} ج.م`;
+  const description =
+    item.description ?? `${item.name} — ${item.category.name} — ${price}`;
+
+  return {
+    title: item.name,
+    description,
+    openGraph: {
+      title: `${item.name} | Lumière`,
+      description,
+      type: "article",
+    },
+  };
+}
+
+// ═══════════════════════════════════════════════════
+// 🍽️ صفحة الطبق
+// ═══════════════════════════════════════════════════
 export default async function MenuItemPage({ params }: MenuItemPageProps) {
   const { slug } = await params;
 

@@ -1,6 +1,17 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { LoginForm } from "@/components/auth/LoginForm";
+
+export const metadata: Metadata = {
+  title: "تسجيل الدخول",
+  description: "تسجيل الدخول إلى لوحة تحكم Lumière — مخصص لفريق العمل.",
+  robots: {
+    // لا تُفهرس صفحة تسجيل الدخول
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function LoginPage() {
   // لو المستخدم مسجّل دخوله بالفعل → تحويل مباشر
