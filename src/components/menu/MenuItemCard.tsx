@@ -23,24 +23,27 @@ export function MenuItemCard({ item, priority = false }: MenuItemCardProps) {
       className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col"
     >
       {/* الصورة أو البديل */}
-      <div className="relative aspect-4/3 bg-accent-light overflow-hidden skeleton-pulse">
+      <div className="relative aspect-4/3 bg-accent-light overflow-hidden">
+        {/* طبقة Shimmer — ضوء ذهبي متحرك خلف الصورة */}
+        <div className="absolute inset-0 z-0 shimmer" aria-hidden="true" />
+
         {item.imageUrl ? (
-        <Image
-          src={item.imageUrl}
-          alt={item.name}
-          fill
-          priority={priority}
-          sizes="(max-width: 768px) 100vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+          <Image
+            src={item.imageUrl}
+            alt={item.name}
+            fill
+            priority={priority}
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500 z-10 animate-[fadeIn_0.4s_ease-out]"
+          />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-4xl text-accent/40">
+          <div className="absolute inset-0 z-10 flex items-center justify-center text-4xl text-accent/40">
             🍽️
           </div>
         )}
 
         {item.isFeatured && (
-          <span className="absolute top-3 left-3 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
+          <span className="absolute top-3 left-3 z-20 bg-accent text-white text-xs font-bold px-3 py-1 rounded-full">
             ⭐ مميز
           </span>
         )}

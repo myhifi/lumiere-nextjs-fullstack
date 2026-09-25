@@ -30,8 +30,32 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════
-   ✨ Skeleton Pulse — للصور أثناء التحميل
+   ✨ Shimmer Skeleton — ضوء ذهبي متحرك للصور أثناء التحميل
    ═══════════════════════════════════════════════════ */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #f5ecd9 0%,
+    #e8ddc0 20%,
+    #f9f3e3 50%,
+    #e8ddc0 80%,
+    #f5ecd9 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════
+   ✨ Skeleton Pulse — للصور أثناء التحميل
 @keyframes skeleton-pulse {
   0%, 100% {
     opacity: 0.6;
@@ -43,4 +67,17 @@ body {
 
 .skeleton-pulse {
   animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+     ═══════════════════════════════════════════════════ */
+
+     /* ═══════════════════════════════════════════════════
+   🌅 Fade In — لظهور الصورة بتلاشٍ ناعم
+   ═══════════════════════════════════════════════════ */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
