@@ -86,7 +86,7 @@ export const viewport: Viewport = {
 // ═══════════════════════════════════════════════════
 // 🏗️ Root Layout
 // ═══════════════════════════════════════════════════
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className="h-full antialiased">
       <body className="min-h-full">{children}</body>
