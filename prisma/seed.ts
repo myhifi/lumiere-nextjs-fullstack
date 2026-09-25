@@ -2,7 +2,7 @@
 // يُشغَّل عبر الأمر: npm run db:seed
 
 import 'dotenv/config'
-import { PrismaClient } from '../src/generated/prisma/client'
+import { PrismaClient } from '@prisma/client'
 import { categories } from './data/categories'
 import { menuItems } from './data/menu-items'
 import { tables } from './data/tables'

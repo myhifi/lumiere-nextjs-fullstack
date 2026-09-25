@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { MenuItemCard } from "@/components/menu/MenuItemCard";
 import { CategoryFilter } from "@/components/menu/CategoryFilter";
+
 export const dynamic = "force-dynamic";
 
 type MenuPageProps = {

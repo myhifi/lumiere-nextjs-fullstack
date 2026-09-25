@@ -6,7 +6,7 @@
 // آمن للتشغيل المتكرر — لا يمسح أي بيانات.
 
 import "dotenv/config";
-import { PrismaClient } from "../src/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "../src/lib/auth/password";
 
 const prisma = new PrismaClient();
