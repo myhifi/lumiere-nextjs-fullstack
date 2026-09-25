@@ -26,6 +26,22 @@
 
 ---
 
+## 📸 Screenshots
+
+### Customer-Facing
+![Homepage](./screenshots/public/01-homepage.jpg)
+![Menu](./screenshots/public/02-menu-grid.jpg)
+![Item Detail](./screenshots/public/04-item-detail.jpg)
+
+### Admin Dashboard
+![Overview](./screenshots/admin/06-admin-overview.jpg)
+![Reservations](./screenshots/admin/07-admin-reservations.jpg)
+![Login](./screenshots/admin/10-login.jpg)
+
+### Documentation
+![Portfolio Page](./screenshots/docs/portfolio-page.jpg)
+
+
 ## ✨ Features
 
 ### Customer-Facing
