@@ -13,25 +13,29 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
           cache: "npm"
 
-      # نثبت الحزم بدون تشغيل أي سكربتات تلقائية لتجنب أخطاء npm ci
+      # تثبيت الحزم (بدون تشغيل سكربتات تلقائية)
       - name: Install dependencies
         run: npm ci --ignore-scripts
 
-      # نولد عميل Prisma يدويًا في خطوة منفصلة وواضحة
+      # توليد Prisma Client مع تمرير متغير DATABASE_URL الوهمي
       - name: Generate Prisma Client
         run: npx prisma generate
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
 
+      # فحص TypeScript
       - name: TypeScript type check
         run: npx tsc --noEmit
 
+      # بناء الإنتاج
       - name: Build for production
         run: npm run build
         env:
