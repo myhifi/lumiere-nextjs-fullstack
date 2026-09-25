@@ -149,11 +149,14 @@ Open http://localhost:3000 in your browser.
 ### Admin Access
 
 After running `npm run db:admin`, log in at `/login` with:
+### Demo Access
 
-- **Email:** `admin@lumiere.com`
-- **Password:** `Admin@Lumiere2026`
+For portfolio review, use this account to explore the full admin dashboard:
 
-> ⚠️ **Demo credentials for portfolio review only. Change immediately in any production deployment.**
+- **Email:** `demo@lumiere.com`
+- **Password:** `Demo2026!`
+
+> ⚠️ **Demo mode:** This account is provided for portfolio review only. All changes are automatically reset every 6 hours to preserve the demo experience. The production admin account is not published.
 
 ---
 

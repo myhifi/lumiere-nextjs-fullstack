@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { DemoBanner } from "@/components/admin/DemoBanner";
 
 export default async function AdminLayout({
   children,
@@ -12,6 +13,9 @@ export default async function AdminLayout({
     redirect("/login?callbackUrl=/admin");
   }
 
+  // هل المستخدم الحالي هو حساب العرض؟
+  const isDemoUser = session.user.email === "demo@lumiere.com";
+
   return (
     <div className="min-h-screen flex bg-background">
       <AdminSidebar
@@ -20,7 +24,10 @@ export default async function AdminLayout({
           role: session.user.role,
         }}
       />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+      <main className="flex-1 overflow-y-auto">
+        {isDemoUser && <DemoBanner />}
+        {children}
+      </main>
     </div>
   );
 }
