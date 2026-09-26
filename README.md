@@ -64,6 +64,8 @@
 - 📂 **Categories management** — with cascade-delete protection
 - 🪑 **Tables management** — with reservation-history protection
 - 👥 **Users management** — role-based access (ADMIN/STAFF) with three-tier safety rules
+- 📋 **Audit Log** — tracks every staff action (create/update/delete) with before/after diffs, severity levels (info/warning/critical), and filtering by entity or severity
+- 📊 **Analytics Dashboard** — interactive donut and bar charts (Recharts) showing category distribution, price ranges, and featured balance
 - 🔐 **Authentication** — Auth.js v5 with credentials, bcrypt hashing, JWT sessions
 
 ### Engineering
@@ -88,6 +90,7 @@
 | **Validation** | Zod 4 | Runtime schema validation |
 | **Styling** | Tailwind CSS 4 | Utility-first CSS with RTL support |
 | **Auth** | Auth.js v5 (NextAuth) | Credential-based authentication |
+| **Charts** | Recharts | Interactive analytics dashboards |
 | **Email** | React Email + Resend | Transactional email templates |
 | **Hosting** | Vercel | Serverless deployment with CDN |
 | **Source Control** | GitHub | Version control and collaboration |
@@ -167,7 +170,6 @@ npm run dev
 
 Open http://localhost:3000 in your browser.
 
-After running `npm run db:admin`, log in at `/login` with:
 ### Demo Access
 
 For portfolio review, use this account to explore the full admin dashboard:
@@ -205,7 +207,7 @@ lumiere-nextjs-fullstack/
 │   ├── portfolio/          # 10 HTML portfolio pages (one per phase)
 │   └── screenshots/        # Curated screenshots (public, admin, docs)
 ├── prisma/
-│   ├── schema.prisma       # Database schema (5 models)
+│   ├── schema.prisma       # Database schema (6 models)
 │   ├── migrations/         # Versioned migrations
 │   ├── seed.ts             # Seed script
 │   └── data/               # Seed data (categories, items, tables)
