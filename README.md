@@ -3,7 +3,7 @@
 > A production-ready restaurant website with an intelligent table-assignment engine, complete admin dashboard, authentication, and email notifications. Deployed on Vercel with Neon PostgreSQL, featuring full RTL Arabic UI.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-9%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](./portfolio)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-10%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -167,8 +167,6 @@ npm run dev
 
 Open http://localhost:3000 in your browser.
 
-### Admin Access
-
 After running `npm run db:admin`, log in at `/login` with:
 ### Demo Access
 
@@ -203,7 +201,9 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 
 ```
 lumiere-nextjs-fullstack/
-├── portfolio/              # 9 HTML portfolio pages (one per phase)
+├── public/
+│   ├── portfolio/          # 10 HTML portfolio pages (one per phase)
+│   └── screenshots/        # Curated screenshots (public, admin, docs)
 ├── prisma/
 │   ├── schema.prisma       # Database schema (5 models)
 │   ├── migrations/         # Versioned migrations
@@ -224,7 +224,7 @@ lumiere-nextjs-fullstack/
 │   ├── types/              # TypeScript augmentations
 │   ├── auth.config.ts      # Edge-safe Auth.js config
 │   ├── auth.ts             # Node-only Auth.js config
-│   └── proxy.ts           # Route protection
+│   └── proxy.ts            # Route protection (Next.js 16)
 └── package.json
 ```
 
