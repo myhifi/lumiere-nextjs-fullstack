@@ -77,6 +77,54 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ─── Location / Google Maps ─── */}
+      <section className="max-w-6xl mx-auto px-4 py-20">
+        <div className="text-center mb-12">
+          <span className="text-accent text-sm font-medium tracking-widest">
+            VISIT US
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">موقعنا</h2>
+          <p className="text-muted max-w-xl mx-auto">
+            نتشرف بزيارتك في قلب القاهرة
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* ─── معلومات الاتصال ─── */}
+          <div className="lg:col-span-1 flex flex-col gap-4">
+            <InfoCard
+              icon="📍"
+              label="العنوان"
+              value="قرية الأسد - طريق القاهرة الاسكندرية الصحراوي"
+            />
+            <InfoCard
+              icon="🕐"
+              label="ساعات العمل"
+              value="يومياً: ١٢:٠٠ ظهراً — ١١:٠٠ مساءً"
+            />
+            <InfoCard
+              icon="📞"
+              label="الهاتف"
+              value="+20 100 123 4567"
+            />
+          </div>
+
+          {/* ─── الخريطة ─── */}
+          <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-border">
+            <iframe
+              src="https://maps.google.com/maps?q=Qaryat+El+Asad+Alexandria+Desert+Rd&t=&z=15&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0, minHeight: "450px" }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="موقع مطعم Lumière"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* ─── CTA: Reserve ─── */}
       <section className="bg-accent-light/50 py-20">
         <div className="max-w-3xl mx-auto px-4 text-center">
@@ -95,5 +143,30 @@ export default async function HomePage() {
         </div>
       </section>
     </>
+  );
+}
+
+// ═══════════════════════════════════════════════════
+// 🏠 InfoCard — بطاقة معلومة اتصال (خارج HomePage)
+// ═══════════════════════════════════════════════════
+function InfoCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: string;
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="bg-card border border-border rounded-2xl p-5 flex gap-4">
+      <span className="text-3xl shrink-0">{icon}</span>
+      <div className="flex-1 min-w-0">
+        <div className="text-xs text-accent-dark font-medium tracking-wider uppercase mb-1">
+          {label}
+        </div>
+        <div className="text-sm text-foreground leading-relaxed">{value}</div>
+      </div>
+    </div>
   );
 }

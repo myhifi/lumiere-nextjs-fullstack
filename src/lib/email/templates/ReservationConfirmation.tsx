@@ -10,6 +10,7 @@ import {
   Hr,
 } from "@react-email/components";
 import type { ReservationEmailData } from "../types";
+import { generateGoogleCalendarLink } from "../calendar";
 
 // ─── ألوان هوية Lumière ───
 const colors = {
@@ -87,6 +88,32 @@ export function ReservationConfirmation({
             </Text>
 
             <Hr style={hr} />
+            {/* ─── زر "أضف إلى Google Calendar" ─── */}
+            <Section style={{ textAlign: "center", marginTop: 24 }}>
+              <a
+                href={generateGoogleCalendarLink({
+                  title: `حجز في Lumière — طاولة رقم ${tableNumber}`,
+                  description: `عدد الأشخاص: ${guestsCount}\nرقم الحجز: #${shortId}`,
+                  location: "١٢٣ شارع التحرير، وسط البلد، القاهرة",
+                  startDate: reservationDate,
+                  durationMinutes: 90,
+                })}
+                style={{
+                  display: "inline-block",
+                  backgroundColor: colors.accent,
+                  color: "#ffffff",
+                  padding: "12px 28px",
+                  borderRadius: "999px",
+                  textDecoration: "none",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                }}
+              >
+                📅 أضف إلى Google Calendar
+              </a>
+            </Section>
+
+            <Hr style={hr} />            
 
             {/* ─── تذييل ─── */}
             <Text style={footer}>
