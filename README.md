@@ -134,7 +134,7 @@ This project was built in **10 documented phases**, each with a self-contained H
 | 9 | Deployment (Vercel + Neon) | [Open](./public/portfolio/phase-09-deployment.html) |
 | 10 | Polishing & Production Readiness | [Open](./public/portfolio/phase-10-polishing.html) |
 
-> **Open any file above in a browser** — each is a standalone HTML page with architecture diagrams, code examples, and engineering rationale.
+> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the live version](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 
 ---
 
