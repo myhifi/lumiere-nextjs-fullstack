@@ -23,23 +23,26 @@
 | **Menu** | https://lumiere-nextjs-fullstack.vercel.app/menu |
 | **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/reserve |
 | **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/admin |
-
+| **Full Project Walkthrough** | [Phase 1 → Phase 10](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html) |
 ---
 
 ## 📸 Screenshots
 
 ### Customer-Facing
-![Homepage](./screenshots/public/01-homepage.jpg)
-![Menu](./screenshots/public/02-menu-grid.jpg)
-![Item Detail](./screenshots/public/04-item-detail.jpg)
+![Homepage](./public/screenshots/public/01-homepage.jpg)
+![Menu Grid](./public/screenshots/public/02-menu-grid.jpg)
+![Menu Filtered](./public/screenshots/public/03-menu-filtered.jpg)
+![Item Detail](./public/screenshots/public/04-item-detail.jpg)
+![Reserve Form](./public/screenshots/public/05-reserve-form.jpg)
 
 ### Admin Dashboard
-![Overview](./screenshots/admin/06-admin-overview.jpg)
-![Reservations](./screenshots/admin/07-admin-reservations.jpg)
-![Login](./screenshots/admin/10-login.jpg)
+![Overview](./public/screenshots/admin/06-admin-overview.jpg)
+![Reservations](./public/screenshots/admin/07-admin-reservations.jpg)
+![Menu Management](./public/screenshots/admin/08-admin-menu.jpg)
+![Login](./public/screenshots/admin/10-login.jpg)
 
 ### Documentation
-![Portfolio Page](./screenshots/docs/portfolio-page.jpg)
+![Portfolio Page](./public/screenshots/docs/portfolio-page.jpg)
 
 
 ## ✨ Features
@@ -116,19 +119,20 @@ Git push → GitHub → Vercel Build → Production URL
 
 ## 📚 Project Documentation
 
-This project was built in **9 documented phases**, each with a self-contained HTML portfolio page:
+This project was built in **10 documented phases**, each with a self-contained HTML portfolio page:
 
 | Phase | Topic | Documentation |
 |---|---|---|
-| 1 | Foundation & Environment Setup | [Open](./portfolio/phase-01-foundation.html) |
-| 2 | Data Modeling (Prisma Schema) | [Open](./portfolio/phase-02-data-modeling.html) |
-| 3 | API Layer (Route Handlers) | [Open](./portfolio/phase-03-api-layer.html) |
-| 4 | Frontend (Server Components) | [Open](./portfolio/phase-04-frontend.html) |
-| 5 | Reservation Engine (Smart Logic) | [Open](./portfolio/phase-05-reservation-engine.html) |
-| 6 | Email + WhatsApp Integration | [Open](./portfolio/phase-06-email-whatsapp.html) |
-| 7 | Authentication (Auth.js v5) | [Open](./portfolio/phase-07-authentication.html) |
-| 8 | Admin Dashboard (Full CRUD) | [Open](./portfolio/phase-08-admin-dashboard.html) |
-| 9 | Deployment (Vercel + Neon) | [Open](./portfolio/phase-09-deployment.html) |
+| 1 | Foundation & Environment Setup | [Open](./public/portfolio/phase-01-foundation.html) |
+| 2 | Data Modeling (Prisma Schema) | [Open](./public/portfolio/phase-02-data-modeling.html) |
+| 3 | API Layer (Route Handlers) | [Open](./public/portfolio/phase-03-api-layer.html) |
+| 4 | Frontend (Server Components) | [Open](./public/portfolio/phase-04-frontend.html) |
+| 5 | Reservation Engine (Smart Logic) | [Open](./public/portfolio/phase-05-reservation-engine.html) |
+| 6 | Email + WhatsApp Integration | [Open](./public/portfolio/phase-06-email-whatsapp.html) |
+| 7 | Authentication (Auth.js v5) | [Open](./public/portfolio/phase-07-authentication.html) |
+| 8 | Admin Dashboard (Full CRUD) | [Open](./public/portfolio/phase-08-admin-dashboard.html) |
+| 9 | Deployment (Vercel + Neon) | [Open](./public/portfolio/phase-09-deployment.html) |
+| 10 | Polishing & Production Readiness | [Open](./public/portfolio/phase-10-polishing.html) |
 
 > **Open any file above in a browser** — each is a standalone HTML page with architecture diagrams, code examples, and engineering rationale.
 

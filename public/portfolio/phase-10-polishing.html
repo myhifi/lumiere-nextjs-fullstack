@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 10 — Polishing · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero .live-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(39,174,96,0.15); color: #1e7e45; padding: 0.5rem 1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-bottom: 1rem; border: 1px solid rgba(39,174,96,0.3); }
+.hero .live-badge::before { content: ""; width: 8px; height: 8px; background: #27ae60; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .del { color: #ff7b72; text-decoration: line-through; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* ─── Flow ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 22px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Part Split ─── */
+.parts-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0; }
+.part-card { background: var(--bg-card); border: 2px solid var(--border); border-radius: 12px; padding: 1.5rem; position: relative; }
+.part-card.part-1 { border-color: var(--info); }
+.part-card.part-2 { border-color: var(--success); }
+.part-card .part-badge { position: absolute; top: -12px; left: 1.5rem; background: var(--info); color: #fff; padding: 0.2rem 0.75rem; border-radius: 999px; font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; }
+.part-card.part-2 .part-badge { background: var(--success); }
+.part-card h4 { font-size: 1rem; margin-bottom: 0.75rem; }
+.part-card ul { margin: 0; padding-right: 0; }
+.part-card li { font-size: 0.85rem; }
+
+/* ─── Feature Grid ─── */
+.feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.feat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; border-top: 4px solid var(--accent); }
+.feat-card .feat-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.feat-card h4 { font-size: 0.95rem; margin-bottom: 0.35rem; }
+.feat-card p { font-size: 0.8rem; color: var(--fg-muted); margin: 0; }
+
+/* ─── Error Timeline ─── */
+.error-journey { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.error-journey::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%); }
+.error-item { position: relative; margin-bottom: 1.5rem; }
+.error-item::before { content: ""; position: absolute; left: -2rem; top: 8px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); background: var(--success); }
+.error-item h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.error-item .error-msg { background: var(--bg-code); color: #ff9b8a; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.75rem; margin: 0.5rem 0; border-left: 3px solid var(--danger); }
+.error-item .error-fix { background: #eaf7ef; color: #1e5a3a; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; border-left: 3px solid var(--success); }
+.error-item .error-fix strong { color: #1e7e45; }
+
+/* ─── Terminal ─── */
+.terminal { background: #0d1117; color: #c9d1d9; border-radius: 10px; overflow: hidden; margin: 1rem 0; font-family: 'Consolas', monospace; font-size: 0.8rem; border: 1px solid #30363d; }
+.terminal-bar { background: #161b22; padding: 0.5rem 0.75rem; display: flex; gap: 0.4rem; border-bottom: 1px solid #30363d; }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; } .terminal-dot.yellow { background: #ffbd2e; } .terminal-dot.green { background: #27c93f; }
+.terminal-body { padding: 1rem 1.25rem; line-height: 1.7; }
+.terminal-body .cmd { color: #79c0ff; }
+.terminal-body .out { color: #c9d1d9; }
+.terminal-body .ok { color: #7ee787; }
+.terminal-body .warn { color: #ffa657; }
+.terminal-body .dim { color: #8b949e; }
+.terminal-body .accent { color: #d2a8ff; }
+.terminal-body .err { color: #ff7b72; }
+
+/* ─── Roadmap Table ─── */
+.roadmap-table td:first-child { font-weight: 600; }
+.priority-critical { color: var(--danger); font-weight: 700; }
+.priority-high { color: var(--warning); font-weight: 700; }
+.priority-medium { color: var(--info); font-weight: 700; }
+.priority-low { color: var(--fg-muted); font-weight: 700; }
+
+/* ─── Screenshot Gallery (with real images) ─── */
+.shot-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin: 1.25rem 0 2.5rem;
+}
+.shot-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.shot-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.shot-card img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  object-position: top;
+  border-bottom: 1px solid var(--border);
+}
+.shot-card figcaption {
+  padding: 0.75rem 1rem;
+  font-size: 0.78rem;
+  color: var(--fg-muted);
+  font-family: 'Consolas', monospace;
+  text-align: center;
+}
+
+/* ─── Screenshot Grid ─── */
+.shot-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+.shot-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem; font-size: 0.75rem; text-align: center; color: var(--fg-muted); font-family: 'Consolas', monospace; }
+.shot-item::before { content: "🖼️"; display: block; font-size: 1.5rem; margin-bottom: 0.4rem; }
+
+/* ─── Two Col ─── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.col-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+.col-card.before { border-left: 4px solid var(--danger); }
+.col-card.after { border-left: 4px solid var(--success); }
+.col-card h5 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); margin-bottom: 0.5rem; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .parts-split, .two-col { grid-template-columns: 1fr; }
+  .error-journey { padding-left: 1.5rem; }
+  .error-item::before { left: -1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 10</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#parts">Two-Part Strategy</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#part1-seo">Part 1: SEO Metadata</a>
+      <a href="#part1-og">Part 1: OG Image</a>
+      <a href="#part1-sitemap">Part 1: Sitemap + Robots</a>
+      <a href="#part1-meta">Part 1: Per-Page Metadata</a>
+      <a href="#part1-readme">Part 1: README + Demo Account</a>
+      <a href="#part1-proxy">Part 1: middleware → proxy</a>
+      <a href="#part1-ci">Part 1: GitHub Actions CI</a>
+      <a href="#ci-errors">The CI Errors Journey</a>
+      <a href="#part2-images">Part 2: Unsplash Images</a>
+      <a href="#part2-shimmer">Part 2: Shimmer + Fade-In</a>
+      <a href="#part2-screenshots">Part 2: Screenshots</a>
+      <a href="#part2-maps">Part 2: Google Maps</a>
+      <a href="#part2-calendar">Part 2: Add to Calendar</a>
+      <a href="#part2-analytics">Part 2: Analytics (Recharts)</a>
+      <a href="#roadmap">Future Roadmap</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 10 · Polishing</div>
+      <div class="live-badge">PRODUCTION-READY</div>
+      <h1>From Working to Professional-Grade</h1>
+      <p class="lede">Transform a functioning application into a polished, SEO-optimized, visually refined, CI-tested production product. Split into two parts — one for offline infrastructure, one for visual enhancements. Includes real food imagery, custom shimmer skeleton, Google Maps integration, add-to-calendar functionality, and interactive analytics dashboards.</p>
+      <div class="stack">
+        <span>SEO</span><span>OG Image</span><span>Sitemap</span>
+        <span>GitHub Actions</span><span>Recharts</span>
+        <span>Shimmer Skeleton</span><span>Google Maps</span>
+        <span>Unsplash</span><span>Trust-Building</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Elevate the deployed Lumière project from "functional" to "portfolio-showcase ready" — without adding core features. Focus exclusively on presentation quality, discoverability, developer experience, and visual trust signals.</p>
+
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Complete SEO layer</strong> — global + per-page metadata, Open Graph, dynamic OG image, sitemap, robots.</li>
+        <li><strong>Professional README</strong> with badges, live demo links, screenshots, and full architecture documentation.</li>
+        <li><strong>Dedicated demo account</strong> with warning banner and safe reset philosophy.</li>
+        <li><strong>GitHub Actions CI</strong> — TypeScript check + production build on every push.</li>
+        <li><strong>Real food imagery</strong> from Unsplash + Shimmer loading UX.</li>
+        <li><strong>11 curated screenshots</strong> across public, admin, and documentation.</li>
+        <li><strong>Google Maps</strong> location section + <strong>Add-to-Calendar</strong> button in confirmation emails.</li>
+        <li><strong>Interactive analytics dashboard</strong> powered by Recharts.</li>
+        <li><strong>Next.js 16 convention migration</strong> — <code>middleware.ts</code> → <code>proxy.ts</code>.</li>
+        <li><strong>Complete Future Roadmap</strong> documenting deferred enhancements for client/stakeholder transparency.</li>
+      </ol>
+    </section>
+
+    <section id="parts">
+      <h2><span class="num">2</span> Two-Part Strategy</h2>
+      <p>Polishing was strategically divided based on network requirements — offline-first work first, then image-heavy tasks.</p>
+
+      <div class="parts-split">
+        <div class="part-card part-1">
+          <span class="part-badge">PART 1</span>
+          <h4>🔌 Offline Infrastructure</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin-bottom:0.5rem;">Zero downloads · Works on mobile data</p>
+          <ul>
+            <li>SEO metadata</li>
+            <li>OG image generator</li>
+            <li>sitemap.xml + robots.txt</li>
+            <li>Per-page metadata</li>
+            <li>README + demo account</li>
+            <li>middleware → proxy</li>
+            <li>GitHub Actions CI</li>
+          </ul>
+        </div>
+        <div class="part-card part-2">
+          <span class="part-badge">PART 2</span>
+          <h4>🎨 Visual Enhancements</h4>
+          <p style="font-size:0.85rem;color:var(--fg-muted);margin-bottom:0.5rem;">Images · Screenshots · Integrations</p>
+          <ul>
+            <li>Unsplash food images</li>
+            <li>Shimmer + Fade-In</li>
+            <li>11 screenshots</li>
+            <li>Google Maps section</li>
+            <li>Add-to-Calendar button</li>
+            <li>Recharts analytics</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout info">
+        <strong>Why split?</strong>
+        Part 1 produces zero byte downloads. Part 2 requires image uploads and file transfers.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">3</span> Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npm install recharts</code></td><td>Install charting library for analytics</td></tr>
+          <tr><td>2</td><td><code>npx tsc --noEmit</code></td><td>Type-check after every change</td></tr>
+          <tr><td>3</td><td><code>npm run dev</code></td><td>Local dev server with webpack</td></tr>
+          <tr><td>4</td><td><code>npm run db:seed</code></td><td>Re-seed with image URLs</td></tr>
+          <tr><td>5</td><td><code>git add -A && git commit -m "..." && git push</code></td><td>Deploy cycle</td></tr>
+          <tr><td>6</td><td><code>npx tsx scripts/test-email.ts</code></td><td>Preview confirmation email</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         PART 1
+         ════════════════════════════════════════════════ -->
+
+    <section id="part1-seo">
+      <h2><span class="num">4</span> Part 1 · SEO Metadata Foundation</h2>
+      <p>Every page now declares metadata that controls how it appears in <code>Google</code>, <code>WhatsApp</code> previews, and social shares.</p>
+
+      <h3>Global Metadata — layout.tsx</h3>
+      <pre><code>export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Lumière | مطعم Lumière — تجربة طعام استثنائية",
+    template: "%s | Lumière",
+  },
+  description:
+    "مطعم Lumière — تجربة طعام استثنائية بلمسة عصرية...",
+  keywords: ["مطعم", "Lumière", "حجز طاولة", ...],
+  openGraph: {
+    type: "website",
+    locale: "ar_EG",
+    siteName: "Lumière",
+    ...
+  },
+  twitter: { card: "summary_large_image", ... },
+  robots: { index: true, follow: true, ... },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#c9a961",
+  width: "device-width",
+  initialScale: 1,
+};</code></pre>
+
+      <h3>Verified Result in opengraph.xyz</h3>
+      <table>
+        <thead><tr><th>Check</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>Errors (red)</td><td>3</td><td><strong>0</strong> ✅</td></tr>
+          <tr><td>Warnings (yellow)</td><td>5</td><td><strong>0</strong> ✅</td></tr>
+          <tr><td>Passed (green)</td><td>2</td><td><strong>12</strong> ✅</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="part1-og">
+      <h2><span class="num">5</span> Part 1 · Dynamic OG Image</h2>
+      <p>Generated at build time via <code>ImageResponse</code> from <code>next/og</code> — no design tool, no image file, pure code.</p>
+
+      <h3>File: src/app/opengraph-image.tsx</h3>
+      <pre><code>import { ImageResponse } from "next/og";
+
+export const size = { width: 1200, height: 630 };
+export const contentType = "image/png";
+export const dynamic = "force-static";
+
+export default async function OpengraphImage() {
+  return new ImageResponse(
+    (
+      &lt;div style={{ /* ... */ }}&gt;
+        &lt;div&gt;WELCOME TO&lt;/div&gt;
+        &lt;div&gt;Lumière&lt;/div&gt;
+        &lt;div&gt;Fine Dining · Reservation System&lt;/div&gt;
+      &lt;/div&gt;
+    ),
+    { ...size }
+  );
+}</code></pre>
+
+      <div class="callout success">
+        <strong>Zero-config integration</strong>
+        Placing this file in <code>app/</code> automatically injects <code>&lt;meta property="og:image"&gt;</code> and <code>&lt;meta name="twitter:image"&gt;</code> into every page's <code>&lt;head&gt;</code>.
+      </div>
+
+    </section>
+
+    <section id="part1-sitemap">
+      <h2><span class="num">6</span> Part 1 · Sitemap + Robots</h2>
+      <p>Two <code>TypeScript</code> files generate <code>sitemap.xml</code> and <code>robots.txt</code> automatically. The sitemap queries the database to include every dish dynamically.</p>
+
+      <h3>Verified Live Output</h3>
+      <div class="terminal">
+        <div class="terminal-bar"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+        <div class="terminal-body">
+          <div class="out"><span class="cmd">GET</span> /sitemap.xml → <span class="ok">200</span> · 15 URLs</div>
+          <div class="out">├── / (priority: 1.0)</div>
+          <div class="out">├── /menu (priority: 0.9)</div>
+          <div class="out">├── /reserve (priority: 0.8)</div>
+          <div class="out">└── /menu/[slug] × 12 (priority: 0.7)</div>
+          <div class="out">&nbsp;</div>
+          <div class="out"><span class="cmd">GET</span> /robots.txt → <span class="ok">200</span></div>
+          <div class="out">User-Agent: *</div>
+          <div class="out">Allow: /</div>
+          <div class="out">Disallow: <span class="err">/admin</span></div>
+          <div class="out">Disallow: <span class="err">/api</span></div>
+          <div class="out">Sitemap: https://lumiere-nextjs-fullstack.vercel.app/sitemap.xml</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="part1-meta">
+      <h2><span class="num">7</span> Part 1 · Per-Page Metadata</h2>
+      <p>Every route declares its own title and description. The layout's <code>template: "%s | Lumière"</code> prepends the restaurant name automatically.</p>
+
+      <table>
+        <thead><tr><th>Route</th><th>Rendered Title</th></tr></thead>
+        <tbody>
+          <tr><td><code>/</code></td><td>Lumière | مطعم Lumière — تجربة طعام استثنائية</td></tr>
+          <tr><td><code>/menu</code></td><td>القائمة | Lumière</td></tr>
+          <tr><td><code>/reserve</code></td><td>احجز طاولة | Lumière</td></tr>
+          <tr><td><code>/menu/hummus</code></td><td>حمص بالطحينة | Lumière</td></tr>
+          <tr><td><code>/login</code></td><td>تسجيل الدخول | Lumière <em>(+ noindex)</em></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>Dynamic metadata for dishes</strong>
+        <code>/menu/[slug]</code> uses <code>generateMetadata()</code> — queries <code>Prisma</code> for each item and builds a unique title + description from its name, price, and category.
+      </div>
+    </section>
+
+    <section id="part1-readme">
+      <h2><span class="num">8</span> Part 1 · README + Demo Account</h2>
+      <p>A professional README is the first thing HR sees on GitHub. The screenshot-heavy version drives the "5-second decision".</p>
+
+      <h3>README Structure</h3>
+      <ul>
+        <li><strong>Badges row</strong> — Live Demo, Portfolio, GitHub, Next.js, TypeScript, Prisma, PostgreSQL, Tailwind, CI</li>
+        <li><strong>Live Demo table</strong> — 4 clickable URLs</li>
+        <li><strong>Screenshots section</strong> — 11 curated screenshots (public + admin + docs)</li>
+        <li><strong>Features section</strong> — Customer-Facing, Admin Dashboard, Engineering</li>
+        <li><strong>Tech Stack table</strong></li>
+        <li><strong>Architecture diagram</strong> + key decisions</li>
+        <li><strong>Project Documentation</strong> — table linking all 9 portfolio phase pages</li>
+        <li><strong>Getting Started</strong> — Prerequisites, Installation, Admin Access</li>
+        <li><strong>Environment Variables table</strong></li>
+        <li><strong>Project Structure</strong></li>
+        <li><strong>Testing section</strong></li>
+        <li><strong>License + Author + Acknowledgments</strong></li>
+      </ul>
+
+      <h3>Dedicated Demo Account</h3>
+      <p>A second <code>demo@lumiere.com</code> account was created with the <code>ADMIN</code> role but isolated for public portfolio review.</p>
+
+      <table>
+        <thead><tr><th>Account</th><th>Email</th><th>Purpose</th><th>Public?</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Production</strong></td><td><code>admin@lumiere.com</code></td><td>Real admin</td><td>❌ Never published</td></tr>
+          <tr><td><strong>Demo</strong></td><td><code>demo@lumiere.com</code></td><td>Portfolio visitors</td><td>✅ Published in README</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <strong>Demo banner</strong>
+        When logged in as demo, a yellow banner appears at the top of <code>/admin</code> — informing users that data is reset every 6 hours. This transparency protects the demo while inviting genuine exploration.
+      </div>
+    </section>
+
+    <section id="part1-proxy">
+      <h2><span class="num">9</span> Part 1 · middleware → proxy Migration</h2>
+      <p><code>Next.js 16</code> renamed the <code>middleware.ts</code> convention to <code>proxy.ts</code> — same functionality, clearer naming.</p>
+
+      <div class="filetree">
+        <div><span class="dir">src/</span></div>
+        <div class="indent-1"><span class="file del">middleware.ts</span> <span class="note">← removed</span></div>
+        <div class="indent-1"><span class="file new">proxy.ts</span> <span class="note">← created (same content)</span></div>
+      </div>
+
+      <h3>File Content (unchanged)</h3>
+      <pre><code>import NextAuth from "next-auth";
+import { authConfig } from "./auth.config";
+
+export default NextAuth(authConfig).auth;
+
+export const config = {
+  matcher: ["/admin/:path*"],
+};</code></pre>
+
+      <div class="callout success">
+        <strong>Build warning eliminated</strong>
+        The deprecation warning that appeared on every Vercel deployment is now gone.
+      </div>
+    </section>
+
+    <section id="part1-ci">
+      <h2><span class="num">10</span> Part 1 · GitHub Actions CI</h2>
+      <p>Every <code>git push</code> triggers an automated check — TypeScript validation + production build — before Vercel even starts deploying.</p>
+
+      <h3>Final Working Workflow</h3>
+      <pre><code>name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Type Check &amp; Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Build for production
+        run: npm run build
+        env:
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+          DIRECT_URL: "postgresql://user:pass@localhost:5432/db"
+          AUTH_SECRET: "ci-test-secret-not-used-in-production-000000000000000000000"
+          EMAIL_PROVIDER: "console"</code></pre>
+
+      <h3>CI Badge in README</h3>
+      <pre><code>[![CI](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml/badge.svg)](...)</code></pre>
+
+      <div class="shot-gallery">
+        <figure class="shot-card">
+          <img src="../screenshots/docs/15-ci-success.jpg" alt="GitHub Actions CI passing" loading="lazy" />
+          <figcaption>GitHub Actions — CI passing ✅</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="ci-errors">
+      <h2><span class="num">11</span> The CI Errors Journey</h2>
+      <p>Five iterations were needed to make the CI workflow green. Each error revealed a distinct platform quirk.</p>
+
+      <div class="error-journey">
+        <div class="error-item">
+          <h4>🎯 Error 1: npm ci runs postinstall</h4>
+          <div class="error-msg">Process completed with exit code 1 · during Install dependencies</div>
+          <div class="error-fix"><strong>Fix:</strong> Add <code>--ignore-scripts</code> to <code>npm ci</code> — defer <code>prisma generate</code> to its own step.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 2: Missing DATABASE_URL for prisma generate</h4>
+          <div class="error-msg">PrismaConfigEnvError: Missing required environment variable: DATABASE_URL</div>
+          <div class="error-fix"><strong>Fix:</strong> Pass <code>DATABASE_URL</code> env variable to the <code>prisma generate</code> step.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 3: LayoutProps type not found</h4>
+          <div class="error-msg">Cannot find name 'LayoutProps'.</div>
+          <div class="error-fix"><strong>Fix:</strong> Replace <code>LayoutProps&lt;"/"&gt;</code> with standard <code>{ children: React.ReactNode }</code> — CI has no generated types.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 4: Node.js 20 deprecation warning</h4>
+          <div class="error-msg">Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24</div>
+          <div class="error-fix"><strong>Fix:</strong> Upgrade <code>actions/checkout@v4</code> → <code>@v5</code> and <code>actions/setup-node@v4</code> → <code>@v5</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 5: Placeholder URL needed</h4>
+          <div class="error-msg">Add fallback for prisma.config.ts when DATABASE_URL is undefined.</div>
+          <div class="error-fix"><strong>Fix:</strong> Update <code>prisma.config.ts</code> to use <code>process.env.DATABASE_URL ?? "postgresql://placeholder"</code>.</div>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <strong>All errors resolved · CI is green</strong>
+        Every push now validates the entire codebase in ~1 minute.
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         PART 2
+         ════════════════════════════════════════════════ -->
+
+    <section id="part2-images">
+      <h2><span class="num">12</span> Part 2 · Real Food Images from Unsplash</h2>
+      <p>Placeholder emoji <code>🍽️</code> was replaced with real food photography — no downloads, no file uploads, zero storage cost.</p>
+
+      <h3>Architecture</h3>
+      <div class="flow">
+        <div class="flow-step">Unsplash CDN</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">direct URL</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">prisma/data/menu-items.ts → imageUrl field</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">db:seed</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">Neon PostgreSQL</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-label">Prisma query</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">&lt;Image /&gt; → next/image optimization</div>
+      </div>
+
+      <h3>next.config.ts Update</h3>
+      <pre><code>const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com" },
+    ],
+  },
+};</code></pre>
+
+      <div class="callout info">
+        <strong>Why not download images?</strong>
+        Zero <code>git</code> repository size increase, zero transfer cost, and instant loading from a global CDN. For portfolio projects with limited bandwidth, this pattern is optimal.
+      </div>
+    </section>
+
+    <section id="part2-shimmer">
+      <h2><span class="num">13</span> Part 2 · Shimmer Skeleton + Fade-In</h2>
+      <p>Instead of empty beige boxes while images load, cards display a subtle golden shimmer. Images fade in gracefully when ready.</p>
+
+      <h3>globals.css Additions</h3>
+      <pre><code>@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    #f5ecd9 0%, #e8ddc0 20%, #f9f3e3 50%,
+    #e8ddc0 80%, #f5ecd9 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}</code></pre>
+
+      <h3>The Isolation Pattern</h3>
+      <pre><code>&lt;div className="relative aspect-4/3 overflow-hidden"&gt;
+  {/* Shimmer layer — behind the image */}
+  &lt;div className="absolute inset-0 z-0 shimmer" aria-hidden="true" /&gt;
+
+  {/* Image — fades in on top */}
+  &lt;Image className="... z-10 animate-[fadeIn_0.4s_ease-out]" /&gt;
+&lt;/div&gt;</code></pre>
+
+      <div class="two-col">
+        <div class="col-card before">
+          <h5>❌ Anti-pattern</h5>
+          <p style="font-size:0.85rem;">Shimmer applied to the <em>parent</em> container — the image inherits the opacity and never fully appears.</p>
+        </div>
+        <div class="col-card after">
+          <h5>✅ Solution</h5>
+          <p style="font-size:0.85rem;">Shimmer on an isolated <code>z-0</code> layer behind. Image on <code>z-10</code> covers it when loaded.</p>
+        </div>
+      </div>
+
+      <div class="callout success">
+        <strong>LCP optimization</strong>
+        The first 3 cards receive <code>priority</code> → instant loading. <code>LCP warning</code> from Next.js is eliminated.
+      </div>
+    </section>
+
+    <section id="part2-screenshots">
+      <h2><span class="num">14</span> Part 2 · Curated Screenshots</h2>
+      <p>10 screenshots captured across three categories, all displayed in the README as a visual showcase.</p>
+
+      <h3>public/ — Customer-Facing :</h3>
+      <div class="shot-gallery">
+        <figure class="shot-card">
+          <img src="../screenshots/public/01-homepage.jpg" alt="Homepage hero" loading="lazy" />
+          <figcaption>01 — Homepage</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/public/02-menu-grid.jpg" alt="Menu grid" loading="lazy" />
+          <figcaption>02 — Menu Grid</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/public/03-menu-filtered.jpg" alt="Menu filtered" loading="lazy" />
+          <figcaption>03 — Menu Filtered</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/public/04-item-detail.jpg" alt="Item detail" loading="lazy" />
+          <figcaption>04 — Item Detail</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/public/05-reserve-form.jpg" alt="Reserve form" loading="lazy" />
+          <figcaption>05 — Reserve Form</figcaption>
+        </figure>
+      </div>
+
+      <h3>admin/ — Admin Dashboard :</h3>
+      <div class="shot-gallery">
+        <figure class="shot-card">
+          <img src="../screenshots/admin/06-admin-overview.jpg" alt="Admin overview" loading="lazy" />
+          <figcaption>06 — Admin Overview</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/admin/07-admin-reservations.jpg" alt="Admin reservations" loading="lazy" />
+          <figcaption>07 — Reservations</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/admin/08-admin-menu.jpg" alt="Admin menu" loading="lazy" />
+          <figcaption>08 — Menu Management</figcaption>
+        </figure>
+        <figure class="shot-card">
+          <img src="../screenshots/admin/10-login.jpg" alt="Login page" loading="lazy" />
+          <figcaption>Login Page</figcaption>
+        </figure>
+      </div>
+
+      <h3>docs/ — Documentation :</h3>
+      <div class="shot-gallery">
+        <figure class="shot-card">
+          <img src="../screenshots/docs/portfolio-page.jpg" alt="Portfolio page" loading="lazy" />
+          <figcaption>11 — Portfolio Documentation</figcaption>
+        </figure>
+      </div>
+
+      <div class="callout info">
+        <strong>Tools used</strong>
+        <strong>GoFullPage</strong> (Chrome extension) for full-page captures · <strong>Snipping Tool</strong> for targeted regions · <strong>Paint → Save as JPEG</strong> for 60-80% size reduction.
+      </div>
+    </section>
+
+    <section id="part2-maps">
+      <h2><span class="num">15</span> Part 2 · Google Maps Section</h2>
+      <p>A "Visit Us" section was added to the homepage with location info + an embedded interactive map.</p>
+
+      <h3>Zero-API-Key Approach</h3>
+      <pre><code>&lt;iframe
+  src="https://maps.google.com/maps?q=Qaryat+El+Asad+Alexandria+Desert+Rd&amp;output=embed"
+  width="100%"
+  height="100%"
+  style={{ border: 0, minHeight: "450px" }}
+  allowFullScreen
+  loading="lazy"
+  referrerPolicy="no-referrer-when-downgrade"
+/&gt;</code></pre>
+
+      <div class="callout success">
+        <strong>Why iframe, not Google Maps API?</strong>
+        No <code>API key</code>, no billing account, no usage limits. For an embedded map in a portfolio project, this is the optimal choice.
+      </div>
+    </section>
+
+    <section id="part2-calendar">
+      <h2><span class="num">16</span> Part 2 · Add-to-Calendar Button</h2>
+      <p>The confirmation email now includes a golden button that opens Google Calendar with the reservation pre-filled.</p>
+
+      <h3>Pure Function Generator</h3>
+      <pre><code>export function generateGoogleCalendarLink(
+  params: CalendarEventParams
+): string {
+  const endDate = new Date(
+    startDate.getTime() + durationMinutes * 60_000
+  );
+
+  const formatDate = (d: Date): string =&gt; {
+    // YYYYMMDDTHHmmss
+    ...
+  };
+
+  const dates = `${formatDate(startDate)}/${formatDate(endDate)}`;
+
+  const searchParams = new URLSearchParams({
+    action: "TEMPLATE",
+    text: title,
+    dates,
+    details: description,
+    location,
+  });
+
+  return `https://calendar.google.com/calendar/render?${searchParams}`;
+}</code></pre>
+
+      <div class="callout">
+        <strong>Why this matters</strong>
+        Reducing friction at the reservation confirmation stage increases show-up rates — a business metric that a restaurant owner immediately understands.
+      </div>
+    </section>
+
+    <section id="part2-analytics">
+      <h2><span class="num">17</span> Part 2 · Interactive Analytics Dashboard</h2>
+      <p>Three Recharts visualizations embedded in <code>/admin</code> — donut charts for category distribution and featured balance, bar chart for price ranges.</p>
+
+      <h3>Architecture — Pure Data Layer</h3>
+      <div class="filetree">
+        <div><span class="dir">src/lib/services/</span></div>
+        <div class="indent-1"><span class="file new">analytics.ts</span> <span class="note">← pure aggregation functions</span></div>
+        <div><span class="dir">src/components/admin/charts/</span></div>
+        <div class="indent-1"><span class="file new">AnalyticsCharts.tsx</span> <span class="note">← Client Component (Recharts)</span></div>
+      </div>
+
+      <h3>Server Component → Client Component Boundary</h3>
+      <pre><code>// admin/page.tsx (Server Component)
+const [categoryData, priceData, featuredData] = await Promise.all([
+  getCategoryDistribution(),
+  getPriceDistribution(),
+  getFeaturedDistribution(),
+]);
+
+return (
+  &lt;AnalyticsCharts
+    categoryData={categoryData}
+    priceData={priceData}
+    featuredData={featuredData}
+  /&gt;
+);</code></pre>
+
+      <div class="callout success">
+        <strong>Clean separation</strong>
+        <code>analytics.ts</code> contains pure aggregation logic — runs server-side, queries Prisma. <code>AnalyticsCharts.tsx</code> is the only Client Component, receiving already-processed data as props.
+      </div>
+
+      <h3>Custom Legend Pattern</h3>
+      <p>Instead of <code>Recharts</code>' built-in labels (which overlapped on the donut chart), a custom <code>CustomLegend</code> component renders below each chart — clean, readable, and RTL-friendly.</p>
+
+      <div class="two-col">
+        <div class="col-card before">
+          <h5>❌ Default Labels</h5>
+          <p style="font-size:0.85rem;">Text rendered inside donut segments — overlapped in Arabic, unreadable.</p>
+        </div>
+        <div class="col-card after">
+          <h5>✅ Custom Legend</h5>
+          <p style="font-size:0.85rem;">Horizontal color-coded legend below each chart — clean, scalable.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════
+         ROADMAP
+         ════════════════════════════════════════════════ -->
+
+    <section id="roadmap">
+      <h2><span class="num">18</span> Future Roadmap</h2>
+      <p>Features that were deliberately deferred — documented with priority, effort, and business value for transparency with clients and employers.</p>
+
+      <h3>Planned Enhancements</h3>
+      <table class="roadmap-table">
+        <thead><tr><th>Feature</th><th>Priority</th><th>Effort</th><th>Business Value</th></tr></thead>
+        <tbody>
+          <tr><td>Arabic / English i18n</td><td class="priority-critical">Critical</td><td>15-25h</td><td>Dual-market reach</td></tr>
+          <tr><td>Payment Gateway (Paymob / Stripe)</td><td class="priority-high">High</td><td>10-25h</td><td>Online deposits, reduced no-shows</td></tr>
+          <tr><td>Advanced Analytics (sales, trends)</td><td class="priority-high">High</td><td>6-15h</td><td>Data-driven decisions</td></tr>
+          <tr><td>Real Email Provider (Resend)</td><td class="priority-high">High</td><td>2-5h</td><td>Automated confirmations</td></tr>
+          <tr><td>QR Menu per Table</td><td class="priority-medium">Medium</td><td>3-9h</td><td>Contactless ordering</td></tr>
+          <tr><td>PDF Invoice Generation</td><td class="priority-medium">Medium</td><td>4-10h</td><td>Legal compliance</td></tr>
+          <tr><td>WhatsApp Business API</td><td class="priority-medium">Medium</td><td>5-15h</td><td>Instant confirmations</td></tr>
+          <tr><td>Two-Factor Authentication</td><td class="priority-medium">Medium</td><td>4-10h</td><td>Admin security</td></tr>
+          <tr><td>UptimeRobot Monitoring</td><td class="priority-medium">Medium</td><td>1h</td><td>Eliminate Neon cold starts</td></tr>
+          <tr><td>Audit Log for Admins</td><td class="priority-low">Low</td><td>5-15h</td><td>Compliance, security</td></tr>
+          <tr><td>Customer Reviews System</td><td class="priority-low">Low</td><td>8-15h</td><td>Social proof</td></tr>
+          <tr><td>Multi-branch Support</td><td class="priority-low">Low</td><td>15-30h</td><td>Chain restaurants</td></tr>
+          <tr><td>Thermal Printer Integration</td><td class="priority-low">Low</td><td>8-15h</td><td>Hardware integration</td></tr>
+          <tr><td>BlurDataURL / BlurHash</td><td class="priority-low">Low</td><td>3-8h</td><td>Faster perceived image load</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Why Not Built Now</h3>
+      <ul>
+        <li><strong>Time:</strong> Portfolio deadline and focus on core features.</li>
+        <li><strong>Scope:</strong> MVP-first philosophy — prove the concept, then extend.</li>
+        <li><strong>External dependencies:</strong> Payment gateways require merchant accounts; WhatsApp Business API requires Facebook Business verification.</li>
+        <li><strong>Priority:</strong> Delivered high-impact features first.</li>
+        <li><strong>Transparency:</strong> Documenting the roadmap shows engineering maturity — knowing what <em>not</em> to build is as valuable as knowing what to build.</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>Why this section matters for HR</strong>
+        A hiring manager reading this sees a developer who thinks like a product owner: prioritizes, defers, and communicates. This is the difference between a coder and a lead.
+      </div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">19</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Command / Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>SEO metadata</td><td><code>opengraph.xyz</code> scan</td><td>12 passing · 0 errors</td></tr>
+          <tr><td>OG image renders</td><td>Visit <code>/opengraph-image</code></td><td>Gold "Lumière" image 1200×630</td></tr>
+          <tr><td>Sitemap</td><td><code>curl /sitemap.xml</code></td><td>15 URLs</td></tr>
+          <tr><td>Robots</td><td><code>curl /robots.txt</code></td><td><code>/admin</code> disallowed</td></tr>
+          <tr><td>Per-page titles</td><td>Browser tab on each route</td><td>Unique Arabic title</td></tr>
+          <tr><td>CI workflow</td><td><code>github.com/.../actions</code></td><td>✅ Green</td></tr>
+          <tr><td>CI badge</td><td>README top</td><td>"CI passing" badge</td></tr>
+          <tr><td>Demo login</td><td><code>demo@lumiere.com</code> / <code>Demo2026!</code></td><td>Yellow banner appears</td></tr>
+          <tr><td>Real food images</td><td><code>/menu</code></td><td>12 dishes with photos</td></tr>
+          <tr><td>Shimmer UX</td><td>Slow 3G throttle + hard refresh</td><td>Gold shimmer before images</td></tr>
+          <tr><td>Google Maps</td><td><code>/</code> scroll to "VISIT US"</td><td>Map renders + info cards</td></tr>
+          <tr><td>Add to Calendar</td><td><code>test-email.ts</code> output</td><td>Gold calendar button</td></tr>
+          <tr><td>Analytics charts</td><td><code>/admin</code></td><td>3 charts with clean legends</td></tr>
+          <tr><td>README screenshots</td><td>GitHub repository</td><td>11 images display</td></tr>
+        </tbody>
+      </table>
+
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">20</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>npm ci</code> runs scripts</td><td>CI fails on <code>postinstall</code></td><td>Add <code>--ignore-scripts</code></td></tr>
+          <tr><td>Missing env for <code>prisma generate</code></td><td><code>PrismaConfigEnvError</code></td><td>Pass <code>DATABASE_URL</code> to step</td></tr>
+          <tr><td><code>LayoutProps&lt;"/"&gt;</code> in CI</td><td><code>Cannot find name</code></td><td>Use <code>React.ReactNode</code></td></tr>
+          <tr><td>Shimmer on parent div</td><td>Image never fully appears</td><td>Isolate shimmer on <code>z-0</code> layer</td></tr>
+          <tr><td>Recharts labels overlap</td><td>Arabic text collides</td><td>Custom legend below chart</td></tr>
+          <tr><td>Recharts <code>formatter</code> type</td><td>TS <code>ValueType</code> mismatch</td><td>Remove formatter (defaults work)</td></tr>
+          <tr><td>Unsplash remote image blocked</td><td><code>next/image</code> rejects URL</td><td>Add to <code>remotePatterns</code></td></tr>
+          <tr><td>Demo account exposed admin</td><td>Anyone can delete data</td><td>Separate <code>demo@</code> account + banner</td></tr>
+          <tr><td><code>middleware.ts</code> deprecation</td><td>Yellow warning every build</td><td>Rename to <code>proxy.ts</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">21</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>CI/CD</td><td>Continuous Integration / Continuous Deployment</td><td>Automated checks + deploy pipeline</td></tr>
+          <tr><td>CDN</td><td>Content Delivery Network</td><td>Distributed servers serving content fast</td></tr>
+          <tr><td>LCP</td><td>Largest Contentful Paint</td><td>Core Web Vital — largest visible element timing</td></tr>
+          <tr><td>OG</td><td>Open Graph</td><td>Metadata protocol for social previews</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic/Hebrew</td></tr>
+          <tr><td>SEO</td><td>Search Engine Optimization</td><td>Practices for ranking in search engines</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using an app</td></tr>
+          <tr><td>DX</td><td>Developer Experience</td><td>How pleasant the developer workflow is</td></tr>
+          <tr><td>RBAC</td><td>Role-Based Access Control</td><td>Permissions based on user role</td></tr>
+          <tr><td>SERP</td><td>Search Engine Results Page</td><td>The page showing Google results</td></tr>
+          <tr><td>WCAG</td><td>Web Content Accessibility Guidelines</td><td>International accessibility standard</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">22</span> Phase 10 Summary</h2>
+      <h3>Part 1 Completed</h3>
+      <ul>
+        <li>Global SEO metadata + viewport configuration</li>
+        <li>Dynamic OG image via <code>ImageResponse</code></li>
+        <li>Auto-generated sitemap + robots</li>
+        <li>Per-page metadata (title, description, OG, robots)</li>
+        <li>Professional README with badges, screenshots, and structure</li>
+        <li>Dedicated <code>demo@lumiere.com</code> account + warning banner</li>
+        <li><code>middleware.ts</code> → <code>proxy.ts</code> migration</li>
+        <li>GitHub Actions CI (5 iterations to green)</li>
+        <li>CI passing badge in README</li>
+      </ul>
+
+      <h3>Part 2 Completed</h3>
+      <ul>
+        <li>12 real food images from Unsplash CDN</li>
+        <li>Shimmer skeleton + fade-in animation</li>
+        <li>LCP priority for above-the-fold images</li>
+        <li>11 curated screenshots (public / admin / docs)</li>
+        <li>Google Maps embedded location section</li>
+        <li>Add-to-Google-Calendar button in confirmation email</li>
+        <li>Interactive analytics dashboard with Recharts</li>
+        <li>Custom legend for Arabic donut charts</li>
+      </ul>
+
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Discoverability</strong> — Google, WhatsApp, and social platforms render the site beautifully</li>
+        <li><strong>Trust signals</strong> — screenshots and CI badge at GitHub top-of-fold</li>
+        <li><strong>Security</strong> — demo account separated from production admin</li>
+        <li><strong>Professional polish</strong> — no skeleton flashes, no empty boxes, no deprecation warnings</li>
+        <li><strong>Client transparency</strong> — Future Roadmap documents what's deferred and why</li>
+        <li><strong>Ready for Phase 11</strong> — Arabic/English internationalization</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>This is the final phase before i18n</strong>
+        The project is now a genuinely portfolio-grade, production-ready, fully documented web application. What remains (Phase 11) is an optional market extension, not a technical necessity.
+      </div>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-09-deployment.html">← Phase 9 (Deployment)</a>
+      <span class="center">Phase 10 of 11</span>
+      <a href="phase-11-i18n.html">Phase 11 (i18n) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
