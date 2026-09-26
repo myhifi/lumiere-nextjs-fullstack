@@ -2,6 +2,12 @@ import Link from "next/link";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { StatCard } from "@/components/admin/StatCard";
+import { AnalyticsCharts } from "@/components/admin/charts/AnalyticsCharts";
+import {
+  getCategoryDistribution,
+  getPriceDistribution,
+  getFeaturedDistribution,
+} from "@/lib/services/analytics";
 
 export default async function AdminHomePage() {
   const session = await auth();
@@ -43,6 +49,13 @@ export default async function AdminHomePage() {
 
   const occupancyRate =
     totalTables > 0 ? Math.round((activeTables / totalTables) * 100) : 0;
+
+  // ─── بيانات الرسوم البيانية ───
+  const [categoryData, priceData, featuredData] = await Promise.all([
+    getCategoryDistribution(),
+    getPriceDistribution(),
+    getFeaturedDistribution(),
+  ]);
 
   return (
     <div className="p-8">
@@ -132,6 +145,13 @@ export default async function AdminHomePage() {
           </div>
         )}
       </div>
+
+      {/* ─── Analytics Charts ─── */}
+      <AnalyticsCharts
+        categoryData={categoryData}
+        priceData={priceData}
+        featuredData={featuredData}
+      />
     </div>
   );
 }
