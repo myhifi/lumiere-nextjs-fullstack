@@ -5,6 +5,11 @@ import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createUserSchema, updateUserSchema } from "@/lib/validations/user";
+import { logAction } from "@/lib/services/audit";
+
+// ═══════════════════════════════════════════════════
+// 👥 Server Actions: إدارة الموظفين
+// ═══════════════════════════════════════════════════
 
 type ActionResult =
   | { success: true; id: string }
@@ -20,6 +25,10 @@ async function requireAdminRole() {
   if (!session?.user) return null;
   if (session.user.role !== "ADMIN") return null;
   return session.user;
+}
+
+function getUserName(user: { name?: string | null }): string {
+  return user.name ?? "Unknown";
 }
 
 function parseErrors(
@@ -73,6 +82,24 @@ export async function createUser(input: unknown): Promise<ActionResult> {
       },
     });
 
+    await logAction({
+      userId: admin.id,
+      userName: getUserName(admin),
+      action: "CREATE",
+      entity: "User",
+      entityId: user.id,
+      entityName: user.name,
+      severity: user.role === "ADMIN" ? "warning" : "info",
+      changes: {
+        after: {
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          isActive: user.isActive,
+        },
+      },
+    });
+
     revalidatePath("/admin/users");
     return { success: true, id: user.id };
   } catch (error) {
@@ -101,17 +128,17 @@ export async function updateUser(
   const data = parsed.data;
 
   try {
-    // 🛡️ حماية: لا يمكن للمدير إزالة دور ADMIN من نفسه
+    // 🛡️ حماية 1: لا يمكن للمدير إزالة دور ADMIN من نفسه
     if (id === admin.id && data.role !== "ADMIN") {
       return { success: false, error: "لا يمكنك إزالة صلاحية المدير من نفسك" };
     }
 
-    // 🛡️ حماية: لا يمكن تعطيل نفسك
+    // 🛡️ حماية 2: لا يمكن تعطيل نفسك
     if (id === admin.id && !data.isActive) {
       return { success: false, error: "لا يمكنك تعطيل حسابك" };
     }
 
-    // 🛡️ حماية: لا يمكن تعطيل/تخفيض آخر مدير نشط
+    // 🛡️ حماية 3: لا يمكن تعطيل/تخفيض آخر مدير نشط
     if (data.role !== "ADMIN" || !data.isActive) {
       const otherActiveAdmins = await prisma.user.count({
         where: {
@@ -133,6 +160,16 @@ export async function updateUser(
       }
     }
 
+    // جلب البيانات القديمة (للسجل)
+    const before = await prisma.user.findUnique({
+      where: { id },
+      select: { name: true, role: true, isActive: true },
+    });
+
+    if (!before) {
+      return { success: false, error: "المستخدم غير موجود" };
+    }
+
     // تحديث البيانات الأساسية
     const updateData: {
       name: string;
@@ -145,14 +182,38 @@ export async function updateUser(
       isActive: data.isActive,
     };
 
-    // لو كُتبت كلمة سر جديدة
-    if (data.newPassword && data.newPassword !== "") {
-      updateData.passwordHash = await hashPassword(data.newPassword);
+    const isPasswordChanged = !!(data.newPassword && data.newPassword !== "");
+
+    if (isPasswordChanged) {
+      updateData.passwordHash = await hashPassword(data.newPassword!);
     }
 
     const user = await prisma.user.update({
       where: { id },
       data: updateData,
+    });
+
+    await logAction({
+      userId: admin.id,
+      userName: getUserName(admin),
+      action: "UPDATE",
+      entity: "User",
+      entityId: user.id,
+      entityName: user.name,
+      severity: "warning", // تعديل الموظفين إجراء حساس
+      changes: {
+        before: {
+          name: before.name,
+          role: before.role,
+          isActive: before.isActive,
+        },
+        after: {
+          name: user.name,
+          role: user.role,
+          isActive: user.isActive,
+          ...(isPasswordChanged && { passwordChanged: true }),
+        },
+      },
     });
 
     revalidatePath("/admin/users");
@@ -176,10 +237,11 @@ export async function deleteUser(
   }
 
   try {
-    // 🛡️ حماية: لا يمكن حذف آخر مدير نشط
+    // جلب البيانات قبل الحذف
     const target = await prisma.user.findUnique({ where: { id } });
     if (!target) return { success: false, error: "المستخدم غير موجود" };
 
+    // 🛡️ حماية: لا يمكن حذف آخر مدير نشط
     if (target.role === "ADMIN" && target.isActive) {
       const otherActiveAdmins = await prisma.user.count({
         where: { role: "ADMIN", isActive: true, NOT: { id } },
@@ -190,6 +252,24 @@ export async function deleteUser(
     }
 
     await prisma.user.delete({ where: { id } });
+
+    await logAction({
+      userId: admin.id,
+      userName: getUserName(admin),
+      action: "DELETE",
+      entity: "User",
+      entityId: id,
+      entityName: target.name,
+      severity: "critical",
+      changes: {
+        before: {
+          email: target.email,
+          name: target.name,
+          role: target.role,
+        },
+      },
+    });
+
     revalidatePath("/admin/users");
     return { success: true };
   } catch (error) {

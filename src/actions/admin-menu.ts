@@ -4,6 +4,7 @@ import { menuItemSchema } from "@/lib/validations/menu-item";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { logAction } from "@/lib/services/audit";
 
 // ═══════════════════════════════════════════════════
 // 🍽️ Server Actions: إدارة الأطباق
@@ -20,6 +21,11 @@ async function requireAdmin() {
   return session.user;
 }
 
+// ─── اسم المستخدم الموحّد للسجلات ───
+function getUserName(user: { name?: string | null }): string {
+  return user.name ?? "Unknown";
+}
+
 // ─── تبديل توفّر الطبق ───
 export async function toggleMenuItemAvailability(
   itemId: string,
@@ -29,12 +35,26 @@ export async function toggleMenuItemAvailability(
   if (!user) return { success: false, error: "غير مصرح" };
 
   try {
-    await prisma.menuItem.update({
+    const item = await prisma.menuItem.update({
       where: { id: itemId },
       data: { isAvailable },
+      select: { name: true },
     });
+
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "UPDATE",
+      entity: "MenuItem",
+      entityId: itemId,
+      entityName: item.name,
+      severity: isAvailable ? "info" : "warning",
+      changes: { after: { isAvailable } },
+    });
+
     revalidatePath("/admin/menu");
     revalidatePath("/menu");
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
     console.error("[toggleMenuItemAvailability]", error);
@@ -51,10 +71,23 @@ export async function toggleMenuItemFeatured(
   if (!user) return { success: false, error: "غير مصرح" };
 
   try {
-    await prisma.menuItem.update({
+    const item = await prisma.menuItem.update({
       where: { id: itemId },
       data: { isFeatured },
+      select: { name: true },
     });
+
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "UPDATE",
+      entity: "MenuItem",
+      entityId: itemId,
+      entityName: item.name,
+      severity: "info",
+      changes: { after: { isFeatured } },
+    });
+
     revalidatePath("/admin/menu");
     revalidatePath("/menu");
     revalidatePath("/");
@@ -75,8 +108,35 @@ export async function deleteMenuItem(itemId: string): Promise<ActionResult> {
   }
 
   try {
-    // حماية: لا نحذف إن كان الطبق مرتبطاً بحجوزات (لا يوجد ربط مباشر حالياً، لكن نتحقق مستقبلاً)
+    // جلب بيانات الطبق قبل الحذف (للسجل)
+    const deleted = await prisma.menuItem.findUnique({
+      where: { id: itemId },
+      select: { name: true, price: true, categoryId: true },
+    });
+
+    if (!deleted) {
+      return { success: false, error: "الطبق غير موجود" };
+    }
+
     await prisma.menuItem.delete({ where: { id: itemId } });
+
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "DELETE",
+      entity: "MenuItem",
+      entityId: itemId,
+      entityName: deleted.name,
+      severity: "critical",
+      changes: {
+        before: {
+          name: deleted.name,
+          price: deleted.price,
+          categoryId: deleted.categoryId,
+        },
+      },
+    });
+
     revalidatePath("/admin/menu");
     revalidatePath("/menu");
     revalidatePath("/");
@@ -134,12 +194,35 @@ export async function createMenuItem(
       data: {
         name: data.name,
         slug: data.slug,
-        description: data.description && data.description !== "" ? data.description : null,
+        description:
+          data.description && data.description !== ""
+            ? data.description
+            : null,
         price: data.price,
-        imageUrl: data.imageUrl && data.imageUrl !== "" ? data.imageUrl : null,
+        imageUrl:
+          data.imageUrl && data.imageUrl !== "" ? data.imageUrl : null,
         categoryId: data.categoryId,
         isAvailable: data.isAvailable,
         isFeatured: data.isFeatured,
+      },
+    });
+
+    // 4. التسجيل في Audit Log
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "CREATE",
+      entity: "MenuItem",
+      entityId: item.id,
+      entityName: item.name,
+      severity: "info",
+      changes: {
+        after: {
+          name: item.name,
+          price: item.price,
+          isAvailable: item.isAvailable,
+          isFeatured: item.isFeatured,
+        },
       },
     });
 
@@ -175,7 +258,17 @@ export async function updateMenuItem(
   const data = parsed.data;
 
   try {
-    // التحقق من عدم تكرار slug على طبق آخر
+    // 1. جلب البيانات القديمة (للسجل)
+    const before = await prisma.menuItem.findUnique({
+      where: { id: itemId },
+      select: { name: true, price: true, isAvailable: true, isFeatured: true },
+    });
+
+    if (!before) {
+      return { success: false, error: "الطبق غير موجود" };
+    }
+
+    // 2. التحقق من عدم تكرار slug على طبق آخر
     const duplicate = await prisma.menuItem.findFirst({
       where: { slug: data.slug, NOT: { id: itemId } },
     });
@@ -187,17 +280,47 @@ export async function updateMenuItem(
       };
     }
 
+    // 3. التحديث
     const item = await prisma.menuItem.update({
       where: { id: itemId },
       data: {
         name: data.name,
         slug: data.slug,
-        description: data.description && data.description !== "" ? data.description : null,
+        description:
+          data.description && data.description !== ""
+            ? data.description
+            : null,
         price: data.price,
-        imageUrl: data.imageUrl && data.imageUrl !== "" ? data.imageUrl : null,
+        imageUrl:
+          data.imageUrl && data.imageUrl !== "" ? data.imageUrl : null,
         categoryId: data.categoryId,
         isAvailable: data.isAvailable,
         isFeatured: data.isFeatured,
+      },
+    });
+
+    // 4. التسجيل في Audit Log
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "UPDATE",
+      entity: "MenuItem",
+      entityId: item.id,
+      entityName: item.name,
+      severity: "info",
+      changes: {
+        before: {
+          name: before.name,
+          price: before.price,
+          isAvailable: before.isAvailable,
+          isFeatured: before.isFeatured,
+        },
+        after: {
+          name: item.name,
+          price: item.price,
+          isAvailable: item.isAvailable,
+          isFeatured: item.isFeatured,
+        },
       },
     });
 

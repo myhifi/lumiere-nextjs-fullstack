@@ -4,6 +4,11 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { tableSchema } from "@/lib/validations/table";
+import { logAction } from "@/lib/services/audit";
+
+// ═══════════════════════════════════════════════════
+// 🪑 Server Actions: إدارة الطاولات
+// ═══════════════════════════════════════════════════
 
 type ActionResult =
   | { success: true; id: string }
@@ -20,6 +25,10 @@ async function requireAdmin() {
     return null;
   }
   return session.user;
+}
+
+function getUserName(user: { name?: string | null }): string {
+  return user.name ?? "Unknown";
 }
 
 function parseErrors(
@@ -70,6 +79,24 @@ export async function createTable(input: unknown): Promise<ActionResult> {
       },
     });
 
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "CREATE",
+      entity: "Table",
+      entityId: table.id,
+      entityName: `طاولة ${table.number}`,
+      severity: "info",
+      changes: {
+        after: {
+          number: table.number,
+          capacity: table.capacity,
+          location: table.location,
+          isActive: table.isActive,
+        },
+      },
+    });
+
     revalidatePath("/admin/tables");
     revalidatePath("/admin");
     return { success: true, id: table.id };
@@ -99,6 +126,16 @@ export async function updateTable(
   const data = parsed.data;
 
   try {
+    // جلب البيانات القديمة (للسجل)
+    const before = await prisma.table.findUnique({
+      where: { id },
+      select: { number: true, capacity: true, location: true, isActive: true },
+    });
+
+    if (!before) {
+      return { success: false, error: "الطاولة غير موجودة" };
+    }
+
     const duplicate = await prisma.table.findFirst({
       where: { number: data.number, NOT: { id } },
     });
@@ -120,6 +157,30 @@ export async function updateTable(
       },
     });
 
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "UPDATE",
+      entity: "Table",
+      entityId: table.id,
+      entityName: `طاولة ${table.number}`,
+      severity: "info",
+      changes: {
+        before: {
+          number: before.number,
+          capacity: before.capacity,
+          location: before.location,
+          isActive: before.isActive,
+        },
+        after: {
+          number: table.number,
+          capacity: table.capacity,
+          location: table.location,
+          isActive: table.isActive,
+        },
+      },
+    });
+
     revalidatePath("/admin/tables");
     revalidatePath("/admin");
     return { success: true, id: table.id };
@@ -138,7 +199,23 @@ export async function toggleTableActive(
   if (!user) return { success: false, error: "غير مصرح" };
 
   try {
-    await prisma.table.update({ where: { id }, data: { isActive } });
+    const table = await prisma.table.update({
+      where: { id },
+      data: { isActive },
+      select: { number: true },
+    });
+
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "UPDATE",
+      entity: "Table",
+      entityId: id,
+      entityName: `طاولة ${table.number}`,
+      severity: isActive ? "info" : "warning",
+      changes: { after: { isActive } },
+    });
+
     revalidatePath("/admin/tables");
     revalidatePath("/admin");
     return { success: true };
@@ -171,7 +248,35 @@ export async function deleteTable(
       };
     }
 
+    // جلب البيانات قبل الحذف
+    const deleted = await prisma.table.findUnique({
+      where: { id },
+      select: { number: true, capacity: true, location: true },
+    });
+
+    if (!deleted) {
+      return { success: false, error: "الطاولة غير موجودة" };
+    }
+
     await prisma.table.delete({ where: { id } });
+
+    await logAction({
+      userId: user.id,
+      userName: getUserName(user),
+      action: "DELETE",
+      entity: "Table",
+      entityId: id,
+      entityName: `طاولة ${deleted.number}`,
+      severity: "critical",
+      changes: {
+        before: {
+          number: deleted.number,
+          capacity: deleted.capacity,
+          location: deleted.location,
+        },
+      },
+    });
+
     revalidatePath("/admin/tables");
     revalidatePath("/admin");
     return { success: true };

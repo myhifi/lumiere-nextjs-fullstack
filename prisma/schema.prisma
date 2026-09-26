@@ -110,3 +110,47 @@ model User {
 
   @@map("users")
 }
+
+// ═══════════════════════════════════════════════════
+// 📋 AuditLog — سجل الإجراءات (لمساءلة الموظفين)
+// ═══════════════════════════════════════════════════
+// يُسجّل الإجراءات الحساسة التي يقوم بها الموظفون فقط.
+//
+// ⚠️ **قرار معماري مهم:**
+//   • لا علاقة (`relation`) مع `User` — عن قصد.
+//   • السجل يجب أن يبقى صامداً حتى لو حُذف المستخدم.
+//   • نُخزّن `userName` كـ snapshot وقت الإجراء.
+//   • نُخزّن `entityName` كـ snapshot وقت الإجراء.
+//
+// `severity` للفلترة السريعة:
+//   • info     → إجراءات عادية (إنشاء/تعديل)
+//   • warning  → إجراءات حساسة (تعطيل/إلغاء)
+//   • critical → إجراءات خطيرة (حذف)
+
+model AuditLog {
+  id         String   @id @default(cuid())
+
+  // ─── من فعل الإجراء؟ ───
+  userId     String?  // null لو حُذف المستخدم
+  userName   String   // snapshot وقت الإجراء
+
+  // ─── ماذا حدث؟ ───
+  action     String   // "CREATE" | "UPDATE" | "DELETE"
+  entity     String   // "MenuItem" | "Table" | "User" | "Reservation"
+  entityId   String
+  entityName String   // snapshot وقت الإجراء
+
+  // ─── تفاصيل التغيير ───
+  severity   String   @default("info")  // info | warning | critical
+  changes    Json?    // { before: {...}, after: {...} }
+
+  // ─── متى؟ ───
+  createdAt  DateTime @default(now())
+
+  // ─── فهارس للفلترة السريعة ───
+  @@index([createdAt])
+  @@index([severity])
+  @@index([entity])
+  @@index([userId])
+  @@map("audit_logs")
+}

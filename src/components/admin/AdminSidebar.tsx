@@ -17,6 +17,7 @@ const commonLinks = [
   { href: "/admin/menu", label: "الأطباق", icon: "🍽️" },
   { href: "/admin/categories", label: "التصنيفات", icon: "📂" },
   { href: "/admin/tables", label: "الطاولات", icon: "🪑" },
+  { href: "/admin/audit-log", label: "سجل الإجراءات", icon: "📋" },
 ] as const;
 
 // روابط للمدير فقط
