@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MenuItemCard } from "@/components/menu/MenuItemCard";
+import { ReviewsSection } from "@/components/review/ReviewsSection";
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
@@ -77,6 +78,9 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* ─── Reviews ─── */}
+      <ReviewsSection />
+      
       {/* ─── Location / Google Maps ─── */}
       <section className="max-w-6xl mx-auto px-4 py-20">
         <div className="text-center mb-12">

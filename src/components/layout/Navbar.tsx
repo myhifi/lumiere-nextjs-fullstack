@@ -6,6 +6,7 @@ const navLinks = [
   { href: "/", label: "الرئيسية" },
   { href: "/menu", label: "القائمة" },
   { href: "/reserve", label: "احجز طاولة" },
+  { href: "/review", label: "قيّم تجربتك" },
 ] as const;
 
 export function Navbar() {

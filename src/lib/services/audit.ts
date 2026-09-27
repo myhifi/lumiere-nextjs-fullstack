@@ -13,7 +13,12 @@ import { prisma } from "@/lib/prisma";
 
 // ─── الأنواع ───
 export type AuditAction = "CREATE" | "UPDATE" | "DELETE";
-export type AuditEntity = "MenuItem" | "Table" | "User" | "Reservation";
+export type AuditEntity =
+  | "MenuItem"
+  | "Table"
+  | "User"
+  | "Reservation"
+  | "Review";
 export type AuditSeverity = "info" | "warning" | "critical";
 
 export type LogActionParams = {

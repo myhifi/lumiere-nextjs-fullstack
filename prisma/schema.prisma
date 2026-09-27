@@ -154,3 +154,33 @@ model AuditLog {
   @@index([userId])
   @@map("audit_logs")
 }
+
+// ═══════════════════════════════════════════════════
+// ⭐ Review — تقييمات العملاء
+// ═══════════════════════════════════════════════════
+// ⚠️ لا علاقة بـ `Reservation` — العميل لا يحتاج حجزاً سابقاً.
+// (التقييمات المرتبطة بالحجز = ميزة "Review Invitations" في Roadmap)
+
+model Review {
+  id          String   @id @default(cuid())
+
+  // ─── بيانات العميل ───
+  guestName   String
+  guestEmail  String?  // اختياري — للإدارة فقط، لا يُعرَض
+
+  // ─── التقييم ───
+  rating      Int      // 1..5 نجوم
+  comment     String
+
+  // ─── الحالة ───
+  status      String   @default("PENDING")  // PENDING | APPROVED | REJECTED
+
+  // ─── تواريخ ───
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // ─── فهارس للفلترة السريعة ───
+  @@index([status])
+  @@index([createdAt])
+  @@map("reviews")
+}
