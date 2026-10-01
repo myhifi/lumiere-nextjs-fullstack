@@ -1,14 +1,17 @@
-// ═══════════════════════════════════════════════════
-// 🛡️ Proxy — حماية المسارات (Edge Runtime)
-// ═══════════════════════════════════════════════════
-// ⚠️ مهم: نستخدم NextAuth(authConfig) — وليس auth من auth.ts
-// لأن auth.ts يستورد Prisma (غير مدعوم على Edge).
+import createMiddleware from 'next-intl/middleware';
+import {routing} from './i18n/routing';
+import {auth} from '@/auth';
 
-import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";   // ← من auth.config وليس @/auth
+// إنشاء middleware الخاص بـ next-intl
+const intlMiddleware = createMiddleware(routing);
 
-export default NextAuth(authConfig).auth;
+// تصدير proxy الذي يجمع بين next-intl و Auth.js
+export default auth((req) => {
+  // تشغيل next-intl أولاً لتحديد اللغة
+  return intlMiddleware(req);
+});
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  // استثناء مسارات API والملفات الثابتة
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 };

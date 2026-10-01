@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { toggleTableActive, deleteTable } from "@/actions/admin-tables";
 
 type Table = {
@@ -13,13 +14,6 @@ type Table = {
   reservationsCount: number;
 };
 
-const LOCATION_LABELS: Record<string, string> = {
-  Indoor: "داخلي",
-  Window: "بجانب النافذة",
-  Outdoor: "خارجي",
-  VIP: "VIP",
-};
-
 export function TableRow({
   table,
   isAdmin,
@@ -27,8 +21,21 @@ export function TableRow({
   table: Table;
   isAdmin: boolean;
 }) {
+  const t = useTranslations("Admin.tables");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  // ─── ترجمة اسم الموقع ───
+  function getLocationLabel(location: string | null): string | null {
+    if (!location) return null;
+    const map: Record<string, string> = {
+      Indoor: t("locationIndoor"),
+      Window: t("locationWindow"),
+      Outdoor: t("locationOutdoor"),
+      VIP: t("locationVip"),
+    };
+    return map[location] ?? location;
+  }
 
   function handleToggle() {
     setError(null);
@@ -39,18 +46,17 @@ export function TableRow({
   }
 
   function handleDelete() {
-    if (
-      !confirm(
-        `حذف الطاولة رقم ${table.number}؟${table.reservationsCount > 0 ? " ⚠️ لها حجوزات — سيُرفض" : ""}`
-      )
-    )
-      return;
+    const warning = table.reservationsCount > 0 ? t("deleteWarning") : "";
+    if (!confirm(t("deleteConfirm", { number: table.number }) + warning)) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteTable(table.id);
       if (!result.success) setError(result.error);
     });
   }
+
+  const locationLabel = getLocationLabel(table.location);
+  const seatLabel = table.capacity === 1 ? t("seatSingle") : t("seatPlural");
 
   return (
     <div
@@ -64,16 +70,16 @@ export function TableRow({
         <div className="flex-1 min-w-50">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="text-sm font-medium">
-              {table.capacity} {table.capacity === 1 ? "كرسي" : "كراسي"}
+              {table.capacity} {seatLabel}
             </span>
-            {table.location && (
+            {locationLabel && (
               <span className="text-xs bg-accent-light text-accent-dark px-2 py-0.5 rounded-full">
-                {LOCATION_LABELS[table.location] ?? table.location}
+                {locationLabel}
               </span>
             )}
             {table.reservationsCount > 0 && (
               <span className="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
-                {table.reservationsCount} حجز
+                {t("reservationsBadge", { count: table.reservationsCount })}
               </span>
             )}
           </div>
@@ -86,7 +92,7 @@ export function TableRow({
               : "bg-red-50 text-red-800 border-red-200"
           }`}
         >
-          {table.isActive ? "نشطة" : "معطّلة"}
+          {table.isActive ? t("active") : t("inactive")}
         </span>
 
         <div className="flex flex-wrap gap-2">
@@ -96,14 +102,14 @@ export function TableRow({
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-accent hover:text-accent transition-colors disabled:opacity-40"
           >
-            {table.isActive ? "⊘ تعطيل" : "✓ تفعيل"}
+            {table.isActive ? t("disable") : t("enable")}
           </button>
 
           <Link
             href={`/admin/tables/${table.id}/edit`}
             className="text-xs px-3 py-1.5 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
           >
-            ✎ تعديل
+            {t("edit")}
           </Link>
 
           {isAdmin && (
@@ -113,7 +119,7 @@ export function TableRow({
               disabled={isPending}
               className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-700 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-40"
             >
-              🗑 حذف
+              {t("delete")}
             </button>
           )}
         </div>

@@ -1,9 +1,11 @@
+// src/components/auth/LoginForm.tsx
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { Form } from "@/components/ui/Form";
 
 type Result =
   | { kind: "idle" }
@@ -19,7 +21,7 @@ export function LoginForm() {
   const [password, setPassword] = useState("");
   const [result, setResult] = useState<Result>({ kind: "idle" });
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setResult({ kind: "submitting" });
 
@@ -45,7 +47,7 @@ export function LoginForm() {
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-8 shadow-sm"
     >
@@ -90,6 +92,6 @@ export function LoginForm() {
       >
         {result.kind === "submitting" ? "جاري التحقق..." : "تسجيل الدخول"}
       </button>
-    </form>
+    </Form>
   );
 }

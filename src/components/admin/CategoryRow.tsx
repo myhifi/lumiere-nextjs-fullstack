@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { deleteCategory } from "@/actions/admin-categories";
 
 type Category = {
@@ -20,16 +21,13 @@ export function CategoryRow({
   category: Category;
   isAdmin: boolean;
 }) {
+  const t = useTranslations("Admin.categories");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   function handleDelete() {
-    if (
-      !confirm(
-        `حذف تصنيف "${category.name}"؟${category.itemsCount > 0 ? " ⚠️ يحتوي على أطباق — سيُرفض" : ""}`
-      )
-    )
-      return;
+    const warning = category.itemsCount > 0 ? t("deleteWarning") : "";
+    if (!confirm(t("deleteConfirm", { name: category.name }) + warning)) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteCategory(category.id);
@@ -46,10 +44,10 @@ export function CategoryRow({
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium">{category.name}</span>
             <span className="text-xs bg-background text-muted px-2 py-0.5 rounded-full">
-              ترتيب {category.displayOrder}
+              {t("orderBadge", { order: category.displayOrder })}
             </span>
             <span className="text-xs bg-accent-light text-accent-dark px-2 py-0.5 rounded-full">
-              {category.itemsCount} طبق
+              {t("itemsCount", { count: category.itemsCount })}
             </span>
           </div>
           <div className="text-xs text-muted mt-1" dir="ltr">
@@ -67,7 +65,7 @@ export function CategoryRow({
             href={`/admin/categories/${category.id}/edit`}
             className="text-xs px-3 py-1.5 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
           >
-            ✎ تعديل
+            {t("edit")}
           </Link>
           {isAdmin && (
             <button
@@ -76,7 +74,7 @@ export function CategoryRow({
               disabled={isPending}
               className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-700 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-40"
             >
-              🗑 حذف
+              {t("delete")}
             </button>
           )}
         </div>

@@ -43,7 +43,9 @@ async function main() {
   console.log(`   متطابقان؟     ${hash === hash2 ? "❌ خطأ أمني!" : "✅ مختلفان (Salt يعمل)"}`);
 
   // ─── 5. كلمة سر قصيرة جداً ───
-  console.log("\n📋 السيناريو 5: رفض كلمة سر قصيرة");
+  console.log(
+    `\n📋 السيناريو 5: رفض كلمة سر أقصر من ${MIN_PASSWORD_LENGTH} أحرف`
+  );
   try {
     await hashPassword("short");
     console.log(`   ❌ يجب أن يرفض!`);

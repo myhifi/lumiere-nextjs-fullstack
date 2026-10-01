@@ -1,93 +1,89 @@
 // ═══════════════════════════════════════════════════
-// 📅 مخططات التحقق لنماذج الحجز
+// 📅 Reservation validation schema (i18n-ready)
 // ═══════════════════════════════════════════════════
+// The schema is created via a factory that accepts a
+// translation function `t`. This allows Server Actions
+// to pass locale-specific translations at runtime.
 
 import { z } from "zod";
 import { DEFAULT_DURATION_MINUTES } from "@/lib/services/table-assignment";
 
-// ─── مخطط نموذج الحجز ───
-export const reservationSchema = z.object({
-  guestName: z
-    .string()
-    .trim()
-    .min(2, "الاسم قصير جداً (حرفان على الأقل)")
-    .max(80, "الاسم طويل جداً (80 حرفاً كحد أقصى)"),
+// Translate function signature (subset of next-intl's t)
+type TranslateFn = (key: string) => string;
 
-  guestEmail: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email("البريد الإلكتروني غير صحيح"),
+// ─── Factory: create schema with translated messages ───
+export function createReservationSchema(t: TranslateFn) {
+  return z
+    .object({
+      guestName: z
+        .string()
+        .trim()
+        .min(2, t("guestNameTooShort"))
+        .max(80, t("guestNameTooLong")),
 
-  guestPhone: z
-    .string()
-    .trim()
-    .min(8, "رقم الهاتف قصير جداً")
-    .max(20, "رقم الهاتف طويل جداً")
-    .regex(/^[+\d\s\-()]+$/, "رقم الهاتف يحتوي على رموز غير مسموحة"),
+      guestEmail: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .email(t("guestEmailInvalid")),
 
-  guestsCount: z.coerce
-    .number()
-    .int("عدد الأشخاص يجب أن يكون رقماً صحيحاً")
-    .min(1, "على الأقل شخص واحد")
-    .max(10, "لا يمكن الحجز لأكثر من 10 أشخاص"),
+      guestPhone: z
+        .string()
+        .trim()
+        .min(8, t("guestPhoneTooShort"))
+        .max(20, t("guestPhoneTooLong"))
+        .regex(/^[+\d\s\-()]+$/, t("guestPhoneInvalidChars")),
 
-  date: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "التاريخ غير صحيح"),
+      guestsCount: z.coerce
+        .number()
+        .int(t("guestsCountNotInt"))
+        .min(1, t("guestsCountMin"))
+        .max(10, t("guestsCountMax")),
 
-  time: z
-    .string()
-    .regex(/^\d{2}:\d{2}$/, "الوقت غير صحيح"),
+      date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, t("dateFormatInvalid")),
 
-  notes: z
-    .string()
-    .trim()
-    .max(500, "الملاحظات طويلة جداً (500 حرف كحد أقصى)")
-    .optional()
-    .or(z.literal("")),
-})
-.refine(
-  (data) => {
-    const dt = new Date(`${data.date}T${data.time}:00`);
-    return dt.getTime() > Date.now();
-  },
-  {
-    message: "لا يمكن الحجز في وقت ماضٍ",
-    path: ["date"],
-  }
-)
-.refine(
-  (data) => {
-    const dt = new Date(`${data.date}T${data.time}:00`);
-    const hours = dt.getHours();
-    return hours >= 12 && hours <= 22;
-  },
-  {
-    message: "الحجز متاح فقط بين 12:00 ظهراً و 10:00 مساءً",
-    path: ["time"],
-  }
-);
+      time: z.string().regex(/^\d{2}:\d{2}$/, t("timeFormatInvalid")),
 
-// ─── النوع المُستنتج من المخطط ───
-export type ReservationInput = z.infer<typeof reservationSchema>;
+      notes: z
+        .string()
+        .trim()
+        .max(500, t("notesTooLong"))
+        .optional()
+        .or(z.literal("")),
+    })
+    .refine(
+      (data) => {
+        const dt = new Date(`${data.date}T${data.time}:00`);
+        return dt.getTime() > Date.now();
+      },
+      { message: t("dateInPast"), path: ["date"] }
+    )
+    .refine(
+      (data) => {
+        const dt = new Date(`${data.date}T${data.time}:00`);
+        const hours = dt.getHours();
+        return hours >= 12 && hours <= 22;
+      },
+      { message: t("outsideBusinessHours"), path: ["time"] }
+    );
+}
 
-// ─── النوع المُحوَّل للاستخدام في طبقة الخدمة ───
+// ─── Inferred types (same across all locales) ───
+export type ReservationInput = z.infer<
+  ReturnType<typeof createReservationSchema>
+>;
+
 export type ReservationRequest = ReservationInput & {
   durationMinutes: number;
 };
 
-// ─── دالة تحويل من بيانات النموذج إلى طلب الخدمة ───
+// ─── Helpers ───
 export function toReservationRequest(
   input: ReservationInput
 ): ReservationRequest {
-  return {
-    ...input,
-    durationMinutes: DEFAULT_DURATION_MINUTES,
-  };
+  return { ...input, durationMinutes: DEFAULT_DURATION_MINUTES };
 }
 
-// ─── مساعد: تحويل تاريخ + وقت إلى كائن Date ───
 export function parseReservationDate(date: string, time: string): Date {
   return new Date(`${date}T${time}:00`);
 }

@@ -44,8 +44,15 @@ export const authConfig: NextAuthConfig = {
 
     // ─── authorized callback (يعمل على Edge) ───
     // يُنفَّذ في proxy لمنع الوصول لـ /admin بدون تسجيل
+    // ─── authorized callback (يعمل على Edge) ───
     authorized({ auth, request }) {
-      const isOnAdmin = request.nextUrl.pathname.startsWith("/admin");
+      const pathname = request.nextUrl.pathname;
+      
+      // ─── فحص إذا كان المسار يحتوي على /admin (مع دعم اللغات) ───
+      // مثال: /ar/admin, /en/admin/menu, /fr/admin/reservations
+      const segments = pathname.split("/").filter(Boolean);
+      const isOnAdmin = segments.includes("admin");
+
       if (isOnAdmin) {
         return !!auth; // true = اسمح، false = حوّل لـ /login
       }

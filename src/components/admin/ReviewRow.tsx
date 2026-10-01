@@ -1,15 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { StarRating } from "@/components/ui/StarRating";
-import {
-  updateReviewStatus,
-  deleteReview,
-} from "@/actions/reviews";
-
-// ═══════════════════════════════════════════════════
-// ⭐ ReviewRow — صف واحد في جدول الإشراف
-// ═══════════════════════════════════════════════════
+import { updateReviewStatus, deleteReview } from "@/actions/reviews";
 
 type Review = {
   id: string;
@@ -29,18 +23,18 @@ type Props = {
 // ─── شارات الحالة ───
 const STATUS_META: Record<
   string,
-  { label: string; className: string }
+  { labelKey: string; className: string }
 > = {
   PENDING: {
-    label: "قيد المراجعة",
+    labelKey: "statusPending",
     className: "bg-amber-50 text-amber-800 border-amber-200",
   },
   APPROVED: {
-    label: "معتمد",
+    labelKey: "statusApproved",
     className: "bg-green-50 text-green-800 border-green-200",
   },
   REJECTED: {
-    label: "مرفوض",
+    labelKey: "statusRejected",
     className: "bg-red-50 text-red-800 border-red-200",
   },
 };
@@ -57,11 +51,12 @@ function formatDate(date: Date): string {
 }
 
 export function ReviewRow({ review, isAdmin }: Props) {
+  const t = useTranslations("Admin.reviews");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
   const statusMeta = STATUS_META[review.status] ?? {
-    label: review.status,
+    labelKey: null,
     className: "bg-gray-50 text-gray-800 border-gray-200",
   };
 
@@ -74,7 +69,7 @@ export function ReviewRow({ review, isAdmin }: Props) {
   }
 
   function handleDelete() {
-    if (!confirm(`حذف تقييم "${review.guestName}" نهائياً؟`)) return;
+    if (!confirm(t("deleteConfirm", { name: review.guestName }))) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteReview(review.id);
@@ -105,7 +100,9 @@ export function ReviewRow({ review, isAdmin }: Props) {
         <span
           className={`text-xs px-2.5 py-0.5 rounded-full border ${statusMeta.className}`}
         >
-          {statusMeta.label}
+          {statusMeta.labelKey
+            ? t(statusMeta.labelKey)
+            : review.status}
         </span>
       </div>
 
@@ -128,7 +125,7 @@ export function ReviewRow({ review, isAdmin }: Props) {
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-green-600 text-green-700 hover:bg-green-600 hover:text-white transition-colors disabled:opacity-40"
           >
-            ✓ اعتماد
+            {t("approve")}
           </button>
         )}
 
@@ -139,7 +136,7 @@ export function ReviewRow({ review, isAdmin }: Props) {
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-amber-600 text-amber-700 hover:bg-amber-600 hover:text-white transition-colors disabled:opacity-40"
           >
-            ✗ رفض
+            {t("reject")}
           </button>
         )}
 
@@ -150,7 +147,7 @@ export function ReviewRow({ review, isAdmin }: Props) {
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-700 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-40"
           >
-            🗑 حذف
+            {t("delete")}
           </button>
         )}
       </div>

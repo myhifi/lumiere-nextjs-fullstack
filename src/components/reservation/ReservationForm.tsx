@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, type ChangeEvent } from "react";
+import { useTranslations } from "next-intl";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import {
   createReservation,
   type CreateReservationResult,
 } from "@/actions/reservation";
+import { Link } from "@/i18n/navigation";
+import { Form } from "@/components/ui/Form";
 
 // ─── توليد خيارات الوقت (12:00 → 22:00 كل 30 دقيقة) ───
 const TIME_SLOTS = Array.from({ length: 21 }, (_, i) => {
@@ -18,7 +21,6 @@ const TIME_SLOTS = Array.from({ length: 21 }, (_, i) => {
 
 const TODAY = new Date().toISOString().split("T")[0];
 
-// ─── حالة النتيجة ───
 type Result =
   | { kind: "idle" }
   | { kind: "submitting" }
@@ -26,6 +28,8 @@ type Result =
   | { kind: "error"; message: string; fieldErrors?: Record<string, string[]> };
 
 export function ReservationForm() {
+  const t = useTranslations("Reserve");
+
   const [formData, setFormData] = useState({
     guestName: "",
     guestEmail: "",
@@ -45,7 +49,7 @@ export function ReservationForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setResult({ kind: "submitting" });
 
@@ -72,39 +76,41 @@ export function ReservationForm() {
     return (
       <div className="bg-card border border-border rounded-2xl p-8 md:p-12 text-center shadow-sm">
         <div className="text-6xl mb-4">✅</div>
-        <h2 className="text-2xl font-bold mb-3">تم استلام حجزك!</h2>
+        <h2 className="text-2xl font-bold mb-3">{t("success.title")}</h2>
         <p className="text-muted mb-6">
-          تم تخصيص <span className="text-accent font-bold">طاولة رقم {result.tableNumber}</span> لك.
-          سنراجع حجزك ونرسل التأكيد عبر البريد الإلكتروني قريباً.
+          {t("success.message", { tableNumber: result.tableNumber })}
         </p>
         <p className="text-xs text-muted mb-8">
-          رقم الحجز: <code className="bg-background px-2 py-1 rounded">{result.reservationId.slice(0, 12)}...</code>
+          {t("success.reservationIdLabel")}{" "}
+          <code className="bg-background px-2 py-1 rounded">
+            {result.reservationId.slice(0, 12)}...
+          </code>
         </p>
-        <a
+        <Link
           href="/menu"
           className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"
         >
-          تصفح القائمة
-        </a>
+          {t("success.browseMenu")}
+        </Link>
       </div>
     );
   }
 
   // ─── النموذج ───
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <FormField label="الاسم الكامل" required>
+        <FormField label={t("form.guestName")} required>
           <input
             type="text"
             name="guestName"
             value={formData.guestName}
             onChange={handleChange}
             required
-            placeholder="مثال: أحمد محمد"
+            placeholder={t("form.guestNamePlaceholder")}
             className={inputClasses}
           />
           {result.kind === "error" && result.fieldErrors?.guestName && (
@@ -114,14 +120,14 @@ export function ReservationForm() {
           )}
         </FormField>
 
-        <FormField label="البريد الإلكتروني" required>
+        <FormField label={t("form.guestEmail")} required>
           <input
             type="email"
             name="guestEmail"
             value={formData.guestEmail}
             onChange={handleChange}
             required
-            placeholder="example@email.com"
+            placeholder={t("form.guestEmailPlaceholder")}
             className={inputClasses}
             dir="ltr"
           />
@@ -132,14 +138,14 @@ export function ReservationForm() {
           )}
         </FormField>
 
-        <FormField label="رقم الهاتف" required>
+        <FormField label={t("form.guestPhone")} required>
           <input
             type="tel"
             name="guestPhone"
             value={formData.guestPhone}
             onChange={handleChange}
             required
-            placeholder="+20 1XX XXX XXXX"
+            placeholder={t("form.guestPhonePlaceholder")}
             className={inputClasses}
             dir="ltr"
           />
@@ -150,7 +156,7 @@ export function ReservationForm() {
           )}
         </FormField>
 
-        <FormField label="عدد الأشخاص" required>
+        <FormField label={t("form.guestsCount")} required>
           <select
             name="guestsCount"
             value={formData.guestsCount}
@@ -159,13 +165,13 @@ export function ReservationForm() {
           >
             {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
               <option key={n} value={n}>
-                {n} {n === 1 ? "شخص" : n === 2 ? "شخصان" : "أشخاص"}
+                {t("form.guestCountFormat", { count: n })}
               </option>
             ))}
           </select>
         </FormField>
 
-        <FormField label="التاريخ" required>
+        <FormField label={t("form.date")} required>
           <input
             type="date"
             name="date"
@@ -182,7 +188,7 @@ export function ReservationForm() {
           )}
         </FormField>
 
-        <FormField label="الوقت" required>
+        <FormField label={t("form.time")} required>
           <select
             name="time"
             value={formData.time}
@@ -203,13 +209,13 @@ export function ReservationForm() {
         </FormField>
 
         <div className="md:col-span-2">
-          <FormField label="ملاحظات إضافية">
+          <FormField label={t("form.notes")}>
             <textarea
               name="notes"
               value={formData.notes}
               onChange={handleChange}
               rows={3}
-              placeholder="مناسبة خاصة، حساسية طعام، إلخ (اختياري)"
+              placeholder={t("form.notesPlaceholder")}
               className={inputClasses}
             />
           </FormField>
@@ -227,8 +233,8 @@ export function ReservationForm() {
         disabled={result.kind === "submitting"}
         className="mt-6 w-full bg-accent hover:bg-accent-dark text-white font-medium py-3 px-8 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {result.kind === "submitting" ? "جاري الحجز..." : "تأكيد الحجز"}
+        {result.kind === "submitting" ? t("form.submitting") : t("form.submit")}
       </button>
-    </form>
+    </Form>
   );
 }

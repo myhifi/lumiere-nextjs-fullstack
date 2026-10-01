@@ -3,10 +3,9 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import {
-  createReviewSchema,
-  updateReviewStatusSchema,
-} from "@/lib/validations/review";
+import { createReviewSchema, updateReviewStatusSchema } from "@/lib/validations/review";
+import { getTranslations } from "next-intl/server";
+import { tError } from "@/lib/utils/server-errors";
 import { logAction } from "@/lib/services/audit";
 
 // ═══════════════════════════════════════════════════
@@ -49,7 +48,12 @@ export async function createReview(
 ): Promise<CreateReviewResult> {
   // ⚠️ لا يوجد requireAdmin() — العميل مجهول
 
-  const parsed = createReviewSchema.safeParse(input);
+  // Create schema with current locale's translations
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createReviewSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
   if (!parsed.success) {
     const fieldErrors: Record<string, string[]> = {};
     for (const issue of parsed.error.issues) {
@@ -58,7 +62,7 @@ export async function createReview(
     }
     return {
       success: false,
-      error: "تحقق من البيانات المُدخلة",
+      error: await tError("invalidData"),
       fieldErrors,
     };
   }
@@ -80,7 +84,7 @@ export async function createReview(
       if (recent) {
         return {
           success: false,
-          error: "لقد أرسلت تقييماً خلال آخر 24 ساعة. شكراً لك!",
+          error: await tError("reviewLimit"),
         };
       }
     }
@@ -106,7 +110,7 @@ export async function createReview(
     console.error("[createReview]", error);
     return {
       success: false,
-      error: "فشل إرسال التقييم. حاول مرة أخرى.",
+      error: await tError("reviewSubmitFailed"),
     };
   }
 }
@@ -119,12 +123,12 @@ export async function updateReviewStatus(
   newStatus: "APPROVED" | "REJECTED"
 ): Promise<AdminActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   // التحقق من الحالة الجديدة
   const parsed = updateReviewStatusSchema.safeParse({ status: newStatus });
   if (!parsed.success) {
-    return { success: false, error: "حالة غير صحيحة" };
+    return { success: false, error: await tError("invalidData") };
   }
 
   try {
@@ -134,7 +138,7 @@ export async function updateReviewStatus(
     });
 
     if (!before) {
-      return { success: false, error: "التقييم غير موجود" };
+      return { success: false, error: await tError("reviewNotFound") };
     }
 
     const review = await prisma.review.update({
@@ -163,7 +167,7 @@ export async function updateReviewStatus(
     return { success: true };
   } catch (error) {
     console.error("[updateReviewStatus]", error);
-    return { success: false, error: "فشل تحديث التقييم" };
+    return { success: false, error: await tError("reviewUpdateFailed") };
   }
 }
 
@@ -174,11 +178,11 @@ export async function deleteReview(
   reviewId: string
 ): Promise<AdminActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   // ⚠️ الحذف النهائي: للمدير فقط
   if (user.role !== "ADMIN") {
-    return { success: false, error: "صلاحية المدير مطلوبة للحذف" };
+    return { success: false, error: await tError("adminRequired") };
   }
 
   try {
@@ -188,7 +192,7 @@ export async function deleteReview(
     });
 
     if (!deleted) {
-      return { success: false, error: "التقييم غير موجود" };
+      return { success: false, error: await tError("reviewNotFound") };
     }
 
     await prisma.review.delete({ where: { id: reviewId } });
@@ -216,6 +220,6 @@ export async function deleteReview(
     return { success: true };
   } catch (error) {
     console.error("[deleteReview]", error);
-    return { success: false, error: "فشل حذف التقييم" };
+    return { success: false, error: await tError("reviewDeleteFailed") };
   }
 }

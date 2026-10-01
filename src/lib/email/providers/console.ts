@@ -11,7 +11,8 @@ import type {
 
 export async function sendViaConsole(
   data: ReservationEmailData,
-  html: string
+  html: string,
+  subject: string
 ): Promise<SendEmailResult> {
   const line = "═".repeat(60);
 
@@ -19,7 +20,7 @@ export async function sendViaConsole(
   console.log("📧 [DEV] إيميل جاهز للإرسال (لم يُرسل فعلياً)");
   console.log(line);
   console.log(`   إلى:      ${data.to}`);
-  console.log(`   الموضوع:  تأكيد حجزك في Lumière — طاولة رقم ${data.tableNumber}`);
+  console.log(`   Subject:  ${subject}`);
   console.log(`   المعرّف:  ${data.reservationId}`);
   console.log(line);
   console.log("📄 محتوى HTML (مقتطف):");

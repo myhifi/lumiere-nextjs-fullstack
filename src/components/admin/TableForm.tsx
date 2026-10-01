@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { createTable, updateTable } from "@/actions/admin-tables";
+import { Form } from "@/components/ui/Form";
 
 type InitialData = {
   id?: string;
@@ -17,6 +19,7 @@ type Props = { initialData?: InitialData };
 
 export function TableForm({ initialData }: Props) {
   const router = useRouter();
+  const t = useTranslations("Admin.tableForm");
   const isEdit = !!initialData?.id;
 
   const [formData, setFormData] = useState<InitialData>({
@@ -30,6 +33,7 @@ export function TableForm({ initialData }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [, startTransition] = useTransition();
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -42,7 +46,7 @@ export function TableForm({ initialData }: Props) {
     }));
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -66,17 +70,19 @@ export function TableForm({ initialData }: Props) {
       return;
     }
 
-    router.push("/admin/tables");
-    router.refresh();
+    startTransition(() => {
+      router.push("/admin/tables");
+      router.refresh();
+    });
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-6 md:p-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <FormField label="رقم الطاولة" required>
+        <FormField label={t("numberLabel")} required>
           <input
             type="number"
             name="number"
@@ -93,7 +99,7 @@ export function TableForm({ initialData }: Props) {
           )}
         </FormField>
 
-        <FormField label="السعة (عدد الكراسي)" required>
+        <FormField label={t("capacityLabel")} required>
           <input
             type="number"
             name="capacity"
@@ -110,18 +116,18 @@ export function TableForm({ initialData }: Props) {
           )}
         </FormField>
 
-        <FormField label="الموقع (اختياري)">
+        <FormField label={t("locationLabel")}>
           <select
             name="location"
             value={formData.location}
             onChange={handleChange}
             className={inputClasses}
           >
-            <option value="">— بدون تصنيف —</option>
-            <option value="Indoor">داخلي (Indoor)</option>
-            <option value="Window">بجانب النافذة (Window)</option>
-            <option value="Outdoor">خارجي (Outdoor)</option>
-            <option value="VIP">VIP</option>
+            <option value="">{t("locationNone")}</option>
+            <option value="Indoor">{t("locationIndoor")}</option>
+            <option value="Window">{t("locationWindow")}</option>
+            <option value="Outdoor">{t("locationOutdoor")}</option>
+            <option value="VIP">{t("locationVip")}</option>
           </select>
           {fieldErrors.location && (
             <p className="text-xs text-red-600 mt-1">{fieldErrors.location[0]}</p>
@@ -137,9 +143,7 @@ export function TableForm({ initialData }: Props) {
               onChange={handleChange}
               className="w-4 h-4 accent-[--color-accent]"
             />
-            <span className="text-sm font-medium">
-              طاولة نشطة (متاحة للحجز)
-            </span>
+            <span className="text-sm font-medium">{t("isActiveLabel")}</span>
           </label>
         </div>
       </div>
@@ -156,20 +160,16 @@ export function TableForm({ initialData }: Props) {
           onClick={() => router.push("/admin/tables")}
           className="px-6 py-3 rounded-full border border-border hover:border-foreground transition-colors"
         >
-          إلغاء
+          {t("cancel")}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isSubmitting
-            ? "جاري الحفظ..."
-            : isEdit
-              ? "حفظ التعديلات"
-              : "إضافة الطاولة"}
+          {isSubmitting ? t("saving") : isEdit ? t("save") : t("create")}
         </button>
       </div>
-    </form>
+    </Form>
   );
 }

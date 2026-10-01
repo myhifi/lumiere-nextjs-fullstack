@@ -10,9 +10,10 @@ type Category = {
 
 type CategoryFilterProps = {
   categories: Category[];
+  allLabel: string;
 };
 
-export function CategoryFilter({ categories }: CategoryFilterProps) {
+export function CategoryFilter({ categories, allLabel }: CategoryFilterProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -33,7 +34,7 @@ export function CategoryFilter({ categories }: CategoryFilterProps) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
       <FilterButton
-        label="الكل"
+        label={allLabel}
         isActive={!activeSlug}
         onClick={() => handleFilter(null)}
       />

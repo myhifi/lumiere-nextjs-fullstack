@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import {
   updateReservationStatus,
   deleteReservation,
@@ -22,9 +23,13 @@ type Reservation = {
 type Props = {
   reservation: Reservation;
   isAdmin: boolean;
+  locale: string;
 };
 
-export function ReservationRow({ reservation, isAdmin }: Props) {
+export function ReservationRow({ reservation, isAdmin, locale }: Props) {
+  const t = useTranslations("Admin.reservations");
+  const tOverview = useTranslations("Admin.overview");
+
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -41,13 +46,16 @@ export function ReservationRow({ reservation, isAdmin }: Props) {
   }
 
   function handleDelete() {
-    if (!confirm(`حذف حجز "${reservation.guestName}" نهائياً؟`)) return;
+    if (!confirm(t("deleteConfirm", { name: reservation.guestName }))) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteReservation(reservation.id);
       if (!result.success) setError(result.error);
     });
   }
+
+  // ─── تنسيق التاريخ حسب اللغة ───
+  const dateLocale = locale === "ar" ? "ar-EG" : locale;
 
   return (
     <div
@@ -70,14 +78,14 @@ export function ReservationRow({ reservation, isAdmin }: Props) {
         {/* الوقت */}
         <div className="text-sm min-w-35">
           <div className="font-medium">
-            {date.toLocaleDateString("ar-EG", {
+            {date.toLocaleDateString(dateLocale, {
               day: "2-digit",
               month: "short",
               year: "numeric",
             })}
           </div>
           <div className="text-xs text-muted">
-            {date.toLocaleTimeString("ar-EG", {
+            {date.toLocaleTimeString(dateLocale, {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -86,26 +94,36 @@ export function ReservationRow({ reservation, isAdmin }: Props) {
 
         {/* الحجم + الطاولة */}
         <div className="text-sm min-w-25">
-          <div className="font-medium">{reservation.guestsCount} أشخاص</div>
+          <div className="font-medium">
+            {t("guests", { count: reservation.guestsCount })}
+          </div>
           <div className="text-xs text-muted">
-            طاولة {reservation.table.number}
+            {t("table", { number: reservation.table.number })}
           </div>
         </div>
 
-        <StatusBadge status={reservation.status} />
+        <StatusBadge
+          status={reservation.status}
+          labels={{
+            PENDING: tOverview("statusPending"),
+            CONFIRMED: tOverview("statusConfirmed"),
+            CANCELLED: tOverview("statusCancelled"),
+            COMPLETED: tOverview("statusCompleted"),
+          }}
+        />
 
         {/* الأزرار */}
         <div className="flex flex-wrap gap-2">
           {reservation.status === "PENDING" && (
             <>
               <ActionButton
-                label="✓ تأكيد"
+                label={t("confirm")}
                 variant="success"
                 onClick={() => handleStatus("CONFIRMED")}
                 disabled={isPending}
               />
               <ActionButton
-                label="✗ إلغاء"
+                label={t("cancel")}
                 variant="danger"
                 onClick={() => handleStatus("CANCELLED")}
                 disabled={isPending}
@@ -115,13 +133,13 @@ export function ReservationRow({ reservation, isAdmin }: Props) {
           {reservation.status === "CONFIRMED" && (
             <>
               <ActionButton
-                label="✓ إكمال"
+                label={t("complete")}
                 variant="primary"
                 onClick={() => handleStatus("COMPLETED")}
                 disabled={isPending}
               />
               <ActionButton
-                label="✗ إلغاء"
+                label={t("cancel")}
                 variant="danger"
                 onClick={() => handleStatus("CANCELLED")}
                 disabled={isPending}
@@ -132,7 +150,7 @@ export function ReservationRow({ reservation, isAdmin }: Props) {
             reservation.status === "COMPLETED") &&
             isAdmin && (
               <ActionButton
-                label="🗑 حذف"
+                label={t("delete")}
                 variant="danger"
                 onClick={handleDelete}
                 disabled={isPending}
@@ -188,19 +206,20 @@ function ActionButton({
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({
+  status,
+  labels,
+}: {
+  status: string;
+  labels: Record<string, string>;
+}) {
   const styles: Record<string, string> = {
     PENDING: "bg-yellow-50 text-yellow-800 border-yellow-200",
     CONFIRMED: "bg-green-50 text-green-800 border-green-200",
     CANCELLED: "bg-red-50 text-red-800 border-red-200",
     COMPLETED: "bg-blue-50 text-blue-800 border-blue-200",
   };
-  const labels: Record<string, string> = {
-    PENDING: "قيد الانتظار",
-    CONFIRMED: "مؤكد",
-    CANCELLED: "ملغى",
-    COMPLETED: "مكتمل",
-  };
+
   return (
     <span
       className={`text-xs px-3 py-1 rounded-full border shrink-0 ${

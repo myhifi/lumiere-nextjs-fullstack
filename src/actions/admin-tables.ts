@@ -1,13 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
-import { tableSchema } from "@/lib/validations/table";
+import { createTableSchema } from "@/lib/validations/table";
 import { logAction } from "@/lib/services/audit";
+import { tError } from "@/lib/utils/server-errors";
 
 // ═══════════════════════════════════════════════════
-// 🪑 Server Actions: إدارة الطاولات
+// 🪑 Server Actions: Tables management
 // ═══════════════════════════════════════════════════
 
 type ActionResult =
@@ -42,16 +44,21 @@ function parseErrors(
   return fieldErrors;
 }
 
-// ─── إنشاء طاولة ───
+// ─── Create table ───
 export async function createTable(input: unknown): Promise<ActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
-  const parsed = tableSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createTableSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     return {
       success: false,
-      error: "تحقق من البيانات",
+      error: await tError("invalidData"),
       fieldErrors: parseErrors(parsed.error.issues),
     };
   }
@@ -65,8 +72,8 @@ export async function createTable(input: unknown): Promise<ActionResult> {
     if (duplicate) {
       return {
         success: false,
-        error: "رقم الطاولة مستخدم",
-        fieldErrors: { number: ["هذا الرقم مستخدم في طاولة أخرى"] },
+        error: await tError("duplicateNumber"),
+        fieldErrors: { number: [await tError("duplicateNumber")] },
       };
     }
 
@@ -85,7 +92,7 @@ export async function createTable(input: unknown): Promise<ActionResult> {
       action: "CREATE",
       entity: "Table",
       entityId: table.id,
-      entityName: `طاولة ${table.number}`,
+      entityName: `Table ${table.number}`,
       severity: "info",
       changes: {
         after: {
@@ -102,23 +109,28 @@ export async function createTable(input: unknown): Promise<ActionResult> {
     return { success: true, id: table.id };
   } catch (error) {
     console.error("[createTable]", error);
-    return { success: false, error: "فشل إنشاء الطاولة" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── تحديث طاولة ───
+// ─── Update table ───
 export async function updateTable(
   id: string,
   input: unknown
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
-  const parsed = tableSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createTableSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     return {
       success: false,
-      error: "تحقق من البيانات",
+      error: await tError("invalidData"),
       fieldErrors: parseErrors(parsed.error.issues),
     };
   }
@@ -126,14 +138,13 @@ export async function updateTable(
   const data = parsed.data;
 
   try {
-    // جلب البيانات القديمة (للسجل)
     const before = await prisma.table.findUnique({
       where: { id },
       select: { number: true, capacity: true, location: true, isActive: true },
     });
 
     if (!before) {
-      return { success: false, error: "الطاولة غير موجودة" };
+      return { success: false, error: await tError("notFound") };
     }
 
     const duplicate = await prisma.table.findFirst({
@@ -142,8 +153,8 @@ export async function updateTable(
     if (duplicate) {
       return {
         success: false,
-        error: "رقم الطاولة مستخدم",
-        fieldErrors: { number: ["هذا الرقم مستخدم في طاولة أخرى"] },
+        error: await tError("duplicateNumber"),
+        fieldErrors: { number: [await tError("duplicateNumber")] },
       };
     }
 
@@ -163,7 +174,7 @@ export async function updateTable(
       action: "UPDATE",
       entity: "Table",
       entityId: table.id,
-      entityName: `طاولة ${table.number}`,
+      entityName: `Table ${table.number}`,
       severity: "info",
       changes: {
         before: {
@@ -186,17 +197,17 @@ export async function updateTable(
     return { success: true, id: table.id };
   } catch (error) {
     console.error("[updateTable]", error);
-    return { success: false, error: "فشل تحديث الطاولة" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── تبديل تفعيل الطاولة ───
+// ─── Toggle active ───
 export async function toggleTableActive(
   id: string,
   isActive: boolean
 ): Promise<{ success: true } | { success: false; error: string }> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   try {
     const table = await prisma.table.update({
@@ -211,7 +222,7 @@ export async function toggleTableActive(
       action: "UPDATE",
       entity: "Table",
       entityId: id,
-      entityName: `طاولة ${table.number}`,
+      entityName: `Table ${table.number}`,
       severity: isActive ? "info" : "warning",
       changes: { after: { isActive } },
     });
@@ -221,41 +232,40 @@ export async function toggleTableActive(
     return { success: true };
   } catch (error) {
     console.error("[toggleTableActive]", error);
-    return { success: false, error: "فشل تحديث الطاولة" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── حذف طاولة (بشروط صارمة) ───
+// ─── Delete table (with strict protection) ───
 export async function deleteTable(
   id: string
 ): Promise<{ success: true } | { success: false; error: string }> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   if (user.role !== "ADMIN") {
-    return { success: false, error: "صلاحية المدير مطلوبة للحذف" };
+    return { success: false, error: await tError("adminRequired") };
   }
 
   try {
-    // 🛡️ حماية: منع الحذف إن كان للطاولة أي حجز تاريخي
+    // 🛡️ Prevent deleting a table with any historical reservation
     const reservationsCount = await prisma.reservation.count({
       where: { tableId: id },
     });
     if (reservationsCount > 0) {
       return {
         success: false,
-        error: `لا يمكن حذف الطاولة — لها ${reservationsCount} حجز تاريخي. عطّلها بدلاً من ذلك.`,
+        error: await tError("hasReservations", { count: reservationsCount }),
       };
     }
 
-    // جلب البيانات قبل الحذف
     const deleted = await prisma.table.findUnique({
       where: { id },
       select: { number: true, capacity: true, location: true },
     });
 
     if (!deleted) {
-      return { success: false, error: "الطاولة غير موجودة" };
+      return { success: false, error: await tError("notFound") };
     }
 
     await prisma.table.delete({ where: { id } });
@@ -266,7 +276,7 @@ export async function deleteTable(
       action: "DELETE",
       entity: "Table",
       entityId: id,
-      entityName: `طاولة ${deleted.number}`,
+      entityName: `Table ${deleted.number}`,
       severity: "critical",
       changes: {
         before: {
@@ -282,6 +292,6 @@ export async function deleteTable(
     return { success: true };
   } catch (error) {
     console.error("[deleteTable]", error);
-    return { success: false, error: "فشل حذف الطاولة" };
+    return { success: false, error: await tError("unexpected") };
   }
 }

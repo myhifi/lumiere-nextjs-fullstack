@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { createUser, updateUser } from "@/actions/admin-users";
+import { Form } from "@/components/ui/Form";
 
 type InitialData = {
   id?: string;
@@ -15,11 +17,12 @@ type InitialData = {
 
 type Props = {
   initialData?: InitialData;
-  isSelf?: boolean; // لتعديل حسابك الخاص
+  isSelf?: boolean;
 };
 
 export function UserForm({ initialData, isSelf }: Props) {
   const router = useRouter();
+  const t = useTranslations("Admin.userForm");
   const isEdit = !!initialData?.id;
 
   const [formData, setFormData] = useState({
@@ -34,6 +37,8 @@ export function UserForm({ initialData, isSelf }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [, startTransition] = useTransition();
+
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -46,7 +51,7 @@ export function UserForm({ initialData, isSelf }: Props) {
     }));
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -78,17 +83,19 @@ export function UserForm({ initialData, isSelf }: Props) {
       return;
     }
 
-    router.push("/admin/users");
-    router.refresh();
+    startTransition(() => {
+      router.push("/admin/users");
+      router.refresh();
+    });
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-6 md:p-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <FormField label="البريد الإلكتروني" required={!isEdit}>
+        <FormField label={t("emailLabel")} required={!isEdit}>
           <input
             type="email"
             name="email"
@@ -96,26 +103,27 @@ export function UserForm({ initialData, isSelf }: Props) {
             onChange={handleChange}
             required={!isEdit}
             disabled={isEdit}
-            placeholder="staff@lumiere.com"
+            autoComplete="email"
+            placeholder={t("emailPlaceholder")}
             dir="ltr"
             className={`${inputClasses} ${isEdit ? "opacity-60 cursor-not-allowed" : ""}`}
           />
           {isEdit && (
-            <p className="text-xs text-muted mt-1">لا يمكن تغيير البريد</p>
+            <p className="text-xs text-muted mt-1">{t("emailEditHint")}</p>
           )}
           {fieldErrors.email && (
             <p className="text-xs text-red-600 mt-1">{fieldErrors.email[0]}</p>
           )}
         </FormField>
 
-        <FormField label="الاسم الكامل" required>
+        <FormField label={t("nameLabel")} required>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
             required
-            placeholder="مثال: محمد أحمد"
+            placeholder={t("namePlaceholder")}
             className={inputClasses}
           />
           {fieldErrors.name && (
@@ -123,7 +131,7 @@ export function UserForm({ initialData, isSelf }: Props) {
           )}
         </FormField>
 
-        <FormField label="الدور" required>
+        <FormField label={t("roleLabel")} required>
           <select
             name="role"
             value={formData.role}
@@ -131,18 +139,16 @@ export function UserForm({ initialData, isSelf }: Props) {
             className={inputClasses}
             disabled={isSelf}
           >
-            <option value="STAFF">موظف (صلاحيات محدودة)</option>
-            <option value="ADMIN">مدير (صلاحيات كاملة)</option>
+            <option value="STAFF">{t("roleStaffOption")}</option>
+            <option value="ADMIN">{t("roleAdminOption")}</option>
           </select>
           {isSelf && (
-            <p className="text-xs text-muted mt-1">
-              لا يمكنك تغيير دورك الخاص
-            </p>
+            <p className="text-xs text-muted mt-1">{t("roleSelfHint")}</p>
           )}
         </FormField>
 
         {!isEdit && (
-          <FormField label="كلمة السر" required>
+          <FormField label={t("passwordLabel")} required>
             <input
               type="password"
               name="password"
@@ -150,7 +156,8 @@ export function UserForm({ initialData, isSelf }: Props) {
               onChange={handleChange}
               required
               minLength={8}
-              placeholder="8 أحرف على الأقل"
+              autoComplete="new-password"
+              placeholder={t("passwordPlaceholder")}
               dir="ltr"
               className={inputClasses}
             />
@@ -163,14 +170,15 @@ export function UserForm({ initialData, isSelf }: Props) {
         )}
 
         {isEdit && (
-          <FormField label="كلمة سر جديدة (اختياري)">
+          <FormField label={t("newPasswordLabel")}>
             <input
               type="password"
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               minLength={8}
-              placeholder="اترك فارغاً لعدم التغيير"
+              autoComplete="new-password"
+              placeholder={t("newPasswordPlaceholder")}
               dir="ltr"
               className={inputClasses}
             />
@@ -192,14 +200,10 @@ export function UserForm({ initialData, isSelf }: Props) {
               disabled={isSelf}
               className="w-4 h-4 accent-[--color-accent]"
             />
-            <span className="text-sm font-medium">
-              حساب نشط (يستطيع الدخول)
-            </span>
+            <span className="text-sm font-medium">{t("isActiveLabel")}</span>
           </label>
           {isSelf && (
-            <p className="text-xs text-muted mt-1">
-              لا يمكنك تعطيل حسابك الخاص
-            </p>
+            <p className="text-xs text-muted mt-1">{t("isActiveSelfHint")}</p>
           )}
         </div>
       </div>
@@ -216,20 +220,16 @@ export function UserForm({ initialData, isSelf }: Props) {
           onClick={() => router.push("/admin/users")}
           className="px-6 py-3 rounded-full border border-border hover:border-foreground transition-colors"
         >
-          إلغاء
+          {t("cancel")}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isSubmitting
-            ? "جاري الحفظ..."
-            : isEdit
-              ? "حفظ التعديلات"
-              : "إضافة الموظف"}
+          {isSubmitting ? t("saving") : isEdit ? t("save") : t("create")}
         </button>
       </div>
-    </form>
+    </Form>
   );
 }

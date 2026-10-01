@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   toggleMenuItemAvailability,
   toggleMenuItemFeatured,
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export function MenuItemRow({ item, isAdmin }: Props) {
+  const t = useTranslations("Admin.menu");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -49,7 +51,7 @@ export function MenuItemRow({ item, isAdmin }: Props) {
   }
 
   function handleDelete() {
-    if (!confirm(`حذف "${item.name}" نهائياً؟ لا يمكن التراجع.`)) return;
+    if (!confirm(t("deleteConfirm", { name: item.name }))) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteMenuItem(item.id);
@@ -64,18 +66,17 @@ export function MenuItemRow({ item, isAdmin }: Props) {
       }`}
     >
       <div className="flex flex-wrap items-center gap-4">
-        {/* معلومات الطبق */}
         <div className="flex-1 min-w-50">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium">{item.name}</span>
             {item.isFeatured && (
               <span className="text-xs bg-accent text-white px-2 py-0.5 rounded-full">
-                ⭐ مميز
+                {t("featured")}
               </span>
             )}
             {!item.isAvailable && (
               <span className="text-xs bg-red-100 text-red-800 px-2 py-0.5 rounded-full">
-                ⊘ غير متاح
+                {t("unavailable")}
               </span>
             )}
           </div>
@@ -89,12 +90,10 @@ export function MenuItemRow({ item, isAdmin }: Props) {
           )}
         </div>
 
-        {/* السعر */}
         <div className="text-sm font-bold text-accent-dark min-w-25">
-          {item.price} <span className="font-normal text-xs">ج.م</span>
+          {item.price} <span className="font-normal text-xs">{t("currency")}</span>
         </div>
 
-        {/* الأزرار */}
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
@@ -102,7 +101,7 @@ export function MenuItemRow({ item, isAdmin }: Props) {
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-accent hover:text-accent transition-colors disabled:opacity-40"
           >
-            {item.isAvailable ? "⊘ إخفاء" : "✓ إظهار"}
+            {item.isAvailable ? t("hide") : t("show")}
           </button>
 
           <button
@@ -111,14 +110,14 @@ export function MenuItemRow({ item, isAdmin }: Props) {
             disabled={isPending}
             className="text-xs px-3 py-1.5 rounded-full border border-border hover:border-accent hover:text-accent transition-colors disabled:opacity-40"
           >
-            {item.isFeatured ? "☆ إلغاء التمييز" : "⭐ تمييز"}
+            {item.isFeatured ? t("unfeature") : t("feature")}
           </button>
 
           <Link
             href={`/admin/menu/${item.id}/edit`}
             className="text-xs px-3 py-1.5 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
           >
-            ✎ تعديل
+            {t("edit")}
           </Link>
 
           {isAdmin && (
@@ -128,7 +127,7 @@ export function MenuItemRow({ item, isAdmin }: Props) {
               disabled={isPending}
               className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-700 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-40"
             >
-              🗑 حذف
+              {t("delete")}
             </button>
           )}
         </div>

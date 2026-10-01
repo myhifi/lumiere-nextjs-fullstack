@@ -2,25 +2,23 @@
 
 import { prisma } from "@/lib/prisma";
 import {
-  reservationSchema,
+  createReservationSchema,
   parseReservationDate,
 } from "@/lib/validations/reservation";
+import { getLocale, getTranslations } from "next-intl/server";
 import {
   findBestTable,
   DEFAULT_DURATION_MINUTES,
 } from "@/lib/services/table-assignment";
 import { sendReservationConfirmation } from "@/lib/email/send";
+import { tError } from "@/lib/utils/server-errors";
 
 // ═══════════════════════════════════════════════════
-// 📅 Server Action: إنشاء حجز جديد
+// 📅 Server Action: Create new reservation
 // ═══════════════════════════════════════════════════
 
 export type CreateReservationResult =
-  | {
-      success: true;
-      reservationId: string;
-      tableNumber: number;
-    }
+  | { success: true; reservationId: string; tableNumber: number }
   | {
       success: false;
       error: string;
@@ -30,8 +28,15 @@ export type CreateReservationResult =
 export async function createReservation(
   input: unknown
 ): Promise<CreateReservationResult> {
-  // ─── 1. التحقق من صحة البيانات (Zod) ───
-  const parsed = reservationSchema.safeParse(input);
+  // Get the current request's locale (for both validation + email)
+  const locale = await getLocale();
+
+  // ─── 1. Validate input with Zod (using current locale) ───
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createReservationSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
 
   if (!parsed.success) {
     const fieldErrors: Record<string, string[]> = {};
@@ -41,7 +46,7 @@ export async function createReservation(
     }
     return {
       success: false,
-      error: "تحقق من البيانات المُدخلة",
+      error: await tError("invalidData"),
       fieldErrors,
     };
   }
@@ -51,8 +56,7 @@ export async function createReservation(
   const duration = DEFAULT_DURATION_MINUTES;
 
   try {
-    // ─── 2. جلب الطاولات المرشّحة (مع حجوزاتها في نافذة زمنية قريبة) ───
-    // نضيّق نطاق البحث لتحسين الأداء: ±3 ساعات حول وقت الحجز
+    // ─── 2. Fetch candidate tables with nearby reservations ───
     const bufferMs = 3 * 60 * 60 * 1000;
     const windowStart = new Date(reservationDate.getTime() - bufferMs);
     const windowEnd = new Date(
@@ -62,29 +66,20 @@ export async function createReservation(
     const tables = await prisma.table.findMany({
       where: {
         isActive: true,
-        capacity: {
-          gte: data.guestsCount,
-          lte: data.guestsCount + 3,
-        },
+        capacity: { gte: data.guestsCount, lte: data.guestsCount + 3 },
       },
       include: {
         reservations: {
           where: {
             status: { in: ["PENDING", "CONFIRMED"] },
-            reservationDate: {
-              gte: windowStart,
-              lte: windowEnd,
-            },
+            reservationDate: { gte: windowStart, lte: windowEnd },
           },
-          select: {
-            reservationDate: true,
-            durationMinutes: true,
-          },
+          select: { reservationDate: true, durationMinutes: true },
         },
       },
     });
 
-    // ─── 3. اتخاذ القرار (الدالة النقية) ───
+    // ─── 3. Assign best table (pure function) ───
     const bestTable = findBestTable(tables, {
       guestsCount: data.guestsCount,
       reservationDate,
@@ -94,12 +89,11 @@ export async function createReservation(
     if (!bestTable) {
       return {
         success: false,
-        error:
-          "لا توجد طاولة متاحة في هذا الوقت. جرّب وقتاً آخر أو تواصل معنا هاتفياً.",
+        error: await tError("noTableAvailable"),
       };
     }
 
-    // ─── 4. حفظ الحجز (الأولوية القصوى) ───
+    // ─── 4. Save reservation (highest priority) ───
     const reservation = await prisma.reservation.create({
       data: {
         guestName: data.guestName,
@@ -114,19 +108,19 @@ export async function createReservation(
       },
     });
 
-    // ─── 5. إرسال إيميل التأكيد (لا يُلغي الحجز إن فشل) ───
-    // ملاحظة: نستخدم try/catch داخلي منفصل، لأن فشل الإيميل
-    // لا يجب أن يُلغي حجزاً تم في قاعدة البيانات بنجاح.
-    // نريد فصل فشل الإيميل عن فشل الحجز
+    // ─── 5. Send confirmation email (non-blocking) ───
     try {
-      const emailResult = await sendReservationConfirmation({
-        to: data.guestEmail,
-        guestName: data.guestName,
-        reservationId: reservation.id,
-        tableNumber: bestTable.number,
-        reservationDate,
-        guestsCount: data.guestsCount,
-      });
+      const emailResult = await sendReservationConfirmation(
+        {
+          to: data.guestEmail,
+          guestName: data.guestName,
+          reservationId: reservation.id,
+          tableNumber: bestTable.number,
+          reservationDate,
+          guestsCount: data.guestsCount,
+        },
+        locale
+      );
 
       if (!emailResult.success) {
         console.error(
@@ -135,7 +129,6 @@ export async function createReservation(
         );
       }
     } catch (emailError) {
-      // نبتلع الخطأ عمداً — الحجز نجح، والمشكلة في الإيميل فقط
       console.error("[createReservation] Email exception:", emailError);
     }
 
@@ -144,12 +137,11 @@ export async function createReservation(
       reservationId: reservation.id,
       tableNumber: bestTable.number,
     };
-
   } catch (error) {
     console.error("[createReservation] error:", error);
     return {
       success: false,
-      error: "حدث خطأ غير متوقع أثناء الحجز. يرجى المحاولة لاحقاً.",
+      error: await tError("unexpected"),
     };
   }
 }

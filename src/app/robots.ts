@@ -1,22 +1,24 @@
 import type { MetadataRoute } from "next";
-
-// ═══════════════════════════════════════════════════
-// 🤖 Robots — يُخبر محركات البحث ما يُؤرشف
-// ═══════════════════════════════════════════════════
-// • Next.js يبني robots.txt تلقائياً من هذا الملف
-// • /admin → محظور (صفحات إدارية)
-// • /api → محظور (نقاط نهاية برمجية)
+import { routing } from "@/i18n/routing";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
   "https://lumiere-nextjs-fullstack.vercel.app";
 
 export default function robots(): MetadataRoute.Robots {
+  // Disallow admin + API across all locale prefixes
+  const localePrefixes = routing.locales.map((locale) => `/${locale}`);
+  const disallow = localePrefixes.flatMap((prefix) => [
+    `${prefix}/admin`,
+    `${prefix}/admin/`,
+  ]);
+  disallow.push("/api/");
+
   return {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/admin", "/admin/", "/api/"],
+      disallow,
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };

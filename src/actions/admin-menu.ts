@@ -1,16 +1,22 @@
 "use server";
 
-import { menuItemSchema } from "@/lib/validations/menu-item";
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { createMenuItemSchema } from "@/lib/validations/menu-item";
 import { logAction } from "@/lib/services/audit";
+import { tError } from "@/lib/utils/server-errors";
 
 // ═══════════════════════════════════════════════════
-// 🍽️ Server Actions: إدارة الأطباق
+// 🍽️ Server Actions: Menu items management
 // ═══════════════════════════════════════════════════
 
 type ActionResult = { success: true } | { success: false; error: string };
+
+export type MenuItemActionResult =
+  | { success: true; id: string }
+  | { success: false; error: string; fieldErrors?: Record<string, string[]> };
 
 async function requireAdmin() {
   const session = await auth();
@@ -21,18 +27,17 @@ async function requireAdmin() {
   return session.user;
 }
 
-// ─── اسم المستخدم الموحّد للسجلات ───
 function getUserName(user: { name?: string | null }): string {
   return user.name ?? "Unknown";
 }
 
-// ─── تبديل توفّر الطبق ───
+// ─── Toggle availability ───
 export async function toggleMenuItemAvailability(
   itemId: string,
   isAvailable: boolean
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   try {
     const item = await prisma.menuItem.update({
@@ -58,17 +63,17 @@ export async function toggleMenuItemAvailability(
     return { success: true };
   } catch (error) {
     console.error("[toggleMenuItemAvailability]", error);
-    return { success: false, error: "فشل تحديث الطبق" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── تبديل تمييز الطبق ───
+// ─── Toggle featured ───
 export async function toggleMenuItemFeatured(
   itemId: string,
   isFeatured: boolean
 ): Promise<ActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   try {
     const item = await prisma.menuItem.update({
@@ -94,28 +99,27 @@ export async function toggleMenuItemFeatured(
     return { success: true };
   } catch (error) {
     console.error("[toggleMenuItemFeatured]", error);
-    return { success: false, error: "فشل تحديث الطبق" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── حذف طبق (للمدير فقط) ───
+// ─── Delete item (admin only) ───
 export async function deleteMenuItem(itemId: string): Promise<ActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
   if (user.role !== "ADMIN") {
-    return { success: false, error: "صلاحية المدير مطلوبة للحذف" };
+    return { success: false, error: await tError("adminRequired") };
   }
 
   try {
-    // جلب بيانات الطبق قبل الحذف (للسجل)
     const deleted = await prisma.menuItem.findUnique({
       where: { id: itemId },
       select: { name: true, price: true, categoryId: true },
     });
 
     if (!deleted) {
-      return { success: false, error: "الطبق غير موجود" };
+      return { success: false, error: await tError("notFound") };
     }
 
     await prisma.menuItem.delete({ where: { id: itemId } });
@@ -143,24 +147,23 @@ export async function deleteMenuItem(itemId: string): Promise<ActionResult> {
     return { success: true };
   } catch (error) {
     console.error("[deleteMenuItem]", error);
-    return { success: false, error: "فشل حذف الطبق" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── نتيجة موحّدة للنماذج ───
-export type MenuItemActionResult =
-  | { success: true; id: string }
-  | { success: false; error: string; fieldErrors?: Record<string, string[]> };
-
-// ─── إنشاء طبق جديد ───
+// ─── Create menu item ───
 export async function createMenuItem(
   input: unknown
 ): Promise<MenuItemActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
-  // 1. التحقق من البيانات
-  const parsed = menuItemSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createMenuItemSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     const fieldErrors: Record<string, string[]> = {};
     for (const issue of parsed.error.issues) {
@@ -169,7 +172,7 @@ export async function createMenuItem(
     }
     return {
       success: false,
-      error: "تحقق من البيانات المُدخلة",
+      error: await tError("invalidData"),
       fieldErrors,
     };
   }
@@ -177,19 +180,17 @@ export async function createMenuItem(
   const data = parsed.data;
 
   try {
-    // 2. التحقق من عدم تكرار slug
     const existing = await prisma.menuItem.findUnique({
       where: { slug: data.slug },
     });
     if (existing) {
       return {
         success: false,
-        error: "المعرّف (slug) مستخدم بالفعل",
-        fieldErrors: { slug: ["هذا المعرّف مستخدم بالفعل"] },
+        error: await tError("duplicateSlug"),
+        fieldErrors: { slug: [await tError("duplicateSlug")] },
       };
     }
 
-    // 3. الحفظ
     const item = await prisma.menuItem.create({
       data: {
         name: data.name,
@@ -207,7 +208,6 @@ export async function createMenuItem(
       },
     });
 
-    // 4. التسجيل في Audit Log
     await logAction({
       userId: user.id,
       userName: getUserName(user),
@@ -229,58 +229,59 @@ export async function createMenuItem(
     revalidatePath("/admin/menu");
     revalidatePath("/menu");
     revalidatePath("/");
-
     return { success: true, id: item.id };
   } catch (error) {
     console.error("[createMenuItem]", error);
-    return { success: false, error: "فشل إنشاء الطبق" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── تحديث طبق موجود ───
+// ─── Update menu item ───
 export async function updateMenuItem(
   itemId: string,
   input: unknown
 ): Promise<MenuItemActionResult> {
   const user = await requireAdmin();
-  if (!user) return { success: false, error: "غير مصرح" };
+  if (!user) return { success: false, error: await tError("unauthorized") };
 
-  const parsed = menuItemSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createMenuItemSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     const fieldErrors: Record<string, string[]> = {};
     for (const issue of parsed.error.issues) {
       const key = issue.path.join(".") || "_";
       (fieldErrors[key] ??= []).push(issue.message);
     }
-    return { success: false, error: "تحقق من البيانات المُدخلة", fieldErrors };
+    return { success: false, error: await tError("invalidData"), fieldErrors };
   }
 
   const data = parsed.data;
 
   try {
-    // 1. جلب البيانات القديمة (للسجل)
     const before = await prisma.menuItem.findUnique({
       where: { id: itemId },
       select: { name: true, price: true, isAvailable: true, isFeatured: true },
     });
 
     if (!before) {
-      return { success: false, error: "الطبق غير موجود" };
+      return { success: false, error: await tError("notFound") };
     }
 
-    // 2. التحقق من عدم تكرار slug على طبق آخر
     const duplicate = await prisma.menuItem.findFirst({
       where: { slug: data.slug, NOT: { id: itemId } },
     });
     if (duplicate) {
       return {
         success: false,
-        error: "المعرّف (slug) مستخدم في طبق آخر",
-        fieldErrors: { slug: ["هذا المعرّف مستخدم في طبق آخر"] },
+        error: await tError("duplicateSlug"),
+        fieldErrors: { slug: [await tError("duplicateSlug")] },
       };
     }
 
-    // 3. التحديث
     const item = await prisma.menuItem.update({
       where: { id: itemId },
       data: {
@@ -299,7 +300,6 @@ export async function updateMenuItem(
       },
     });
 
-    // 4. التسجيل في Audit Log
     await logAction({
       userId: user.id,
       userName: getUserName(user),
@@ -327,10 +327,9 @@ export async function updateMenuItem(
     revalidatePath("/admin/menu");
     revalidatePath("/menu");
     revalidatePath("/");
-
     return { success: true, id: item.id };
   } catch (error) {
     console.error("[updateMenuItem]", error);
-    return { success: false, error: "فشل تحديث الطبق" };
+    return { success: false, error: await tError("unexpected") };
   }
 }

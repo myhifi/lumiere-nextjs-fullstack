@@ -1,57 +1,48 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
+import { routing } from "@/i18n/routing";
 
-// ═══════════════════════════════════════════════════
-// 🗺️ Sitemap — يُخبر Google بكل صفحات الموقع
-// ═══════════════════════════════════════════════════
-// • Next.js يبني sitemap.xml تلقائياً من هذا الملف
-// • يُحدَّث عند كل بناء (مع كل نشرة)
-// • يحتوي الصفحات العامة + صفحات الأطباق الديناميكية
+// Build a locale-prefixed URL (matches localePrefix: "always")
+function localeUrl(locale: string, path: string): string {
+  return `${SITE_URL}/${locale}${path}`;
+}
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
   "https://lumiere-nextjs-fullstack.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // ─── الصفحات الثابتة ───
-  const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: SITE_URL,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 1.0,
-    },
-    {
-      url: `${SITE_URL}/menu`,
-      lastModified: new Date(),
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${SITE_URL}/reserve`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-  ];
+  // Static paths shared across all locales
+  const staticPaths = ["", "/menu", "/reserve"] as const;
+  const staticPages: MetadataRoute.Sitemap = routing.locales.flatMap(
+    (locale) =>
+      staticPaths.map((path) => ({
+        url: localeUrl(locale, path),
+        lastModified: new Date(),
+        changeFrequency: path === "" ? "daily" : "monthly",
+        priority: path === "" ? 1.0 : path === "/menu" ? 0.9 : 0.8,
+      }))
+  );
 
-  // ─── صفحات الأطباق الديناميكية ───
+  // Dynamic menu item pages × all locales
   try {
     const items = await prisma.menuItem.findMany({
       where: { isAvailable: true },
       select: { slug: true, updatedAt: true },
     });
 
-    const itemPages: MetadataRoute.Sitemap = items.map((item) => ({
-      url: `${SITE_URL}/menu/${item.slug}`,
-      lastModified: item.updatedAt,
-      changeFrequency: "weekly",
-      priority: 0.7,
-    }));
+    const itemPages: MetadataRoute.Sitemap = routing.locales.flatMap(
+      (locale) =>
+        items.map((item) => ({
+          url: localeUrl(locale, `/menu/${item.slug}`),
+          lastModified: item.updatedAt,
+          changeFrequency: "weekly" as const,
+          priority: 0.7,
+        }))
+    );
 
     return [...staticPages, ...itemPages];
   } catch {
-    // إن فشل الاتصال بـ DB، نُعيد الصفحات الثابتة فقط
     return staticPages;
   }
 }

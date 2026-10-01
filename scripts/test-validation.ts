@@ -2,7 +2,10 @@
 // 🧪 اختبار مخططات Zod
 // ═══════════════════════════════════════════════════
 
-import { reservationSchema } from "../src/lib/validations/reservation";
+import { createReservationSchema } from "../src/lib/validations/reservation";
+
+// Test-only translate function: returns the key as-is
+const reservationSchema = createReservationSchema((key) => key);
 
 const line = "═".repeat(62);
 console.log("\n🧪 اختبار مخطط التحقق (Zod)\n" + line);
@@ -34,7 +37,7 @@ function futureDate(daysAhead = 1): string {
 test(
   "بيانات صحيحة تماماً",
   {
-    guestName: "أحمد محمد",
+    guestName: "سامي آدم",
     guestEmail: "Ahmed@Example.com",
     guestPhone: "+20 100 123 4567",
     guestsCount: 4,
@@ -77,7 +80,7 @@ test(
 test(
   "عدد أشخاص = 15 (أكثر من الحد)",
   {
-    guestName: "أحمد محمد",
+    guestName: "سامي آدم",
     guestEmail: "a@b.com",
     guestPhone: "+20 100 123 4567",
     guestsCount: 15,
@@ -91,7 +94,7 @@ test(
 test(
   "تاريخ في الماضي",
   {
-    guestName: "أحمد محمد",
+    guestName: "سامي آدم",
     guestEmail: "a@b.com",
     guestPhone: "+20 100 123 4567",
     guestsCount: 2,
@@ -105,7 +108,7 @@ test(
 test(
   "وقت الحجز 03:00 صباحاً (خارج ساعات العمل)",
   {
-    guestName: "أحمد محمد",
+    guestName: "سامي آدم",
     guestEmail: "a@b.com",
     guestPhone: "+20 100 123 4567",
     guestsCount: 2,
@@ -119,7 +122,7 @@ test(
 test(
   "ملاحظات فارغة (حقل اختياري)",
   {
-    guestName: "أحمد محمد",
+    guestName: "سامي آدم",
     guestEmail: "a@b.com",
     guestPhone: "+20 100 123 4567",
     guestsCount: 2,

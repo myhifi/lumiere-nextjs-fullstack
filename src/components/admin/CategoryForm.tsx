@@ -1,16 +1,19 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import {
   createCategory,
   updateCategory,
 } from "@/actions/admin-categories";
+import { Form } from "@/components/ui/Form";
 
 type InitialData = {
   id?: string;
   name: string;
+  nameEn: string;
   slug: string;
   description: string;
   displayOrder: number;
@@ -29,11 +32,13 @@ function slugify(text: string): string {
 
 export function CategoryForm({ initialData }: Props) {
   const router = useRouter();
+  const t = useTranslations("Admin.categoryForm");
   const isEdit = !!initialData?.id;
 
   const [formData, setFormData] = useState<InitialData>({
     id: initialData?.id,
     name: initialData?.name ?? "",
+    nameEn: initialData?.nameEn ?? "",
     slug: initialData?.slug ?? "",
     description: initialData?.description ?? "",
     displayOrder: initialData?.displayOrder ?? 0,
@@ -59,7 +64,17 @@ export function CategoryForm({ initialData }: Props) {
     }));
   }
 
-  async function handleSubmit(e: FormEvent) {
+  function handleNameEnChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const nameEn = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      nameEn,
+      // Auto-generate slug from English name if slug is empty
+      slug: !isEdit && !prev.slug ? slugify(nameEn) : prev.slug,
+    }));
+  }
+
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -67,6 +82,7 @@ export function CategoryForm({ initialData }: Props) {
 
     const payload = {
       name: formData.name,
+      nameEn: formData.nameEn,
       slug: formData.slug,
       description: formData.description,
       displayOrder: formData.displayOrder,
@@ -88,19 +104,19 @@ export function CategoryForm({ initialData }: Props) {
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-6 md:p-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <FormField label="اسم التصنيف" required>
+        <FormField label={t("nameLabel")} required>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleNameChange}
             required
-            placeholder="مثال: أطباق رئيسية"
+            placeholder={t("namePlaceholder")}
             className={inputClasses}
           />
           {fieldErrors.name && (
@@ -108,14 +124,32 @@ export function CategoryForm({ initialData }: Props) {
           )}
         </FormField>
 
-        <FormField label="المعرّف (Slug)" required>
+        <FormField label={t("nameEnLabel")}>
+          <input
+            type="text"
+            name="nameEn"
+            value={formData.nameEn}
+            onChange={handleNameEnChange}
+            placeholder={t("nameEnPlaceholder")}
+            dir="ltr"
+            className={inputClasses}
+          />
+          <p className="text-xs text-muted mt-1">{t("nameEnHint")}</p>
+          {fieldErrors.nameEn && (
+            <p className="text-xs text-red-600 mt-1">
+              {fieldErrors.nameEn[0]}
+            </p>
+          )}
+        </FormField>
+
+        <FormField label={t("slugLabel")} required>
           <input
             type="text"
             name="slug"
             value={formData.slug}
             onChange={handleChange}
             required
-            placeholder="main-courses"
+            placeholder={t("slugPlaceholder")}
             dir="ltr"
             className={inputClasses}
           />
@@ -124,7 +158,7 @@ export function CategoryForm({ initialData }: Props) {
           )}
         </FormField>
 
-        <FormField label="ترتيب العرض" required>
+        <FormField label={t("orderLabel")} required>
           <input
             type="number"
             name="displayOrder"
@@ -136,19 +170,22 @@ export function CategoryForm({ initialData }: Props) {
             dir="ltr"
             className={inputClasses}
           />
-          <p className="text-xs text-muted mt-1">
-            الرقم الأصغر يظهر أولاً
-          </p>
+          <p className="text-xs text-muted mt-1">{t("orderHint")}</p>
+          {fieldErrors.displayOrder && (
+            <p className="text-xs text-red-600 mt-1">
+              {fieldErrors.displayOrder[0]}
+            </p>
+          )}
         </FormField>
 
         <div className="md:col-span-2">
-          <FormField label="الوصف (اختياري)">
+          <FormField label={t("descriptionLabel")}>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={2}
-              placeholder="وصف موجز..."
+              placeholder={t("descriptionPlaceholder")}
               className={inputClasses}
             />
             {fieldErrors.description && (
@@ -172,20 +209,16 @@ export function CategoryForm({ initialData }: Props) {
           onClick={() => router.push("/admin/categories")}
           className="px-6 py-3 rounded-full border border-border hover:border-foreground transition-colors"
         >
-          إلغاء
+          {t("cancel")}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isSubmitting
-            ? "جاري الحفظ..."
-            : isEdit
-              ? "حفظ التعديلات"
-              : "إضافة التصنيف"}
+          {isSubmitting ? t("saving") : isEdit ? t("save") : t("create")}
         </button>
       </div>
-    </form>
+    </Form>
   );
 }

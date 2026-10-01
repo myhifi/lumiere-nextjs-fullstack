@@ -3,7 +3,6 @@
 import {
   PieChart,
   Pie,
-  Cell,
   BarChart,
   Bar,
   XAxis,
@@ -12,19 +11,22 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import { useTranslations } from "next-intl";
 
 // ═══════════════════════════════════════════════════
-// 📊 Analytics Charts — رسوم بيانية للوحة التحكم
+// 📊 Analytics Charts — Dashboard visualizations
 // ═══════════════════════════════════════════════════
 
+// Color palette for charts
 const COLORS = ["#c9a961", "#a88847", "#f5ecd9", "#1a1a1a", "#6b6b6b"];
 
+// Shape of chart data
 type ChartData = {
   name: string;
   value: number;
 };
 
-// ─── Legend مخصص أسفل الرسم ───
+// ─── Custom legend below the chart ───
 function CustomLegend({ data }: { data: ChartData[] }) {
   return (
     <div className="flex flex-wrap justify-center gap-x-5 gap-y-2 mt-4">
@@ -44,7 +46,7 @@ function CustomLegend({ data }: { data: ChartData[] }) {
   );
 }
 
-// ─── 1. رسم دائري ───
+// ─── 1. Donut chart ───
 function DonutChart({
   data,
   title,
@@ -54,6 +56,12 @@ function DonutChart({
   title: string;
   height?: number;
 }) {
+  // Add color directly to each item (instead of <Cell>)
+  const coloredData = data.map((item, i) => ({
+    ...item,
+    fill: COLORS[i % COLORS.length],
+  }));
+
   return (
     <div className="bg-card border border-border rounded-2xl p-6">
       <h3 className="text-sm font-medium text-muted mb-4 tracking-wider uppercase">
@@ -63,7 +71,7 @@ function DonutChart({
       <ResponsiveContainer width="100%" height={height}>
         <PieChart>
           <Pie
-            data={data}
+            data={coloredData}
             cx="50%"
             cy="50%"
             innerRadius={50}
@@ -71,37 +79,35 @@ function DonutChart({
             paddingAngle={3}
             dataKey="value"
             stroke="none"
-          >
-            {data.map((_, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
+          />
           <Tooltip
             contentStyle={{
               backgroundColor: "#1a1a1a",
               border: "none",
               borderRadius: "8px",
-              color: "#fff",
               fontSize: "12px",
             }}
+            itemStyle={{ color: "#ffffff" }}
+            labelStyle={{ color: "#ffffff" }}
           />
         </PieChart>
       </ResponsiveContainer>
 
-      {/* Legend مخصص أسفل الرسم — بدون تداخل */}
       <CustomLegend data={data} />
     </div>
   );
 }
 
-// ─── 2. رسم أعمدة ───
+// ─── 2. Bar chart ───
 function BarChartCard({
   data,
   title,
+  hint,
   height = 260,
 }: {
   data: ChartData[];
   title: string;
+  hint: string;
   height?: number;
 }) {
   return (
@@ -110,9 +116,7 @@ function BarChartCard({
         <h3 className="text-sm font-medium text-muted tracking-wider uppercase">
           {title}
         </h3>
-        <p className="text-xs text-muted mt-1.5">
-          المحور الأفقي: نطاق السعر · المحور العمودي: عدد الأطباق
-        </p>
+        <p className="text-xs text-muted mt-1.5">{hint}</p>
       </div>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart data={data}>
@@ -132,9 +136,10 @@ function BarChartCard({
               backgroundColor: "#1a1a1a",
               border: "none",
               borderRadius: "8px",
-              color: "#fff",
               fontSize: "12px",
             }}
+            itemStyle={{ color: "#ffffff" }}
+            labelStyle={{ color: "#ffffff" }}
             cursor={{ fill: "rgba(201,169,97,0.1)" }}
           />
           <Bar dataKey="value" fill="#c9a961" radius={[6, 6, 0, 0]} />
@@ -145,7 +150,7 @@ function BarChartCard({
 }
 
 // ═══════════════════════════════════════════════════
-// 🎯 المكوّن الرئيسي
+// 🎯 Main component
 // ═══════════════════════════════════════════════════
 type Props = {
   categoryData: ChartData[];
@@ -158,20 +163,38 @@ export function AnalyticsCharts({
   priceData,
   featuredData,
 }: Props) {
+  const t = useTranslations("Admin.analytics");
+
+  // Translate the featured/regular labels before rendering
+  const translatedFeaturedData = featuredData.map((item) => ({
+    ...item,
+    name:
+      item.name === "featured"
+        ? t("featuredLabel")
+        : item.name === "regular"
+          ? t("regularLabel")
+          : item.name,
+  }));
+
   return (
     <div className="mt-8">
       <div className="mb-6">
-        <h2 className="text-xl font-bold">📊 التحليلات</h2>
-        <p className="text-sm text-muted">
-          نظرة بصرية على توزيع القائمة والأسعار
-        </p>
+        <h2 className="text-xl font-bold">{t("title")}</h2>
+        <p className="text-sm text-muted">{t("subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <DonutChart data={categoryData} title="الأطباق حسب التصنيف" />
-        <DonutChart data={featuredData} title="المميزة مقابل العادية" />
+        <DonutChart data={categoryData} title={t("categoryTitle")} />
+        <DonutChart
+          data={translatedFeaturedData}
+          title={t("featuredTitle")}
+        />
         <div className="lg:col-span-2">
-          <BarChartCard data={priceData} title="توزيع الأسعار (ج.م)" />
+          <BarChartCard
+            data={priceData}
+            title={t("priceTitle")}
+            hint={t("priceAxisHint")}
+          />
         </div>
       </div>
     </div>

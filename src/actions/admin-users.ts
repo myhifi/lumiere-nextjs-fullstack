@@ -1,14 +1,16 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { getTranslations } from "next-intl/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/auth/password";
 import { createUserSchema, updateUserSchema } from "@/lib/validations/user";
 import { logAction } from "@/lib/services/audit";
+import { tError } from "@/lib/utils/server-errors";
 
 // ═══════════════════════════════════════════════════
-// 👥 Server Actions: إدارة الموظفين
+// 👥 Server Actions: Staff management
 // ═══════════════════════════════════════════════════
 
 type ActionResult =
@@ -19,7 +21,6 @@ type ActionResult =
       fieldErrors?: Record<string, string[]>;
     };
 
-// المدير فقط يدير الموظفين
 async function requireAdminRole() {
   const session = await auth();
   if (!session?.user) return null;
@@ -42,16 +43,21 @@ function parseErrors(
   return fieldErrors;
 }
 
-// ─── إنشاء موظف ───
+// ─── Create user ───
 export async function createUser(input: unknown): Promise<ActionResult> {
   const admin = await requireAdminRole();
-  if (!admin) return { success: false, error: "صلاحية المدير مطلوبة" };
+  if (!admin) return { success: false, error: await tError("adminRequired") };
 
-  const parsed = createUserSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = createUserSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     return {
       success: false,
-      error: "تحقق من البيانات",
+      error: await tError("invalidData"),
       fieldErrors: parseErrors(parsed.error.issues),
     };
   }
@@ -65,8 +71,8 @@ export async function createUser(input: unknown): Promise<ActionResult> {
     if (duplicate) {
       return {
         success: false,
-        error: "البريد مستخدم",
-        fieldErrors: { email: ["هذا البريد مستخدم بالفعل"] },
+        error: await tError("duplicateEmail"),
+        fieldErrors: { email: [await tError("duplicateEmail")] },
       };
     }
 
@@ -104,23 +110,28 @@ export async function createUser(input: unknown): Promise<ActionResult> {
     return { success: true, id: user.id };
   } catch (error) {
     console.error("[createUser]", error);
-    return { success: false, error: "فشل إنشاء الموظف" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── تحديث موظف ───
+// ─── Update user ───
 export async function updateUser(
   id: string,
   input: unknown
 ): Promise<ActionResult> {
   const admin = await requireAdminRole();
-  if (!admin) return { success: false, error: "صلاحية المدير مطلوبة" };
+  if (!admin) return { success: false, error: await tError("adminRequired") };
 
-  const parsed = updateUserSchema.safeParse(input);
+  const tValidation = await getTranslations("Errors.validation");
+  const schema = updateUserSchema((key) =>
+    tValidation(key as Parameters<typeof tValidation>[0])
+  );
+  const parsed = schema.safeParse(input);
+
   if (!parsed.success) {
     return {
       success: false,
-      error: "تحقق من البيانات",
+      error: await tError("invalidData"),
       fieldErrors: parseErrors(parsed.error.issues),
     };
   }
@@ -128,17 +139,17 @@ export async function updateUser(
   const data = parsed.data;
 
   try {
-    // 🛡️ حماية 1: لا يمكن للمدير إزالة دور ADMIN من نفسه
+    // 🛡️ Protection 1: cannot remove ADMIN role from yourself
     if (id === admin.id && data.role !== "ADMIN") {
-      return { success: false, error: "لا يمكنك إزالة صلاحية المدير من نفسك" };
+      return { success: false, error: await tError("selfRoleChange") };
     }
 
-    // 🛡️ حماية 2: لا يمكن تعطيل نفسك
+    // 🛡️ Protection 2: cannot disable yourself
     if (id === admin.id && !data.isActive) {
-      return { success: false, error: "لا يمكنك تعطيل حسابك" };
+      return { success: false, error: await tError("selfDisable") };
     }
 
-    // 🛡️ حماية 3: لا يمكن تعطيل/تخفيض آخر مدير نشط
+    // 🛡️ Protection 3: cannot demote/disable the last active admin
     if (data.role !== "ADMIN" || !data.isActive) {
       const otherActiveAdmins = await prisma.user.count({
         where: {
@@ -153,24 +164,19 @@ export async function updateUser(
         target?.role === "ADMIN" && target?.isActive;
 
       if (isTargetCurrentlyAdmin && otherActiveAdmins === 0) {
-        return {
-          success: false,
-          error: "لا يمكن إزالة صلاحية المدير من آخر مدير نشط",
-        };
+        return { success: false, error: await tError("lastAdmin") };
       }
     }
 
-    // جلب البيانات القديمة (للسجل)
     const before = await prisma.user.findUnique({
       where: { id },
       select: { name: true, role: true, isActive: true },
     });
 
     if (!before) {
-      return { success: false, error: "المستخدم غير موجود" };
+      return { success: false, error: await tError("notFound") };
     }
 
-    // تحديث البيانات الأساسية
     const updateData: {
       name: string;
       role: string;
@@ -200,7 +206,7 @@ export async function updateUser(
       entity: "User",
       entityId: user.id,
       entityName: user.name,
-      severity: "warning", // تعديل الموظفين إجراء حساس
+      severity: "warning",
       changes: {
         before: {
           name: before.name,
@@ -220,34 +226,32 @@ export async function updateUser(
     return { success: true, id: user.id };
   } catch (error) {
     console.error("[updateUser]", error);
-    return { success: false, error: "فشل تحديث الموظف" };
+    return { success: false, error: await tError("unexpected") };
   }
 }
 
-// ─── حذف موظف ───
+// ─── Delete user ───
 export async function deleteUser(
   id: string
 ): Promise<{ success: true } | { success: false; error: string }> {
   const admin = await requireAdminRole();
-  if (!admin) return { success: false, error: "صلاحية المدير مطلوبة" };
+  if (!admin) return { success: false, error: await tError("adminRequired") };
 
-  // 🛡️ حماية: لا يمكنك حذف نفسك
   if (id === admin.id) {
-    return { success: false, error: "لا يمكنك حذف حسابك الخاص" };
+    return { success: false, error: await tError("selfDelete") };
   }
 
   try {
-    // جلب البيانات قبل الحذف
     const target = await prisma.user.findUnique({ where: { id } });
-    if (!target) return { success: false, error: "المستخدم غير موجود" };
+    if (!target) return { success: false, error: await tError("notFound") };
 
-    // 🛡️ حماية: لا يمكن حذف آخر مدير نشط
+    // 🛡️ Cannot delete the last active admin
     if (target.role === "ADMIN" && target.isActive) {
       const otherActiveAdmins = await prisma.user.count({
         where: { role: "ADMIN", isActive: true, NOT: { id } },
       });
       if (otherActiveAdmins === 0) {
-        return { success: false, error: "لا يمكن حذف آخر مدير نشط" };
+        return { success: false, error: await tError("lastAdmin") };
       }
     }
 
@@ -274,6 +278,6 @@ export async function deleteUser(
     return { success: true };
   } catch (error) {
     console.error("[deleteUser]", error);
-    return { success: false, error: "فشل حذف الموظف" };
+    return { success: false, error: await tError("unexpected") };
   }
 }

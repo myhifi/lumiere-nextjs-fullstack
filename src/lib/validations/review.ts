@@ -1,45 +1,49 @@
+// ═══════════════════════════════════════════════════
+// ⭐ Review validation schema (i18n-ready)
+// ═══════════════════════════════════════════════════
+
 import { z } from "zod";
 
-// ═══════════════════════════════════════════════════
-// ⭐ مخطط التحقق من التقييمات (Zod)
-// ═══════════════════════════════════════════════════
+type TranslateFn = (key: string) => string;
 
-// ─── مخطط إنشاء تقييم جديد (من العميل) ───
-export const createReviewSchema = z.object({
-  guestName: z
-    .string()
-    .trim()
-    .min(2, "الاسم قصير جداً (حرفان على الأقل)")
-    .max(60, "الاسم طويل جداً (60 حرفاً كحد أقصى)"),
+// ─── Factory: create schema with translated messages ───
+export function createReviewSchema(t: TranslateFn) {
+  return z.object({
+    guestName: z
+      .string()
+      .trim()
+      .min(2, t("reviewerNameTooShort"))
+      .max(60, t("reviewerNameTooLong")),
 
-  guestEmail: z
-    .string()
-    .trim()
-    .toLowerCase()
-    .email("البريد الإلكتروني غير صحيح")
-    .optional()
-    .or(z.literal("")),
+    guestEmail: z
+      .string()
+      .trim()
+      .toLowerCase()
+      .email(t("reviewerEmailInvalid"))
+      .optional()
+      .or(z.literal("")),
 
-  rating: z.coerce
-    .number()
-    .int("التقييم يجب أن يكون رقماً صحيحاً")
-    .min(1, "التقييم على الأقل نجمة واحدة")
-    .max(5, "التقييم بحد أقصى 5 نجوم"),
+    rating: z.coerce
+      .number()
+      .int(t("ratingInvalid"))
+      .min(1, t("ratingTooLow"))
+      .max(5, t("ratingTooHigh")),
 
-  comment: z
-    .string()
-    .trim()
-    .min(10, "التعليق قصير جداً (10 أحرف على الأقل)")
-    .max(500, "التعليق طويل جداً (500 حرف كحد أقصى)"),
-});
+    comment: z
+      .string()
+      .trim()
+      .min(10, t("commentTooShort"))
+      .max(500, t("commentTooLong")),
+  });
+}
 
-// ─── مخطط تحديث حالة التقييم (من المدير) ───
+// ─── Update status schema (admin only, no translation needed) ───
 export const updateReviewStatusSchema = z.object({
   status: z.enum(["PENDING", "APPROVED", "REJECTED"], {
-    message: "الحالة يجب أن تكون PENDING أو APPROVED أو REJECTED",
+    message: "Status must be PENDING, APPROVED, or REJECTED",
   }),
 });
 
-// ─── الأنواع المُستنتَجة ───
-export type CreateReviewInput = z.infer<typeof createReviewSchema>;
+// ─── Inferred types ───
+export type CreateReviewInput = z.infer<ReturnType<typeof createReviewSchema>>;
 export type UpdateReviewStatusInput = z.infer<typeof updateReviewStatusSchema>;

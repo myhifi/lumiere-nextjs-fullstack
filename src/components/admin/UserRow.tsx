@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { deleteUser } from "@/actions/admin-users";
 
 type User = {
@@ -16,21 +17,35 @@ type User = {
 type Props = {
   user: User;
   currentUserId: string;
+  locale: string;
 };
 
-export function UserRow({ user, currentUserId }: Props) {
+export function UserRow({ user, currentUserId, locale }: Props) {
+  const t = useTranslations("Admin.users");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const isSelf = user.id === currentUserId;
 
   function handleDelete() {
-    if (!confirm(`حذف "${user.name}" نهائياً؟`)) return;
+    if (!confirm(t("deleteConfirm", { name: user.name }))) return;
     setError(null);
     startTransition(async () => {
       const result = await deleteUser(user.id);
       if (!result.success) setError(result.error);
     });
   }
+
+  // ─── تنسيق التاريخ حسب اللغة ───
+  const dateLocale = locale === "ar" ? "ar-EG" : locale;
+  const lastLoginText = user.lastLoginAt
+    ? t("lastLogin", {
+        date: new Date(user.lastLoginAt).toLocaleDateString(dateLocale, {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+      })
+    : null;
 
   return (
     <div
@@ -42,7 +57,7 @@ export function UserRow({ user, currentUserId }: Props) {
             <span className="font-medium">{user.name}</span>
             {isSelf && (
               <span className="text-xs bg-accent-light text-accent-dark px-2 py-0.5 rounded-full">
-                أنت
+                {t("youBadge")}
               </span>
             )}
             <span
@@ -52,21 +67,14 @@ export function UserRow({ user, currentUserId }: Props) {
                   : "bg-blue-100 text-blue-800"
               }`}
             >
-              {user.role === "ADMIN" ? "مدير" : "موظف"}
+              {user.role === "ADMIN" ? t("roleAdmin") : t("roleStaff")}
             </span>
           </div>
           <div className="text-xs text-muted mt-1" dir="ltr">
             {user.email}
           </div>
-          {user.lastLoginAt && (
-            <div className="text-xs text-muted mt-0.5">
-              آخر دخول:{" "}
-              {new Date(user.lastLoginAt).toLocaleDateString("ar-EG", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}
-            </div>
+          {lastLoginText && (
+            <div className="text-xs text-muted mt-0.5">{lastLoginText}</div>
           )}
         </div>
 
@@ -77,7 +85,7 @@ export function UserRow({ user, currentUserId }: Props) {
               : "bg-red-50 text-red-800 border-red-200"
           }`}
         >
-          {user.isActive ? "نشط" : "معطّل"}
+          {user.isActive ? t("active") : t("inactive")}
         </span>
 
         <div className="flex flex-wrap gap-2">
@@ -85,7 +93,7 @@ export function UserRow({ user, currentUserId }: Props) {
             href={`/admin/users/${user.id}/edit`}
             className="text-xs px-3 py-1.5 rounded-full border border-accent text-accent hover:bg-accent hover:text-white transition-colors"
           >
-            ✎ تعديل
+            {t("edit")}
           </Link>
 
           {!isSelf && (
@@ -95,7 +103,7 @@ export function UserRow({ user, currentUserId }: Props) {
               disabled={isPending}
               className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-700 hover:bg-red-500 hover:text-white transition-colors disabled:opacity-40"
             >
-              🗑 حذف
+              {t("delete")}
             </button>
           )}
         </div>

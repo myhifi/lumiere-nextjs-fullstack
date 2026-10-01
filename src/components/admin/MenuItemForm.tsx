@@ -1,13 +1,16 @@
+// MenuItemForm.tsx
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import {
   createMenuItem,
   updateMenuItem,
   type MenuItemActionResult,
 } from "@/actions/admin-menu";
+import { Form } from "@/components/ui/Form";
 
 type Category = {
   id: string;
@@ -32,7 +35,6 @@ type Props = {
   initialData?: InitialData;
 };
 
-// ─── توليد slug من الاسم (للإنجليزية فقط) ───
 function slugify(text: string): string {
   return text
     .toLowerCase()
@@ -44,6 +46,7 @@ function slugify(text: string): string {
 
 export function MenuItemForm({ categories, initialData }: Props) {
   const router = useRouter();
+  const t = useTranslations("Admin.menuForm");
   const isEdit = !!initialData?.id;
 
   const [formData, setFormData] = useState<InitialData>({
@@ -61,9 +64,12 @@ export function MenuItemForm({ categories, initialData }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+  const [, startTransition] = useTransition();
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
@@ -73,7 +79,6 @@ export function MenuItemForm({ categories, initialData }: Props) {
     }));
   }
 
-  // توليد slug تلقائياً عند تغيير الاسم (فقط في وضع الإضافة)
   function handleNameChange(e: React.ChangeEvent<HTMLInputElement>) {
     const name = e.target.value;
     setFormData((prev) => ({
@@ -83,7 +88,7 @@ export function MenuItemForm({ categories, initialData }: Props) {
     }));
   }
 
-  async function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
@@ -110,26 +115,26 @@ export function MenuItemForm({ categories, initialData }: Props) {
       setIsSubmitting(false);
       return;
     }
-
-    router.push("/admin/menu");
-    router.refresh();
+    startTransition(() => {
+      router.push("/admin/menu");
+      router.refresh();
+    });
   }
 
   return (
-    <form
+    <Form
       onSubmit={handleSubmit}
       className="bg-card border border-border rounded-2xl p-6 md:p-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {/* الاسم */}
-        <FormField label="اسم الطبق" required>
+        <FormField label={t("nameLabel")} required>
           <input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleNameChange}
             required
-            placeholder="مثال: حمص بالطحينة"
+            placeholder={t("namePlaceholder")}
             className={inputClasses}
           />
           {fieldErrors.name && (
@@ -137,28 +142,24 @@ export function MenuItemForm({ categories, initialData }: Props) {
           )}
         </FormField>
 
-        {/* Slug */}
-        <FormField label="المعرّف (Slug)" required>
+        <FormField label={t("slugLabel")} required>
           <input
             type="text"
             name="slug"
             value={formData.slug}
             onChange={handleChange}
             required
-            placeholder="hummus"
+            placeholder={t("slugPlaceholder")}
             dir="ltr"
             className={inputClasses}
           />
-          <p className="text-xs text-muted mt-1">
-            حروف إنجليزية صغيرة وأرقام وشرطات فقط
-          </p>
+          <p className="text-xs text-muted mt-1">{t("slugHint")}</p>
           {fieldErrors.slug && (
             <p className="text-xs text-red-600 mt-1">{fieldErrors.slug[0]}</p>
           )}
         </FormField>
 
-        {/* السعر */}
-        <FormField label="السعر (ج.م)" required>
+        <FormField label={t("priceLabel")} required>
           <input
             type="number"
             name="price"
@@ -167,7 +168,7 @@ export function MenuItemForm({ categories, initialData }: Props) {
             required
             min="0"
             step="0.5"
-            placeholder="55"
+            placeholder={t("pricePlaceholder")}
             dir="ltr"
             className={inputClasses}
           />
@@ -176,8 +177,7 @@ export function MenuItemForm({ categories, initialData }: Props) {
           )}
         </FormField>
 
-        {/* التصنيف */}
-        <FormField label="التصنيف" required>
+        <FormField label={t("categoryLabel")} required>
           <select
             name="categoryId"
             value={formData.categoryId}
@@ -198,15 +198,14 @@ export function MenuItemForm({ categories, initialData }: Props) {
           )}
         </FormField>
 
-        {/* رابط الصورة */}
         <div className="md:col-span-2">
-          <FormField label="رابط الصورة (اختياري)">
+          <FormField label={t("imageUrlLabel")}>
             <input
               type="url"
               name="imageUrl"
               value={formData.imageUrl}
               onChange={handleChange}
-              placeholder="https://example.com/image.jpg"
+              placeholder={t("imageUrlPlaceholder")}
               dir="ltr"
               className={inputClasses}
             />
@@ -218,15 +217,14 @@ export function MenuItemForm({ categories, initialData }: Props) {
           </FormField>
         </div>
 
-        {/* الوصف */}
         <div className="md:col-span-2">
-          <FormField label="الوصف (اختياري)">
+          <FormField label={t("descriptionLabel")}>
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
               rows={3}
-              placeholder="وصف موجز للطبق..."
+              placeholder={t("descriptionPlaceholder")}
               className={inputClasses}
             />
             {fieldErrors.description && (
@@ -237,7 +235,6 @@ export function MenuItemForm({ categories, initialData }: Props) {
           </FormField>
         </div>
 
-        {/* الخيارات */}
         <div className="md:col-span-2 flex flex-wrap gap-6 pt-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -247,7 +244,7 @@ export function MenuItemForm({ categories, initialData }: Props) {
               onChange={handleChange}
               className="w-4 h-4 accent-[--color-accent]"
             />
-            <span className="text-sm font-medium">متاح للعرض في القائمة</span>
+            <span className="text-sm font-medium">{t("isAvailableLabel")}</span>
           </label>
 
           <label className="flex items-center gap-2 cursor-pointer">
@@ -258,39 +255,33 @@ export function MenuItemForm({ categories, initialData }: Props) {
               onChange={handleChange}
               className="w-4 h-4 accent-[--color-accent]"
             />
-            <span className="text-sm font-medium">⭐ طبق مميز (يظهر في الصفحة الرئيسية)</span>
+            <span className="text-sm font-medium">{t("isFeaturedLabel")}</span>
           </label>
         </div>
       </div>
 
-      {/* خطأ عام */}
       {error && !Object.keys(fieldErrors).length && (
         <div className="mt-6 p-3 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200">
           {error}
         </div>
       )}
 
-      {/* الأزرار */}
       <div className="mt-8 flex flex-wrap gap-3 justify-end">
         <button
           type="button"
           onClick={() => router.push("/admin/menu")}
           className="px-6 py-3 rounded-full border border-border hover:border-foreground transition-colors"
         >
-          إلغاء
+          {t("cancel")}
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isSubmitting
-            ? "جاري الحفظ..."
-            : isEdit
-              ? "حفظ التعديلات"
-              : "إضافة الطبق"}
+          {isSubmitting ? t("saving") : isEdit ? t("save") : t("create")}
         </button>
       </div>
-    </form>
+    </Form>
   );
 }

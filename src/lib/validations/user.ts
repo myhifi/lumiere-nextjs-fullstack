@@ -1,31 +1,42 @@
 import { z } from "zod";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth/password";
 
-export const createUserSchema = z.object({
-  email: z.string().trim().toLowerCase().email("البريد الإلكتروني غير صحيح"),
-  password: z
-    .string()
-    .min(MIN_PASSWORD_LENGTH, `كلمة السر ${MIN_PASSWORD_LENGTH} أحرف على الأقل`)
-    .max(100, "كلمة السر طويلة جداً"),
-  name: z.string().trim().min(2, "الاسم قصير جداً").max(80, "الاسم طويل جداً"),
-  role: z.enum(["ADMIN", "STAFF"], {
-    message: "الدور يجب أن يكون ADMIN أو STAFF",
-  }),
-  isActive: z.boolean().default(true),
-});
+type TranslateFn = (key: string) => string;
 
-export const updateUserSchema = z.object({
-  name: z.string().trim().min(2, "الاسم قصير جداً").max(80, "الاسم طويل جداً"),
-  role: z.enum(["ADMIN", "STAFF"]),
-  isActive: z.boolean(),
-  // كلمة السر اختيارية في التعديل
-  newPassword: z
-    .string()
-    .min(MIN_PASSWORD_LENGTH, `كلمة السر ${MIN_PASSWORD_LENGTH} أحرف على الأقل`)
-    .max(100, "كلمة السر طويلة جداً")
-    .optional()
-    .or(z.literal("")),
-});
+export function createUserSchema(t: TranslateFn) {
+  return z.object({
+    email: z.string().trim().toLowerCase().email(t("userEmailInvalid")),
+    password: z
+      .string()
+      .min(MIN_PASSWORD_LENGTH, t("passwordTooShort"))
+      .max(100, t("passwordTooLong")),
+    name: z
+      .string()
+      .trim()
+      .min(2, t("userNameTooShort"))
+      .max(80, t("userNameTooLong")),
+    role: z.enum(["ADMIN", "STAFF"], { message: t("roleInvalid") }),
+    isActive: z.boolean().default(true),
+  });
+}
 
-export type CreateUserInput = z.infer<typeof createUserSchema>;
-export type UpdateUserInput = z.infer<typeof updateUserSchema>;
+export function updateUserSchema(t: TranslateFn) {
+  return z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, t("userNameTooShort"))
+      .max(80, t("userNameTooLong")),
+    role: z.enum(["ADMIN", "STAFF"]),
+    isActive: z.boolean(),
+    newPassword: z
+      .string()
+      .min(MIN_PASSWORD_LENGTH, t("passwordTooShort"))
+      .max(100, t("passwordTooLong"))
+      .optional()
+      .or(z.literal("")),
+  });
+}
+
+export type CreateUserInput = z.infer<ReturnType<typeof createUserSchema>>;
+export type UpdateUserInput = z.infer<ReturnType<typeof updateUserSchema>>;

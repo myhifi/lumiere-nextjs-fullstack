@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 // ═══════════════════════════════════════════════════
-// ⭐ StarRatingInput — اختيار التقييم بالنجوم
+// ⭐ StarRatingInput — Star rating selector
 // ═══════════════════════════════════════════════════
-// Client Component — يحتاج onClick + hover.
 
 type StarRatingInputProps = {
   value: number;
@@ -13,7 +13,7 @@ type StarRatingInputProps = {
   size?: number;
 };
 
-// ─── نجمة SVG ───
+// ─── Single star (SVG) ───
 function Star({ size, filled }: { size: number; filled: boolean }) {
   return (
     <svg
@@ -36,9 +36,10 @@ export function StarRatingInput({
   onChange,
   size = 32,
 }: StarRatingInputProps) {
+  const t = useTranslations("Review.form");
   const [hovered, setHovered] = useState<number>(0);
 
-  // القيمة المعروضة: عند hover نُظهر الـ hover، وإلا الـ value
+  // Display hovered value if hovering, otherwise the current value
   const displayValue = hovered || value;
 
   return (
@@ -46,7 +47,7 @@ export function StarRatingInput({
       className="inline-flex items-center gap-2"
       onMouseLeave={() => setHovered(0)}
       role="radiogroup"
-      aria-label="اختر تقييمك"
+      aria-label={t("ratingLabel")}
     >
       {[1, 2, 3, 4, 5].map((star) => (
         <button
@@ -54,7 +55,7 @@ export function StarRatingInput({
           type="button"
           onMouseEnter={() => setHovered(star)}
           onClick={() => onChange(star)}
-          aria-label={`${star} من 5 نجوم`}
+          aria-label={`${star} / 5`}
           aria-checked={value === star}
           role="radio"
           className="transition-transform hover:scale-110 focus:outline-none focus:scale-110"
@@ -65,7 +66,7 @@ export function StarRatingInput({
 
       {value > 0 && (
         <span className="text-sm text-muted mr-2">
-          {value} من 5
+          {t("ratingOutOf", { value })}
         </span>
       )}
     </div>

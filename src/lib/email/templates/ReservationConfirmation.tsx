@@ -12,6 +12,14 @@ import {
 import type { ReservationEmailData } from "../types";
 import { generateGoogleCalendarLink } from "../calendar";
 
+// ═══════════════════════════════════════════════════
+// 🎨 Translator type — matches next-intl's TFunction shape
+// ═══════════════════════════════════════════════════
+export type EmailTranslator = (
+  key: string,
+  values?: Record<string, string | number>
+) => string;
+
 // ─── ألوان هوية Lumière ───
 const colors = {
   bg: "#faf7f2",
@@ -23,9 +31,22 @@ const colors = {
   border: "#e5ddd0",
 };
 
-// ─── تنسيق التاريخ بالعربية ───
-function formatArabicDate(date: Date): string {
-  return new Intl.DateTimeFormat("ar-EG", {
+// ═══════════════════════════════════════════════════
+// 🌐 Locale → BCP-47 date locale mapping
+// ═══════════════════════════════════════════════════
+function getDateLocale(locale: string): string {
+  const map: Record<string, string> = {
+    ar: "ar-EG",
+    en: "en-US",
+    fr: "fr-FR",
+    de: "de-DE",
+    es: "es-ES",
+  };
+  return map[locale] ?? locale;
+}
+
+function formatLocalizedDate(date: Date, locale: string): string {
+  return new Intl.DateTimeFormat(getDateLocale(locale), {
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -36,65 +57,87 @@ function formatArabicDate(date: Date): string {
   }).format(date);
 }
 
+// ─── Props ───
+type Props = Omit<ReservationEmailData, "to"> & {
+  locale: string;
+  t: EmailTranslator;
+};
+
 export function ReservationConfirmation({
   guestName,
   reservationId,
   tableNumber,
   reservationDate,
   guestsCount,
-}: Omit<ReservationEmailData, "to">) {
+  locale,
+  t,
+}: Props) {
   const shortId = reservationId.slice(0, 8).toUpperCase();
+  const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <Html dir="rtl" lang="ar">
+    <Html dir={dir} lang={locale}>
       <Head />
-      <Preview>{`تم استلام حجزك في Lumière — طاولة رقم ${tableNumber}`}</Preview>
+      <Preview>{t("preview", { tableNumber })}</Preview>
 
       <Body style={body}>
         <Container style={container}>
           {/* ─── الترويسة ─── */}
           <Section style={header}>
             <Heading style={logo}>Lumière</Heading>
-            <Text style={tagline}>تجربة طعام استثنائية</Text>
+            <Text style={tagline}>{t("tagline")}</Text>
           </Section>
 
-          {/* ─── العنوان ─── */}
+          {/* ─── المحتوى ─── */}
           <Section style={content}>
             <Heading as="h1" style={h1}>
-              مرحباً {guestName} 👋
+              {t("greeting", { guestName })}
             </Heading>
-            <Text style={paragraph}>
-              تم استلام حجزك بنجاح، ونحن في انتظارك بشغف. إليك تفاصيل حجزك:
-            </Text>
+            <Text style={paragraph}>{t("intro")}</Text>
 
             {/* ─── جدول التفاصيل ─── */}
             <Section style={detailsBox}>
-              <DetailRow label="رقم الطاولة" value={`رقم ${tableNumber}`} highlight />
-              <DetailRow label="عدد الأشخاص" value={`${guestsCount} أشخاص`} />
-              <DetailRow label="التاريخ والوقت" value={formatArabicDate(reservationDate)} />
-              <DetailRow label="رقم الحجز" value={`#${shortId}`} />
+              <DetailRow
+                label={t("labelTableNumber")}
+                value={t("valueTableNumber", { number: tableNumber })}
+                highlight
+              />
+              <DetailRow
+                label={t("labelGuestsCount")}
+                value={t("valueGuestsCount", { count: guestsCount })}
+              />
+              <DetailRow
+                label={t("labelDateTime")}
+                value={formatLocalizedDate(reservationDate, locale)}
+              />
+              <DetailRow
+                label={t("labelReservationId")}
+                value={`#${shortId}`}
+              />
             </Section>
 
-            {/* ─── رسالة ─── */}
-            <Text style={paragraph}>
-              سيتم تأكيد حجزك نهائياً عبر البريد الإلكتروني، أو سيتواصل معك
-              فريقنا هاتفياً في حال الحاجة.
-            </Text>
+            <Text style={paragraph}>{t("closing")}</Text>
 
             <Text style={paragraph}>
-              نتشرف بخدمتك،
+              {t("signatureRegards")}
               <br />
-              <strong style={{ color: colors.accentDark }}>فريق Lumière</strong>
+              <strong style={{ color: colors.accentDark }}>
+                {t("signatureTeam")}
+              </strong>
             </Text>
 
             <Hr style={hr} />
-            {/* ─── زر "أضف إلى Google Calendar" ─── */}
+
+            {/* ─── زر Google Calendar ─── */}
             <Section style={{ textAlign: "center", marginTop: 24 }}>
               <a
                 href={generateGoogleCalendarLink({
-                  title: `حجز في Lumière — طاولة رقم ${tableNumber}`,
-                  description: `عدد الأشخاص: ${guestsCount}\nرقم الحجز: #${shortId}`,
-                  location: "١٢٣ شارع التحرير، وسط البلد، القاهرة",
+                  title: t("calendarTitle", { tableNumber }),
+                  description: [
+                    t("calendarDescriptionGuests", { count: guestsCount }),
+                    t("calendarDescriptionReservationId", { id: shortId }),
+                  ].join("\n"),
+                  location: t("calendarLocation"),
                   startDate: reservationDate,
                   durationMinutes: 90,
                 })}
@@ -109,17 +152,18 @@ export function ReservationConfirmation({
                   fontWeight: 600,
                 }}
               >
-                📅 أضف إلى Google Calendar
+                {t("calendarButton")}
               </a>
             </Section>
 
-            <Hr style={hr} />            
+            <Hr style={hr} />
 
-            {/* ─── تذييل ─── */}
+            {/* ─── التذييل ─── */}
             <Text style={footer}>
-              هذا البريد أُرسل تلقائياً من نظام حجوزات Lumière.
+              {t("footerAutoMessage")}
               <br />
-              لأي استفسار، تواصل معنا عبر واتساب: <span dir="ltr">+20 100 000 0000</span>
+              {t("footerContact")}{" "}
+              <span dir="ltr">+20 100 000 0000</span>
             </Text>
           </Section>
         </Container>

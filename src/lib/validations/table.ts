@@ -1,26 +1,30 @@
 import { z } from "zod";
 
-export const tableSchema = z.object({
-  number: z.coerce
-    .number()
-    .int("رقم الطاولة يجب أن يكون رقماً صحيحاً")
-    .min(1, "رقم الطاولة يجب أن يكون أكبر من صفر")
-    .max(999, "رقم الطاولة كبير جداً"),
+type TranslateFn = (key: string) => string;
 
-  capacity: z.coerce
-    .number()
-    .int("السعة يجب أن تكون رقماً صحيحاً")
-    .min(1, "السعة يجب أن تكون شخصاً واحداً على الأقل")
-    .max(50, "السعة كبيرة جداً"),
+export function createTableSchema(t: TranslateFn) {
+  return z.object({
+    number: z.coerce
+      .number()
+      .int(t("tableNumberNotInt"))
+      .min(1, t("tableNumberMin"))
+      .max(999, t("tableNumberMax")),
 
-  location: z
-    .string()
-    .trim()
-    .max(50, "الموقع طويل جداً")
-    .optional()
-    .or(z.literal("")),
+    capacity: z.coerce
+      .number()
+      .int(t("capacityNotInt"))
+      .min(1, t("capacityMin"))
+      .max(50, t("capacityMax")),
 
-  isActive: z.boolean().default(true),
-});
+    location: z
+      .string()
+      .trim()
+      .max(50, t("locationTooLong"))
+      .optional()
+      .or(z.literal("")),
 
-export type TableInput = z.infer<typeof tableSchema>;
+    isActive: z.boolean().default(true),
+  });
+}
+
+export type TableInput = z.infer<ReturnType<typeof createTableSchema>>;
