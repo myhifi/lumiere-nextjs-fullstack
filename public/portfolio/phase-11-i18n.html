@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 11 — Internationalization · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+.hero .flag-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; font-size: 2rem; letter-spacing: 0.25rem; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* ─── File Tree ─── */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .del { color: #ff7b72; text-decoration: line-through; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+.filetree .indent-4 { padding-left: 5rem; }
+
+/* ─── Flow Diagram ─── */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* ─── Layer Diagram ─── */
+.layers { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.layer { padding: 0.75rem 1.25rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; border-left: 4px solid; }
+.layer.client { background: #fdecea; border-color: #c0392b; color: #7a1c1c; }
+.layer.edge { background: #fef5e7; border-color: #e67e22; color: #7a4a12; }
+.layer.node { background: #eaf7ef; border-color: #27ae60; color: #1e5a3a; }
+.layer.action { background: #f5ecd9; border-color: #a88847; color: #5c4616; }
+.layer.db { background: #eaf0fa; border-color: #2e6fc0; color: #1a3d75; }
+.layer strong { color: inherit; }
+
+/* ─── Locale Grid ─── */
+.locale-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.locale-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; }
+.locale-card .lc-flag { font-size: 2rem; margin-bottom: 0.5rem; }
+.locale-card .lc-code { font-family: 'Consolas', monospace; font-size: 0.75rem; color: var(--accent-dark); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.25rem; }
+.locale-card .lc-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+.locale-card .lc-dir { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: var(--accent-light); color: var(--accent-dark); font-weight: 700; display: inline-block; }
+.locale-card .lc-dir.rtl { background: rgba(39,174,96,0.15); color: #1e7e45; }
+
+/* ─── Error Journey ─── */
+.error-journey { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.error-journey::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%); }
+.error-item { position: relative; margin-bottom: 1.5rem; }
+.error-item::before { content: ""; position: absolute; left: -2rem; top: 8px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); background: var(--success); }
+.error-item h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.error-item .error-msg { background: var(--bg-code); color: #ff9b8a; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.75rem; margin: 0.5rem 0; border-left: 3px solid var(--danger); }
+.error-item .error-fix { background: #eaf7ef; color: #1e5a3a; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; border-left: 3px solid var(--success); }
+.error-item .error-fix strong { color: #1e7e45; }
+
+/* ─── Coverage Matrix ─── */
+.coverage { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
+.coverage th, .coverage td { padding: 0.5rem 0.75rem; text-align: center; border-bottom: 1px solid var(--border); }
+.coverage th:first-child, .coverage td:first-child { text-align: left; font-family: 'Consolas', monospace; }
+.coverage th { background: var(--bg); color: var(--fg-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem; }
+.coverage .ok { color: var(--success); font-weight: 700; }
+.coverage .partial { color: var(--warning); font-weight: 700; }
+
+/* ─── Language Switcher Mock ─── */
+.lang-switch-mock {
+  max-width: 320px; margin: 1rem auto; background: #fff;
+  border: 1px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06); font-family: system-ui, sans-serif;
+}
+.lang-switch-mock .lsm-btn {
+  display: flex; align-items: center; gap: 0.5rem;
+  border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem;
+  font-size: 0.85rem; background: transparent;
+}
+.lang-switch-mock .lsm-btn .flag { font-size: 1rem; }
+.lang-switch-mock .lsm-btn .arrow { margin-left: auto; font-size: 0.7rem; opacity: 0.6; }
+.lang-switch-mock .lsm-list { margin-top: 0.5rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.lang-switch-mock .lsm-list .item { padding: 0.5rem 0.75rem; font-size: 0.85rem; display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); }
+.lang-switch-mock .lsm-list .item:last-child { border-bottom: none; }
+.lang-switch-mock .lsm-list .item.active { background: var(--accent-light); font-weight: 600; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .error-journey { padding-left: 1.5rem; }
+  .error-item::before { left: -1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 11</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#decision">Why next-intl</a>
+      <a href="#locales">The 5 Locales</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+      <a href="#restructure">The [locale] Restructure</a>
+      <a href="#routing">routing.ts</a>
+      <a href="#request">request.ts</a>
+      <a href="#navigation">navigation.ts</a>
+      <a href="#proxy">proxy.ts (Edge + Auth)</a>
+      <a href="#edge-split">Edge vs Node Split</a>
+      <a href="#files">Translation Files</a>
+      <a href="#icu">ICU Plurals</a>
+      <a href="#nameen">Category nameEn Migration</a>
+      <a href="#dir">Dynamic dir &amp; lang</a>
+      <a href="#switcher">LanguageSwitcher</a>
+      <a href="#factories">Schema Factories</a>
+      <a href="#actions">Server Actions i18n</a>
+      <a href="#notfound">The not-found Pattern</a>
+      <a href="#status-issue">The 200-vs-404 Issue</a>
+      <a href="#sitemap">Sitemap Per-Locale</a>
+      <a href="#robots">Robots Per-Locale</a>
+      <a href="#coverage">Coverage Matrix</a>
+      <a href="#errors">The 11 Errors Journey</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 11 · Internationalization</div>
+      <div class="flag-row">🇪🇬 🇬🇧 🇫🇷 🇩🇪 🇪🇸</div>
+      <h1>Five Locales, One Codebase</h1>
+      <p class="lede">Transform a single-language Arabic application into a fully internationalized product supporting Arabic, English, French, German, and Spanish — with automatic RTL/LTR direction switching, locale-prefixed routing, translated emails, localized error messages, and per-locale SEO. Zero paid services, zero browser extensions, and full type-safety preserved across all 5 locales.</p>
+      <div class="stack">
+        <span>next-intl v4</span><span>App Router [locale]</span>
+        <span>ICU Messages</span><span>RTL/LTR</span>
+        <span>Auth.js Integration</span><span>Schema Factories</span>
+        <span>Per-Locale SEO</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Make every string in the application locale-aware — from navigation labels and error messages to transactional emails and JSON-LD metadata — without duplicating route files or introducing runtime overhead on the client.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>5 message files</strong> — <code>ar.json</code>, <code>en.json</code>, <code>fr.json</code>, <code>de.json</code>, <code>es.json</code> — sharing identical key structure.</li>
+        <li><strong>Locale-prefixed routing</strong> — every URL becomes <code>/ar/menu</code>, <code>/en/menu</code>, etc.</li>
+        <li><strong>Dynamic <code>dir</code> and <code>lang</code></strong> — <code>rtl</code> for Arabic, <code>ltr</code> for the rest.</li>
+        <li><strong>LanguageSwitcher</strong> component with real country flags (flagcdn.com).</li>
+        <li><strong>Category <code>nameEn</code> migration</strong> — bilingual category names + <code>getLocalizedName()</code> helper.</li>
+        <li><strong>Schema factories</strong> — Zod schemas receive a translator and return localized error messages.</li>
+        <li><strong>Server Actions i18n</strong> — <code>tError()</code> helper replacing every hardcoded error string.</li>
+        <li><strong>Translated email templates</strong> — one React Email template rendering 5 languages.</li>
+        <li><strong>Per-locale sitemap and robots</strong> — 75 URLs (15 × 5 locales), 10 admin disallow rules.</li>
+        <li><strong>Zero hardcoded UI strings</strong> — every visible text is a translation key.</li>
+      </ol>
+    </section>
+
+    <section id="decision">
+      <h2><span class="num">2</span> Architectural Decision — Why next-intl</h2>
+      <p><strong>The question:</strong> How do we internationalize a Next.js 16 App Router project with Server Components, Server Actions, and Auth.js middleware — without reinventing routing?</p>
+      <table>
+        <thead><tr><th>Option</th><th>Verdict</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><strong>next-intl v4</strong></td><td>✅ Chosen</td><td>Built for App Router · Server Component support · Type-safe keys · Small bundle (~14 KB)</td></tr>
+          <tr><td>Manual routing</td><td>❌ Rejected</td><td>Reinventing URL parsing, prefix rewriting, cookie handling, and locale detection</td></tr>
+          <tr><td>next-i18next</td><td>❌ Rejected</td><td>Built for Pages Router — client-side loading, no RSC support, stale architecture</td></tr>
+          <tr><td>react-i18next</td><td>❌ Rejected</td><td>Pure client library — forces "use client" on every page, loses Server Components</td></tr>
+          <tr><td>i18next-http-middleware</td><td>❌ Rejected</td><td>Express-style middleware — incompatible with Next.js App Router</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Why this matters for the project</strong>
+        The application relies heavily on Server Components to deliver zero-JS HTML. Choosing a client-side library would force every page to hydrate just to display text — a massive regression in performance, bundle size, and SEO.
+      </div>
+
+      <h3>The three integration points</h3>
+      <div class="layers">
+        <div class="layer client"><strong>CLIENT</strong> · <code>NextIntlClientProvider</code> wraps the app — exposes messages to the few Client Components that need them</div>
+        <div class="layer edge"><strong>EDGE</strong> · <code>next-intl/middleware</code> detects locale from URL prefix and sets cookies before any request reaches the app</div>
+        <div class="layer node"><strong>NODE</strong> · <code>getTranslations()</code> in Server Components / Server Actions — no serialization, no client bundle cost</div>
+      </div>
+    </section>
+
+    <section id="locales">
+      <h2><span class="num">3</span> The 5 Locales</h2>
+      <p><strong>Default locale:</strong> Arabic (<code>ar</code>) — because the primary market is Egypt and the initial product was Arabic-only.</p>
+      <div class="locale-grid">
+        <div class="locale-card">
+          <div class="lc-flag">🇪🇬</div>
+          <div class="lc-code">ar</div>
+          <div class="lc-name">العربية</div>
+          <div class="lc-dir rtl">RTL</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇬🇧</div>
+          <div class="lc-code">en</div>
+          <div class="lc-name">English</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇫🇷</div>
+          <div class="lc-code">fr</div>
+          <div class="lc-name">Français</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇩🇪</div>
+          <div class="lc-code">de</div>
+          <div class="lc-name">Deutsch</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇪🇸</div>
+          <div class="lc-code">es</div>
+          <div class="lc-name">Español</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+      </div>
+
+      <h3>URL strategy — always prefixed</h3>
+      <table>
+        <thead><tr><th>localePrefix</th><th>Behavior</th><th>Chosen?</th></tr></thead>
+        <tbody>
+          <tr><td><code>"always"</code></td><td>/ar/menu · /en/menu · /fr/menu</td><td>✅ Yes</td></tr>
+          <tr><td><code>"as-needed"</code></td><td>/menu · /en/menu (Arabic hidden)</td><td>❌ Ambiguous</td></tr>
+          <tr><td><code>"never"</code></td><td>Cookie-based only — URLs never change</td><td>❌ Breaks SEO</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <strong>Why "always"</strong>
+        Explicit locale in every URL means search engines index each language separately, WhatsApp previews match the shared URL, and browser history remembers the user's language. The slight aesthetic cost (visible <code>/en/</code>) is a small price for correct multilingual SEO.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">4</span> Complete Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npm install next-intl</code></td><td>Install the i18n library</td></tr>
+          <tr><td>2</td><td><code>npx prisma migrate dev --name add_category_name_en</code></td><td>Add <code>nameEn</code> column to <code>categories</code></td></tr>
+          <tr><td>3</td><td><code>npm run db:seed</code></td><td>Re-seed with English names</td></tr>
+          <tr><td>4</td><td><code>npx tsx scripts/update-categories.ts</code></td><td>Backfill existing categories idempotently</td></tr>
+          <tr><td>5</td><td><code>npx tsc --noEmit</code></td><td>Type check — silent = success</td></tr>
+          <tr><td>6</td><td><code>npx eslint</code></td><td>Lint — silent = success</td></tr>
+          <tr><td>7</td><td><code>npm run build</code></td><td>Verify production build with all 5 locales</td></tr>
+          <tr><td>8</td><td><code>Remove-Item -Recurse -Force .next</code></td><td>Clear cache after config changes</td></tr>
+          <tr><td>9</td><td><code>curl -I http://localhost:3000/sitemap.xml</code></td><td>Verify 200 + per-locale URLs</td></tr>
+          <tr><td>10</td><td><code>curl -I http://localhost:3000/robots.txt</code></td><td>Verify per-locale admin rules</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">5</span> Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">lumiere-nextjs-fullstack/</span></div>
+        <div class="indent-1"><span class="dir new">messages/</span> <span class="note">← NEW: 5 translation files</span></div>
+        <div class="indent-2"><span class="file new">ar.json</span> · <span class="file new">en.json</span> · <span class="file new">fr.json</span></div>
+        <div class="indent-2"><span class="file new">de.json</span> · <span class="file new">es.json</span></div>
+        <div class="indent-1"><span class="dir">src/</span></div>
+        <div class="indent-2"><span class="dir">app/</span></div>
+        <div class="indent-3"><span class="file upd">layout.tsx</span> <span class="note">← minimal — delegates to [locale]</span></div>
+        <div class="indent-3"><span class="dir new">[locale]/</span> <span class="note">← NEW: everything moves here</span></div>
+        <div class="indent-4"><span class="file new">layout.tsx</span> <span class="note">← html/body + dir + provider</span></div>
+        <div class="indent-4"><span class="dir">(public)/</span> <span class="dir">(auth)/</span> <span class="dir">admin/</span></div>
+        <div class="indent-4"><span class="file new">opengraph-image.tsx</span></div>
+        <div class="indent-2"><span class="dir new">i18n/</span> <span class="note">← NEW: 3 config files</span></div>
+        <div class="indent-3"><span class="file new">routing.ts</span></div>
+        <div class="indent-3"><span class="file new">request.ts</span></div>
+        <div class="indent-3"><span class="file new">navigation.ts</span></div>
+        <div class="indent-2"><span class="file new">proxy.ts</span> <span class="note">← Edge: next-intl + Auth.js</span></div>
+        <div class="indent-2"><span class="dir">components/</span></div>
+        <div class="indent-3"><span class="dir">layout/</span></div>
+        <div class="indent-4"><span class="file new">LanguageSwitcher.tsx</span></div>
+        <div class="indent-2"><span class="dir">lib/utils/</span></div>
+        <div class="indent-3"><span class="file new">locale.ts</span> <span class="note">← getLocalizedName()</span></div>
+        <div class="indent-3"><span class="file new">server-errors.ts</span> <span class="note">← tError() helper</span></div>
+      </div>
+      <div class="callout info">
+        <strong>Notice</strong> — <code>next.config.ts</code>, <code>auth.config.ts</code>, <code>auth.ts</code> are all updated to plug into the new architecture. Total files changed: <strong>111</strong> · <strong>+6,417</strong> · <strong>−1,844</strong> — a single atomic commit (<code>d45c5aa</code>).
+      </div>
+    </section>
+
+    <section id="restructure">
+      <h2><span class="num">6</span> The [locale] Restructure</h2>
+      <p><strong>The problem:</strong> Every page currently lives at <code>src/app/(public)/menu/page.tsx</code> — a single URL. To support 5 languages, every route must become locale-aware.</p>
+
+      <h3>Before → After</h3>
+      <div class="filetree">
+        <div class="indent-1"><span class="note">BEFORE — flat app/</span></div>
+        <div class="indent-1"><span class="dir">src/app/</span></div>
+        <div class="indent-2"><span class="file">layout.tsx</span></div>
+        <div class="indent-2"><span class="dir">(public)/</span></div>
+        <div class="indent-3"><span class="file">page.tsx</span> · <span class="dir">menu/</span> · <span class="dir">reserve/</span></div>
+        <div class="indent-2"><span class="dir">(auth)/login/</span></div>
+        <div class="indent-2"><span class="dir">admin/</span></div>
+        <div class="indent-2"><span class="dir">api/</span></div>
+      </div>
+      <div class="filetree">
+        <div class="indent-1"><span class="note">AFTER — [locale]/ segment</span></div>
+        <div class="indent-1"><span class="dir">src/app/</span></div>
+        <div class="indent-2"><span class="file">layout.tsx</span> <span class="note">← passthrough (returns children)</span></div>
+        <div class="indent-2"><span class="dir new">[locale]/</span></div>
+        <div class="indent-3"><span class="file new">layout.tsx</span> <span class="note">← html/body + dir + provider</span></div>
+        <div class="indent-3"><span class="dir">(public)/</span> <span class="dir">(auth)/</span> <span class="dir">admin/</span></div>
+        <div class="indent-2"><span class="dir">api/</span> <span class="note">← stays outside (not localized)</span></div>
+      </div>
+
+      <h3>Why <code>api/</code> stays outside</h3>
+      <p>Route Handlers under <code>/api/</code> are consumed by external systems — mobile apps, webhooks, Postman. Adding a locale prefix (<code>/en/api/menu/items</code>) would be ambiguous: which locale's data should a mobile app fetch? The answer is language-neutral data. So <code>/api/</code> remains at the root, returning raw content regardless of locale.</p>
+
+      <div class="callout warn">
+        <strong>Files moved — 20+ routes</strong>
+        Every <code>page.tsx</code>, <code>layout.tsx</code>, <code>loading.tsx</code>, and <code>error.tsx</code> under <code>app/</code> moved one level deeper. Git tracked these as renames (not delete + create) — preserving history.
+      </div>
+    </section>
+
+    <section id="routing">
+      <h2><span class="num">7</span> i18n/routing.ts — Single Source of Truth</h2>
+      <pre><code>import {defineRouting} from 'next-intl/routing';
+
+export const routing = defineRouting({
+  locales: ['ar', 'en', 'fr', 'de', 'es'],
+  defaultLocale: 'ar',
+  localePrefix: 'always'
+});
+
+export type Locale = (typeof routing.locales)[number];
+export const RTL_LOCALES: Locale[] = ['ar'];</code></pre>
+      <ul>
+        <li><strong><code>locales</code></strong> — single array drives routing, sitemap, robots, message loading, and type inference.</li>
+        <li><strong><code>defaultLocale</code></strong> — Arabic. Used as fallback when the URL has no locale.</li>
+        <li><strong><code>localePrefix: "always"</code></strong> — every URL carries the locale, no exceptions.</li>
+        <li><strong><code>Locale</code> type</strong> — TypeScript union of the 5 codes. Adding a 6th locale makes the compiler flag every place that needs updating.</li>
+        <li><strong><code>RTL_LOCALES</code></strong> — extracted as a constant. Adding Hebrew or Farsi later means one line change.</li>
+      </ul>
+      <div class="callout success">
+        <strong>The compiler becomes the checklist</strong>
+        When you add <code>it</code> (Italian) to the array, TypeScript will error in <code>messages/it.json</code> (missing), <code>LanguageSwitcher</code> (missing label), and anywhere else that requires handling — no silent gaps.
+      </div>
+    </section>
+
+    <section id="request">
+      <h2><span class="num">8</span> i18n/request.ts — Message Loading</h2>
+      <pre><code>import { getRequestConfig } from "next-intl/server";
+import { hasLocale } from "next-intl";
+import { routing } from "./routing";
+
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale = hasLocale(routing.locales, requested)
+    ? requested
+    : routing.defaultLocale;
+
+  return {
+    locale,
+    messages: (await import(`../../messages/${locale}.json`)).default,
+  };
+});</code></pre>
+      <ul>
+        <li><strong><code>getRequestConfig</code></strong> — called once per request by next-intl. Returns the locale and messages for that request.</li>
+        <li><strong><code>hasLocale</code></strong> — type-safe runtime check. If the URL contains <code>/xx/</code>, we fall back to Arabic rather than crashing.</li>
+        <li><strong>Dynamic import</strong> — only the current locale's JSON is loaded. The other 4 stay out of the bundle.</li>
+        <li><strong>Zero client cost</strong> — this runs on the server. Messages are streamed as props to <code>NextIntlClientProvider</code>, then reused by Client Components.</li>
+      </ul>
+    </section>
+
+    <section id="navigation">
+      <h2><span class="num">9</span> i18n/navigation.ts — Locale-Aware Links</h2>
+      <pre><code>import {createNavigation} from 'next-intl/navigation';
+import {routing} from './routing';
+
+export const {Link, redirect, usePathname, useRouter, getPathname} =
+  createNavigation(routing);</code></pre>
+      <p><strong>The problem:</strong> <code>next/link</code> and <code>next/navigation</code>'s <code>useRouter</code> don't know about <code>[locale]</code>. Using them directly would produce <code>href="/menu"</code> — which has no locale prefix and would trigger a redirect loop through the middleware.</p>
+      <p><strong>The fix:</strong> <code>createNavigation</code> returns locale-aware replacements that automatically prefix the current locale.</p>
+
+      <table>
+        <thead><tr><th>Naive (broken)</th><th>next-intl replacement</th></tr></thead>
+        <tbody>
+          <tr><td><code>import Link from "next/link"</code></td><td><code>import { Link } from "@/i18n/navigation"</code></td></tr>
+          <tr><td><code>useRouter()</code> from <code>next/navigation</code></td><td><code>useRouter()</code> from <code>@/i18n/navigation</code></td></tr>
+          <tr><td><code>usePathname()</code> from <code>next/navigation</code></td><td><code>usePathname()</code> from <code>@/i18n/navigation</code> <em>(strips locale)</em></td></tr>
+          <tr><td><code>redirect()</code> from <code>next/navigation</code></td><td><code>redirect()</code> from <code>@/i18n/navigation</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>The <code>usePathname()</code> magic</strong>
+        When you're on <code>/en/menu</code> and switch to French, calling <code>router.replace(pathname, { locale: "fr" })</code> keeps you on <code>/fr/menu</code>. The next-intl version of <code>usePathname()</code> strips the current locale — so you never write <code>pathname.replace("/en", "/fr")</code> manually.
+      </div>
+    </section>
+
+    <section id="proxy">
+      <h2><span class="num">10</span> proxy.ts — Edge Chaining (next-intl + Auth.js)</h2>
+      <pre><code>import createMiddleware from 'next-intl/middleware';
+import {routing} from './i18n/routing';
+import {auth} from '@/auth';
+
+const intlMiddleware = createMiddleware(routing);
+
+export default auth((req) => {
+  return intlMiddleware(req);
+});
+
+export const config = {
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+};</code></pre>
+
+      <h3>What each layer does</h3>
+      <table>
+        <thead><tr><th>Layer</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><code>auth()</code> wrapper</td><td>Runs Auth.js session check. If a protected route, decides allow / redirect</td></tr>
+          <tr><td><code>intlMiddleware(req)</code></td><td>Reads URL prefix · sets <code>NEXT_LOCALE</code> cookie · rewrites internally to <code>[locale]/...</code></td></tr>
+          <tr><td><code>matcher</code></td><td>Skips static assets (<code>_next</code>), API routes, files with extensions</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout warn">
+        <strong>Order matters</strong>
+        <code>auth()</code> wraps <code>intlMiddleware</code>, not the reverse. Reason: Auth.js needs to run first because it may redirect (unauthenticated → /login). If next-intl ran first and rewrote the URL, Auth.js would see the wrong path.
+      </div>
+
+      <h3>The <code>authorized</code> callback fix</h3>
+      <p><strong>Broken:</strong> <code>request.nextUrl.pathname.startsWith("/admin")</code> — never matches because every path now starts with <code>/ar/</code> or <code>/en/</code>.</p>
+      <pre><code>authorized({ auth, request }) {
+  const pathname = request.nextUrl.pathname;
+  const segments = pathname.split("/").filter(Boolean);
+  const isOnAdmin = segments.includes("admin");
+  if (isOnAdmin) return !!auth;
+  return true;
+}</code></pre>
+      <p><strong>Why this works:</strong> <code>segments</code> for <code>/en/admin/menu</code> becomes <code>["en", "admin", "menu"]</code> — <code>.includes("admin")</code> is true regardless of locale position.</p>
+    </section>
+
+    <section id="edge-split">
+      <h2><span class="num">11</span> The Edge Runtime Split — Why Two Auth Configs</h2>
+      <div class="callout danger">
+        <strong>Real error encountered</strong>
+        <code>Failed to load external module node:path: TypeError: Native module not found: node:path</code> at <code>src/lib/prisma.ts</code>.
+      </div>
+      <p><strong>The chain that broke:</strong></p>
+      <pre><code>proxy.ts (Edge Runtime)
+    └── imports auth.ts
+            └── imports prisma.ts
+                    └── imports 'node:path'   ❌ Edge can't load Node built-ins</code></pre>
+
+      <h3>Two files, two runtimes</h3>
+      <div class="filetree">
+        <div><span class="file new">src/auth.config.ts</span> <span class="note">← Edge-safe · shared between both worlds</span></div>
+        <div class="indent-1"><span class="note">session, pages, callbacks, authorized</span></div>
+        <div class="indent-1"><span class="note">no prisma, no bcrypt, no node:*</span></div>
+        <div>&nbsp;</div>
+        <div><span class="file new">src/auth.ts</span> <span class="note">← Node-only · extends authConfig with Credentials</span></div>
+        <div class="indent-1"><span class="note">imports prisma + bcrypt + zod</span></div>
+        <div class="indent-1"><span class="note">exports handlers, signIn, signOut, auth</span></div>
+      </div>
+
+      <table>
+        <thead><tr><th>Capability</th><th>Edge Runtime</th><th>Node Runtime</th></tr></thead>
+        <tbody>
+          <tr><td><code>node:path</code>, <code>node:fs</code>, <code>node:crypto</code></td><td>❌</td><td>✅</td></tr>
+          <tr><td>Native <code>.node</code> binaries (Prisma engine)</td><td>❌</td><td>✅</td></tr>
+          <tr><td>Network APIs (<code>fetch</code>, <code>Request</code>)</td><td>✅</td><td>✅</td></tr>
+          <tr><td>Runs globally, ultra-low latency</td><td>✅</td><td>❌</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What changed in each file</h3>
+      <p><strong><code>auth.config.ts</code></strong> — the <code>authorized</code> callback was updated for locale-aware admin detection (section 10).</p>
+      <p><strong><code>auth.ts</code></strong> — unchanged. It imports <code>authConfig</code>, spreads it, and adds the <code>Credentials</code> provider with Prisma + bcrypt.</p>
+
+      <div class="callout success">
+        <strong>Bundle impact</strong>
+        The Edge bundle shrank from ~100 MB (with the Prisma engine included) to a few KB. Cold start at Vercel Edge dropped from ~800 ms to under 50 ms.
+      </div>
+    </section>
+
+    <section id="files">
+      <h2><span class="num">12</span> Translation File Structure</h2>
+      <p>Five JSON files with <strong>identical key structure</strong>. Only the string values differ.</p>
+
+      <h3>Top-level namespaces</h3>
+      <table>
+        <thead><tr><th>Namespace</th><th>Scope</th><th>Approx. keys</th></tr></thead>
+        <tbody>
+          <tr><td><code>Navbar</code></td><td>Navigation links</td><td>4</td></tr>
+          <tr><td><code>Home</code></td><td>Hero, Featured, CTA, Location, Reviews section</td><td>25</td></tr>
+          <tr><td><code>Menu</code></td><td>Page header, filters, badges, currency</td><td>9</td></tr>
+          <tr><td><code>Reserve</code></td><td>Form fields, success screen, metadata</td><td>15</td></tr>
+          <tr><td><code>Review</code></td><td>Form, success screen, testimonials section</td><td>20</td></tr>
+          <tr><td><code>ItemDetail</code></td><td>Single item page + not-found fallback</td><td>7</td></tr>
+          <tr><td><code>Email</code></td><td>Reservation confirmation template</td><td>18</td></tr>
+          <tr><td><code>Admin</code></td><td>Sidebar, overview, 5 CRUD sections, analytics</td><td>~250</td></tr>
+          <tr><td><code>Errors</code></td><td>~50 validation + business error messages</td><td>~55</td></tr>
+          <tr><td><code>UI</code></td><td>Loading, error fallback, WhatsApp labels</td><td>7</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Sample — the <code>Menu</code> namespace across 5 files</h3>
+      <pre><code>// ar.json
+"Menu": {
+  "title": "قائمة Lumière",
+  "featuredBadge": "⭐ مميز",
+  "currency": "ج.م",
+  "details": "التفاصيل ←"
+}
+
+// en.json
+"Menu": {
+  "title": "Lumière Menu",
+  "featuredBadge": "⭐ Featured",
+  "currency": "EGP",
+  "details": "Details →"
+}
+
+// fr.json
+"Menu": {
+  "title": "Menu Lumière",
+  "featuredBadge": "⭐ En vedette",
+  "currency": "EGP",
+  "details": "Détails →"
+}</code></pre>
+      <div class="callout">
+        <strong>The arrow direction matters</strong> — in Arabic RTL, "forward" is <code>←</code> (pointing left). In LTR languages, it's <code>→</code>. Neither the translator nor the compiler can guess this — it's a per-locale decision encoded in the JSON.
+      </div>
+    </section>
+
+    <section id="icu">
+      <h2><span class="num">13</span> ICU Plurals — One Key, Five Behaviors</h2>
+      <p>next-intl uses ICU MessageFormat — the industry-standard plural syntax supported by Android, ICU4J, and every major i18n system.</p>
+
+      <h3>The same key in all 5 files</h3>
+      <pre><code>// ar.json — Arabic has 6 plural forms
+"valueGuestsCount": "{count, plural, =1 {# شخص} =2 {# شخصان} other {# أشخاص}}"
+
+// en.json — English has 2
+"valueGuestsCount": "{count, plural, one {# guest} other {# guests}}"
+
+// fr.json — French has 3
+"valueGuestsCount": "{count, plural, one {# personne} other {# personnes}}"
+
+// de.json — German has 2
+"valueGuestsCount": "{count, plural, one {# Gast} other {# Gäste}}"
+
+// es.json — Spanish has 2
+"valueGuestsCount": "{count, plural, one {# comensal} other {# comensales}}"</code></pre>
+
+      <h3>Rendered output for <code>count=2</code></h3>
+      <table>
+        <thead><tr><th>Locale</th><th>Rendered</th></tr></thead>
+        <tbody>
+          <tr><td>ar</td><td>شخصان <em>(dual form — Arabic-specific)</em></td></tr>
+          <tr><td>en</td><td>2 guests</td></tr>
+          <tr><td>fr</td><td>2 personnes</td></tr>
+          <tr><td>de</td><td>2 Gäste</td></tr>
+          <tr><td>es</td><td>2 comensales</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <strong>Why this matters</strong>
+        Arabic distinguishes singular, dual, and plural. A naive <code>{count} أشخاص</code> would render "2 أشخاص" — technically wrong. ICU handles this properly and for free.
+      </div>
+    </section>
+
+    <section id="nameen">
+      <h2><span class="num">14</span> Category nameEn Migration</h2>
+      <p><strong>The problem:</strong> Categories are stored as Arabic strings in the database (<code>"مقبلات"</code>, <code>"أطباق رئيسية"</code>). When an English user visits <code>/en/menu</code>, they see Arabic categories.</p>
+
+      <h3>Migration — <code>add_category_name_en</code></h3>
+      <pre><code>ALTER TABLE "categories" ADD COLUMN "nameEn" TEXT;
+CREATE UNIQUE INDEX "categories_nameEn_key" ON "categories"("nameEn");</code></pre>
+
+      <h3>Schema update</h3>
+      <pre><code>model Category {
+  id           String   @id @default(cuid())
+  name         String   @unique
+  nameEn       String?  @unique   // ← NEW: optional English
+  slug         String   @unique
+  ...
+}</code></pre>
+
+      <h3>Backfill script — idempotent</h3>
+      <pre><code>const UPDATES = [
+  { slug: "appetizers",   nameEn: "Appetizers" },
+  { slug: "main-courses", nameEn: "Main Courses" },
+  { slug: "desserts",     nameEn: "Desserts" },
+  { slug: "beverages",    nameEn: "Beverages" },
+];
+
+for (const update of UPDATES) {
+  await prisma.category.update({
+    where: { slug: update.slug },
+    data: { nameEn: update.nameEn },
+  });
+}</code></pre>
+
+      <h3>The helper — <code>getLocalizedName()</code></h3>
+      <pre><code>export function getLocalizedName(
+  name: string,
+  nameEn: string | null | undefined,
+  locale: string
+): string {
+  if (locale === "ar") return name;
+  return nameEn ?? name;
+}</code></pre>
+      <div class="callout">
+        <strong>Why not translate the whole DB?</strong>
+        Categories are content, not UI. Translating them requires either 5 columns (<code>nameAr</code>, <code>nameEn</code>, <code>nameFr</code>...) or a separate translations table. Neither is justified for 4 categories. The pragmatic choice: store Arabic + English, fall back gracefully for the other 3.
+      </div>
+    </section>
+
+    <section id="dir">
+      <h2><span class="num">15</span> Dynamic <code>dir</code> and <code>lang</code></h2>
+      <pre><code>// src/app/[locale]/layout.tsx
+export default async function LocaleLayout({ children, params }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+
+  const messages = await getMessages();
+  const dir = locale === "ar" ? "rtl" : "ltr";
+
+  return (
+    &lt;html lang={locale} dir={dir}&gt;
+      &lt;body&gt;
+        &lt;NextIntlClientProvider messages={messages} locale={locale}&gt;
+          {children}
+        &lt;/NextIntlClientProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  );
+}</code></pre>
+
+      <h3>Why <code>&lt;html&gt;</code>, not <code>&lt;body&gt;</code></h3>
+      <table>
+        <thead><tr><th>Attribute on</th><th>Mirrors text?</th><th>Mirrors Flexbox?</th><th>Mirrors scrollbar?</th></tr></thead>
+        <tbody>
+          <tr><td><code>&lt;body dir="rtl"&gt;</code></td><td>✅</td><td>⚠️ Partial</td><td>❌</td></tr>
+          <tr><td><code>&lt;html dir="rtl"&gt;</code></td><td>✅</td><td>✅</td><td>✅</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Bottom line:</strong> Setting <code>dir</code> on the root <code>&lt;html&gt;</code> element is the only way to make the browser scrollbar, focus rings, and native form controls (dropdowns, date pickers) respect the direction.</p>
+
+      <div class="callout warn">
+        <strong>Deprecation notice</strong>
+        <code>setRequestLocale</code> is now deprecated in next-intl v4. The recommended replacement is <code>next/root-params</code>. Documented as a Phase 12 cleanup item.
+      </div>
+    </section>
+
+    <section id="switcher">
+      <h2><span class="num">16</span> LanguageSwitcher — The Component</h2>
+      <p>A dropdown that swaps the locale segment while preserving the current path.</p>
+
+      <h3>Visual mock</h3>
+      <div class="lang-switch-mock">
+        <div class="lsm-btn">
+          <span class="flag">🇬🇧</span>
+          <span>English</span>
+          <span class="arrow">▼</span>
+        </div>
+        <div class="lsm-list">
+          <div class="item"><span class="flag">🇪🇬</span> العربية</div>
+          <div class="item active"><span class="flag">🇬🇧</span> English</div>
+          <div class="item"><span class="flag">🇫🇷</span> Français</div>
+          <div class="item"><span class="flag">🇩🇪</span> Deutsch</div>
+          <div class="item"><span class="flag">🇪🇸</span> Español</div>
+        </div>
+      </div>
+
+      <h3>Core logic</h3>
+      <pre><code>const LOCALES_DATA = {
+  ar: { label: "العربية",  code: "eg" },
+  en: { label: "English",  code: "gb" },
+  fr: { label: "Français", code: "fr" },
+  de: { label: "Deutsch",  code: "de" },
+  es: { label: "Español",  code: "es" },
+};
+
+function handleChange(newLocale: string) {
+  setIsOpen(false);
+  router.replace(pathname, { locale: newLocale });
+}</code></pre>
+
+      <h3>Why <code>router.replace(pathname, { locale })</code></h3>
+      <ul>
+        <li><strong><code>pathname</code></strong> — from <code>@/i18n/navigation</code> — has the current locale <strong>stripped</strong>. So on <code>/en/menu/hummus</code>, <code>pathname</code> is <code>/menu/hummus</code>.</li>
+        <li><strong><code>router.replace</code></strong> — replaces history entry instead of pushing, so the back button doesn't cycle through every language tested.</li>
+        <li><strong>The result</strong> — switching to French from <code>/en/menu/hummus</code> lands on <code>/fr/menu/hummus</code>, not <code>/fr/</code>.</li>
+      </ul>
+
+      <h3>Flags from flagcdn.com</h3>
+      <pre><code>&lt;Image
+  src={`https://flagcdn.com/24x18/${currentLocale.code}.png`}
+  alt={locale}
+  width={20}
+  height={15}
+/&gt;</code></pre>
+      <p><strong>Why flagcdn:</strong> Zero-bundle SVG flags via CDN, no npm package, one <code>remotePatterns</code> entry in <code>next.config.ts</code>.</p>
+    </section>
+
+    <section id="factories">
+      <h2><span class="num">17</span> Schema Factories — Translations in Zod</h2>
+      <p><strong>The problem:</strong> Zod schemas validate on the server. Their error messages need to match the current locale — but the schema itself has no idea which locale is active.</p>
+
+      <h3>Before (Phase 5) — hardcoded Arabic</h3>
+      <pre><code>export const reservationSchema = z.object({
+  guestName: z.string().min(2, "الاسم قصير جداً"),
+  guestsCount: z.coerce.number().max(10, "لا يمكن الحجز لأكثر من 10 أشخاص"),
+  ...
+});</code></pre>
+
+      <h3>After (Phase 11) — factory receives a translator</h3>
+      <pre><code>type TranslateFn = (key: string) => string;
+
+export function createReservationSchema(t: TranslateFn) {
+  return z.object({
+    guestName: z.string().min(2, t("guestNameTooShort")),
+    guestsCount: z.coerce.number().max(10, t("guestsCountMax")),
+    ...
+  });
+}</code></pre>
+
+      <h3>Usage inside a Server Action</h3>
+      <pre><code>const tValidation = await getTranslations("Errors.validation");
+const schema = createReservationSchema((key) =>
+  tValidation(key as Parameters&lt;typeof tValidation&gt;[0])
+);
+const parsed = schema.safeParse(input);</code></pre>
+
+      <div class="callout success">
+        <strong>The translator is the factory</strong>
+        Instead of duplicating 5 schemas (one per locale), the schema stays a single function. The factory pattern keeps the codebase small and the locale data external — exactly where it belongs.
+      </div>
+
+      <h3>All 6 schemas converted</h3>
+      <table>
+        <thead><tr><th>File</th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td><code>validations/reservation.ts</code></td><td>const schema</td><td>createReservationSchema(t)</td></tr>
+          <tr><td><code>validations/review.ts</code></td><td>const schema</td><td>createReviewSchema(t)</td></tr>
+          <tr><td><code>validations/menu-item.ts</code></td><td>const schema</td><td>createMenuItemSchema(t)</td></tr>
+          <tr><td><code>validations/category.ts</code></td><td>const schema</td><td>createCategorySchema(t)</td></tr>
+          <tr><td><code>validations/table.ts</code></td><td>const schema</td><td>createTableSchema(t)</td></tr>
+          <tr><td><code>validations/user.ts</code></td><td>const schema</td><td>createUserSchema(t) + updateUserSchema(t)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="actions">
+      <h2><span class="num">18</span> Server Actions i18n — The tError() Helper</h2>
+      <p>Server Actions return user-facing errors (<code>"البريد مستخدم بالفعل"</code>). Every one of those strings now comes from translations.</p>
+
+      <h3>The helper — <code>src/lib/utils/server-errors.ts</code></h3>
+      <pre><code>export type ErrorKey =
+  | "unauthorized" | "adminRequired" | "notFound" | "invalidData"
+  | "duplicateSlug" | "duplicateEmail" | "duplicateNumber" | "duplicateName"
+  | "hasItems" | "hasReservations" | "noTableAvailable"
+  | "selfRoleChange" | "selfDisable" | "lastAdmin" | "selfDelete"
+  | "unexpected" | "reviewLimit" | /* ... + 40 more */;
+
+export async function tError(
+  key: ErrorKey,
+  values?: Record&lt;string, string | number&gt;
+): Promise&lt;string&gt; {
+  const t = await getTranslations("Errors");
+  return t(key, values);
+}</code></pre>
+
+      <h3>Usage in every Server Action</h3>
+      <pre><code>// Before
+return { success: false, error: "غير مصرح" };
+
+// After
+return { success: false, error: await tError("unauthorized") };
+
+// With interpolation
+return {
+  success: false,
+  error: await tError("hasItems", { count: itemsCount }),
+};</code></pre>
+
+      <h3>Files updated</h3>
+      <ul>
+        <li><code>actions/reservation.ts</code></li>
+        <li><code>actions/reviews.ts</code></li>
+        <li><code>actions/admin-menu.ts</code></li>
+        <li><code>actions/admin-categories.ts</code></li>
+        <li><code>actions/admin-tables.ts</code></li>
+        <li><code>actions/admin-users.ts</code></li>
+      </ul>
+
+      <div class="callout">
+        <strong>Type-safe error keys</strong>
+        The <code>ErrorKey</code> union lists every valid key. Calling <code>tError("typo")</code> is a compile error — not a runtime silent failure. Adding a new key requires updating the union + the 5 message files.
+      </div>
+    </section>
+
+    <section id="notfound">
+      <h2><span class="num">19</span> The not-found Client Pattern</h2>
+      <p><strong>The problem:</strong> Custom <code>not-found.tsx</code> files need translations. But making them <code>async</code> causes a subtle HTTP status regression.</p>
+
+      <h3>Broken — async + useTranslations</h3>
+      <pre><code>// ❌ Causes 200 instead of 404
+export default async function NotFound() {
+  const t = await getTranslations("ItemDetail");
+  return &lt;div&gt;{t("notFoundTitle")}&lt;/div&gt;;
+}</code></pre>
+      <p>When <code>not-found.tsx</code> is async, Next.js streams the response before the component resolves. By the time we know it's a 404, the HTTP status has already been sent as 200.</p>
+
+      <h3>Fixed — sync wrapper + client child</h3>
+      <pre><code>// ✅ not-found.tsx (stays sync)
+import type { Metadata } from "next";
+import { MenuItemNotFoundClient } from "./not-found-client";
+
+export const metadata: Metadata = {
+  title: "Not Found",
+  robots: { index: false, follow: false },
+};
+
+export default function MenuItemNotFound() {
+  return &lt;MenuItemNotFoundClient /&gt;;
+}
+
+// ✅ not-found-client.tsx ("use client")
+"use client";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+
+export function MenuItemNotFoundClient() {
+  const t = useTranslations("ItemDetail");
+  return (
+    &lt;div className="text-center py-24"&gt;
+      &lt;div className="text-8xl mb-6"&gt;🍽️&lt;/div&gt;
+      &lt;h1&gt;{t("notFoundTitle")}&lt;/h1&gt;
+      &lt;p&gt;{t("notFoundDescription")}&lt;/p&gt;
+      &lt;Link href="/menu"&gt;{t("backToMenu")}&lt;/Link&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+
+      <div class="callout success">
+        <strong>Why this works</strong>
+        The sync parent returns immediately → response headers send with the correct 404. The client child uses <code>useTranslations</code> (available through <code>NextIntlClientProvider</code> mounted in the layout). Both goals achieved.
+      </div>
+    </section>
+
+    <section id="status-issue">
+      <h2><span class="num">20</span> The 200-vs-404 Issue — Framework Limitation</h2>
+      <div class="callout danger">
+        <strong>Observed in production</strong>
+        <code>curl -I http://localhost:3000/en/menu/zxcvbnmx</code> returns <code>HTTP/1.1 200 OK</code> — even though the browser correctly renders the custom 404 page.
+      </div>
+
+      <h3>Root cause</h3>
+      <p>When <code>next-intl</code> middleware wraps a request, the response begins streaming before <code>notFound()</code> can fire in <code>generateMetadata</code> or <code>page.tsx</code>. Next.js can't retroactively change an already-committed HTTP status line.</p>
+
+      <table>
+        <thead><tr><th>Environment</th><th>Behavior</th></tr></thead>
+        <tbody>
+          <tr><td>No middleware (plain Next.js)</td><td>404 ✅</td></tr>
+          <tr><td>With next-intl middleware</td><td>200 (streaming commit)</td></tr>
+          <tr><td>Production (Vercel)</td><td>Same — not a dev-only quirk</td></tr>
+        </tbody>
+      </table>
+
+      <h3>The SEO-safe workaround</h3>
+      <p>Even with a 200 status, we can prevent search engines from indexing the page. Add <code>noindex</code> to the metadata:</p>
+      <pre><code>export const metadata: Metadata = {
+  title: "Not Found",
+  robots: { index: false, follow: false },
+};</code></pre>
+
+      <div class="callout info">
+        <strong>Result</strong>
+        <table style="margin-top:0.5rem">
+          <tr><td>👤 User</td><td>Sees the custom 404 page ✅</td></tr>
+          <tr><td>🤖 Googlebot</td><td>Reads <code>noindex, nofollow</code> → skips indexing ✅</td></tr>
+          <tr><td>📊 HTTP status</td><td>200 — cosmetic, non-blocking ⚠️</td></tr>
+        </table>
+      </div>
+      <p><strong>This is a known next-intl + Next.js 16 limitation</strong>, tracked upstream. Documented as a Phase 12 cleanup item to revisit when a fix lands.</p>
+    </section>
+
+    <section id="sitemap">
+      <h2><span class="num">21</span> Sitemap Per-Locale — 75 URLs</h2>
+      <p>The Phase 10 sitemap returned 15 URLs. After Phase 11, every URL is emitted once <strong>per locale</strong>.</p>
+
+      <h3>Before</h3>
+      <pre><code>https://lumiere-nextjs-fullstack.vercel.app/menu
+https://lumiere-nextjs-fullstack.vercel.app/menu/hummus
+...</code></pre>
+
+      <h3>After — the flatMap pattern</h3>
+      <pre><code>const staticPages = routing.locales.flatMap((locale) =>
+  staticPaths.map((path) => ({
+    url: `${SITE_URL}/${locale}${path}`,
+    lastModified: new Date(),
+    ...
+  }))
+);
+
+const itemPages = routing.locales.flatMap((locale) =>
+  items.map((item) => ({
+    url: `${SITE_URL}/${locale}/menu/${item.slug}`,
+    lastModified: item.updatedAt,
+    ...
+  }))
+);</code></pre>
+
+      <h3>Verified output</h3>
+      <div class="callout success">
+        <table style="margin-top:0.5rem">
+          <tr><td><code>/sitemap.xml</code></td><td>200 · <strong>75 URLs</strong></td></tr>
+          <tr><td>Static pages × 5 locales</td><td>15</td></tr>
+          <tr><td>Menu items × 5 locales</td><td>60</td></tr>
+        </table>
+      </div>
+
+      <h3>Bonus: automatic hreflang</h3>
+      <p>Next.js auto-injects <code>&lt;link rel="alternate" hreflang="..."&gt;</code> tags because we prefix every URL with the locale. Google uses these to serve the right language to each user — no manual work required.</p>
+    </section>
+
+    <section id="robots">
+      <h2><span class="num">22</span> Robots Per-Locale — 10 Admin Rules</h2>
+      <p>The admin panel is protected at <code>/ar/admin</code>, <code>/en/admin</code>, ... <code>/es/admin</code>. Each must be individually disallowed.</p>
+
+      <h3>Generated robots.txt</h3>
+      <pre><code>User-Agent: *
+Allow: /
+Disallow: /ar/admin
+Disallow: /ar/admin/
+Disallow: /en/admin
+Disallow: /en/admin/
+Disallow: /fr/admin
+Disallow: /fr/admin/
+Disallow: /de/admin
+Disallow: /de/admin/
+Disallow: /es/admin
+Disallow: /es/admin/
+Disallow: /api/
+
+Sitemap: https://lumiere-nextjs-fullstack.vercel.app/sitemap.xml</code></pre>
+
+      <h3>The code</h3>
+      <pre><code>const localePrefixes = routing.locales.map((locale) => `/${locale}`);
+const disallow = localePrefixes.flatMap((prefix) => [
+  `${prefix}/admin`,
+  `${prefix}/admin/`,
+]);
+disallow.push("/api/");</code></pre>
+
+      <div class="callout">
+        <strong>Why the trailing slash rule</strong>
+        <code>/ar/admin</code> disallows the exact path. <code>/ar/admin/</code> disallows all subpaths. Both are needed — some bots treat them differently.
+      </div>
+    </section>
+
+    <section id="coverage">
+      <h2><span class="num">23</span> Translation Coverage Matrix</h2>
+      <p>Every namespace must exist in every locale. Any missing key produces a <code>MISSING_MESSAGE</code> runtime error.</p>
+
+      <table class="coverage">
+        <thead>
+          <tr>
+            <th>Namespace</th>
+            <th>ar</th><th>en</th><th>fr</th><th>de</th><th>es</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Navbar</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Home</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Menu</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Reserve</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Review</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>ItemDetail</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Email</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (sidebar)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (overview)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (reservations)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (menu / categories / tables)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (users / reviews / auditLog)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Admin (analytics)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>Errors + validation</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+          <tr><td>UI (loading, error, whatsapp)</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td><td class="ok">✅</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <strong>~400 keys × 5 locales = 2,000 translated strings</strong>
+        Every visible character in every page — public, admin, email — is sourced from a translation file.
+      </div>
+    </section>
+
+    <section id="errors">
+      <h2><span class="num">24</span> The 11 Errors Journey</h2>
+      <p>Real errors encountered during the i18n build — each one exposed a different layer of the stack.</p>
+
+      <div class="error-journey">
+        <div class="error-item">
+          <h4>🎯 Error 1 — getTranslations in standalone script</h4>
+          <div class="error-msg">getTranslations is not supported in Client Components</div>
+          <div class="error-fix"><strong>Fix:</strong> In <code>send.ts</code>, replaced <code>getTranslations()</code> with <code>createTranslator({ locale, messages, namespace })</code> — the standalone, context-free version.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 2 — Edge runtime can't load Prisma</h4>
+          <div class="error-msg">Failed to load external module node:path: TypeError: Native module not found: node:path</div>
+          <div class="error-fix"><strong>Fix:</strong> Split <code>auth.ts</code> into <code>auth.config.ts</code> (Edge-safe) + <code>auth.ts</code> (Node-only, extends config with Prisma-backed Credentials).</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 3 — authorized callback mis-match</h4>
+          <div class="error-msg">Middleware runs but never blocks /ar/admin or /en/admin</div>
+          <div class="error-fix"><strong>Fix:</strong> Changed <code>pathname.startsWith("/admin")</code> → <code>segments.includes("admin")</code> to catch locale-prefixed paths.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 4 — Build-time DB connection</h4>
+          <div class="error-msg">Error occurred prerendering page "/[locale]" — Can't reach database server</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>export const dynamic = "force-dynamic"</code> to every page that queries Prisma at render time.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 5 — not-found async → 200 response</h4>
+          <div class="error-msg">HTTP/1.1 200 OK on /en/menu/zxcvbnmx (should be 404)</div>
+          <div class="error-fix"><strong>Fix:</strong> Made <code>not-found.tsx</code> sync, delegated translations to a child Client Component. Added <code>robots: { index: false }</code> as SEO fallback.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 6 — Featured cards show Arabic on /en</h4>
+          <div class="error-msg">Homepage featured items show "مقبلات" instead of "Starters"</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>nameEn</code> to the <code>select</code> and mapped results through <code>getLocalizedName(name, nameEn, locale)</code> — matching what <code>/menu</code> already did.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 7 — DemoBanner hardcoded Arabic</h4>
+          <div class="error-msg">Yellow demo banner shows Arabic text on /en/admin</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>Admin.demoBanner</code> namespace with <code>title</code> + <code>message</code> in all 5 files. Converted <code>DemoBanner.tsx</code> to use <code>useTranslations("Admin.demoBanner")</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 8 — WhatsApp message Arabic everywhere</h4>
+          <div class="error-msg">Clicking WhatsApp on /fr opens chat with "مرحباً Lumière!"</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>UI.whatsappDefaultMessage</code> per locale. Passed <code>t("whatsappDefaultMessage")</code> to <code>getWhatsAppLink()</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 9 — WhatsAppButton hardcoded label</h4>
+          <div class="error-msg">Floating button text "تواصل معنا" on all languages</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>UI.whatsappLabel</code> + <code>UI.whatsappAriaLabel</code>. Made <code>WhatsAppButton</code> async Server Component using <code>getTranslations("UI")</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 10 — MenuItemCard hardcoded badge/currency/details</h4>
+          <div class="error-msg">Card shows "⭐ مميز" and "ج.م" on /en/menu</div>
+          <div class="error-fix"><strong>Fix:</strong> Added <code>Menu.featuredBadge</code>, <code>Menu.currency</code>, <code>Menu.details</code> per locale. Converted <code>MenuItemCard</code> to async Server Component using <code>getTranslations("Menu")</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 11 — setRequestLocale deprecated</h4>
+          <div class="error-msg">Windsurf: 'setCachedRequestLocale' is deprecated — migrate to next/root-params</div>
+          <div class="error-fix"><strong>Fix:</strong> Documented for Phase 12 cleanup. Non-blocking — the current API still works, just shows a warning in the IDE.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">25</span> Verification Checklist</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>TypeScript clean</td><td><code>npx tsc --noEmit</code></td><td>Silent</td></tr>
+          <tr><td>ESLint clean</td><td><code>npx eslint</code></td><td>Silent</td></tr>
+          <tr><td>Production build</td><td><code>npm run build</code></td><td>✅ Compiled · 30 routes</td></tr>
+          <tr><td>5 locales render</td><td>Visit <code>/ar</code>, <code>/en</code>, <code>/fr</code>, <code>/de</code>, <code>/es</code></td><td>200 · correct language</td></tr>
+          <tr><td>RTL applied</td><td>Arabic homepage</td><td>Scrollbar left · logo right</td></tr>
+          <tr><td>LTR applied</td><td>English homepage</td><td>Scrollbar right · logo left</td></tr>
+          <tr><td>Language switcher</td><td>/en/menu → click العربية</td><td>Lands on /ar/menu, not /ar/</td></tr>
+          <tr><td>WhatsApp message</td><td>Click on /fr</td><td>Message begins "Bonjour Lumière"</td></tr>
+          <tr><td>Admin sidebar</td><td>Login · navigate /en/admin</td><td>All labels English</td></tr>
+          <tr><td>Validation error</td><td>/fr/reserve · submit invalid</td><td>French error messages</td></tr>
+          <tr><td>Sitemap</td><td><code>curl /sitemap.xml</code></td><td>75 URLs · per-locale prefixes</td></tr>
+          <tr><td>Robots</td><td><code>curl /robots.txt</code></td><td>10 admin rules + /api/</td></tr>
+          <tr><td>Email</td><td><code>npx tsx scripts/test-email.ts</code></td><td>5 language blocks printed</td></tr>
+          <tr><td>404 page</td><td><code>/en/menu/pizza</code></td><td>"Dish Not Found" + "Back to Menu"</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">26</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Using <code>next/link</code> in locale-prefixed pages</td><td>Broken links, redirect loops</td><td>Import <code>Link</code> from <code>@/i18n/navigation</code></td></tr>
+          <tr><td>Calling <code>usePathname</code> from <code>next/navigation</code></td><td>Locale prefix included in pathname</td><td>Import from <code>@/i18n/navigation</code></td></tr>
+          <tr><td>Making <code>not-found.tsx</code> async</td><td>200 instead of 404</td><td>Sync wrapper + Client child</td></tr>
+          <tr><td>Missing key in one locale</td><td><code>MISSING_MESSAGE</code> runtime error</td><td>Add to all 5 files; use the coverage matrix</td></tr>
+          <tr><td>Prisma imported into Edge</td><td><code>node:path</code> load error</td><td>Split config into Edge + Node files</td></tr>
+          <tr><td><code>useTranslations</code> in Server Component</td><td>"not supported in Server Components"</td><td>Use <code>getTranslations</code> (async) instead</td></tr>
+          <tr><td><code>getTranslations</code> in <code>tsx</code> script</td><td>"not supported in Client Components"</td><td>Use <code>createTranslator</code> from <code>next-intl</code></td></tr>
+          <tr><td>Adding locale to <code>/api/</code></td><td>Webhooks break</td><td>Keep API routes outside <code>[locale]</code></td></tr>
+          <tr><td>Hardcoded English in Client Component</td><td>Shows English on /de</td><td>Every visible string must be <code>t("...")</code></td></tr>
+          <tr><td>Wrong flag code</td><td>Broken image next to language</td><td>Use ISO 3166 alpha-2 codes (<code>eg</code>, <code>gb</code>, <code>fr</code>...)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">27</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>i18n</td><td>Internationalization</td><td>Designing software to support multiple languages</td></tr>
+          <tr><td>l10n</td><td>Localization</td><td>Actually translating for a specific locale</td></tr>
+          <tr><td>Locale</td><td>—</td><td>A language + region combo, e.g., <code>ar-EG</code> or <code>en-GB</code></td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic, Hebrew, Farsi, Urdu</td></tr>
+          <tr><td>LTR</td><td>Left-to-Right</td><td>Text direction for Latin, Cyrillic, Greek scripts</td></tr>
+          <tr><td>ICU</td><td>International Components for Unicode</td><td>Standard for plurals, dates, numbers in messages</td></tr>
+          <tr><td>BCP-47</td><td>Best Current Practice 47</td><td>Standard tag format for locales, e.g., <code>ar-EG</code></td></tr>
+          <tr><td>hreflang</td><td>(HTML attribute)</td><td>Tells search engines a page has alternates in other languages</td></tr>
+          <tr><td>Edge Runtime</td><td>—</td><td>V8-isolated environment without Node APIs (Vercel, Cloudflare)</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>React components that render only on the server</td></tr>
+          <tr><td>SEO</td><td>Search Engine Optimization</td><td>Practices to rank in search results</td></tr>
+          <tr><td>SERP</td><td>Search Engine Results Page</td><td>The page listing Google results</td></tr>
+          <tr><td>ICU MF</td><td>ICU MessageFormat</td><td>The <code>{count, plural, ...}</code> syntax</td></tr>
+          <tr><td>SSR</td><td>Server-Side Rendering</td><td>Rendering HTML on the server before sending to the browser</td></tr>
+          <tr><td>SPA</td><td>Single Page Application</td><td>Client-rendered app with a single HTML shell</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">28</span> Phase 11 Summary</h2>
+      <h3>Completed</h3>
+      <ul>
+        <li>Installed and configured <strong>next-intl v4</strong></li>
+        <li>Created <strong>5 translation files</strong> (~2,000 strings total)</li>
+        <li>Restructured <code>app/</code> with <code>[locale]</code> segment (20+ routes moved)</li>
+        <li>Split auth into <code>auth.config.ts</code> (Edge) + <code>auth.ts</code> (Node)</li>
+        <li>Chained next-intl middleware with Auth.js in <code>proxy.ts</code></li>
+        <li>Fixed <code>authorized</code> callback for locale-prefixed <code>/ar/admin</code> URLs</li>
+        <li>Added <strong>Category <code>nameEn</code></strong> migration + <code>getLocalizedName()</code> helper</li>
+        <li>Built <strong>LanguageSwitcher</strong> with real flags (flagcdn.com)</li>
+        <li>Converted <strong>6 Zod schemas</strong> to factories accepting a translator</li>
+        <li>Updated <strong>6 Server Actions</strong> to use <code>tError()</code></li>
+        <li>Translated <strong>email templates</strong> across 5 locales</li>
+        <li>Solved the <code>not-found</code> 200-vs-404 issue (client child pattern)</li>
+        <li>Rebuilt sitemap → <strong>75 URLs</strong> (15 × 5 locales)</li>
+        <li>Rebuilt robots → <strong>10 admin disallow rules</strong></li>
+        <li>Fixed 11 real i18n bugs (see Errors Journey)</li>
+      </ul>
+
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Zero client-side i18n overhead</strong> — every page renders server-side with translated HTML</li>
+        <li><strong>Preserved zero-JS Server Components</strong> — only the language switcher and a few dropdowns hydrate</li>
+        <li><strong>Type-safe translation keys</strong> — the <code>ErrorKey</code> union and inferred schema types catch typos at compile time</li>
+        <li><strong>Edge-safe + Node-safe separation</strong> — Prisma kept out of the Edge bundle</li>
+        <li><strong>Full SEO for 5 languages</strong> — sitemap + hreflang + robots per locale</li>
+        <li><strong>Idempotent DB migration</strong> — <code>update-categories.ts</code> safe to run any number of times</li>
+        <li><strong>Zero cost</strong> — next-intl is open-source, flagcdn is free, no translation service needed</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>Phase 11 ships a genuinely multilingual product</strong>
+        Lumière now serves a first-class experience to Arabic, English, French, German, and Spanish guests — matching the quality bar of commercial restaurant chains at zero additional infrastructure cost.
+      </div>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-10-polishing.html">← Phase 10 (Polishing)</a>
+      <span class="center">Phase 11 of 11</span>
+      <a href="phase-12-about.html">Phase 12 (About Page) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

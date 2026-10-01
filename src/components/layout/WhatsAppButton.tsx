@@ -6,7 +6,7 @@ export async function WhatsAppButton() {
 
   return (
     <a
-      href={getWhatsAppLink()}
+      href={getWhatsAppLink(t("whatsappDefaultMessage"))}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("whatsappAriaLabel")}

@@ -124,7 +124,8 @@
     "loadingDefault": "Wird geladen...",
     "loadingAdmin": "Dashboard wird geladen...",
     "whatsappLabel": "Kontaktieren Sie uns",
-    "whatsappAriaLabel": "Kontaktieren Sie uns über WhatsApp"
+    "whatsappAriaLabel": "Kontaktieren Sie uns über WhatsApp",
+    "whatsappDefaultMessage": "Hallo Lumière! Ich möchte mich über eine Tischreservierung informieren."
   },
     "Email": {
     "ReservationConfirmation": {

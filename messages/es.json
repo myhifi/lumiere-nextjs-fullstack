@@ -124,7 +124,8 @@
     "loadingDefault": "Cargando...",
     "loadingAdmin": "Cargando el panel...",
     "whatsappLabel": "Contáctanos",
-    "whatsappAriaLabel": "Contáctanos por WhatsApp"
+    "whatsappAriaLabel": "Contáctanos por WhatsApp",
+    "whatsappDefaultMessage": "¡Hola Lumière! Me gustaría consultar sobre la reserva de una mesa."
   },
     "Email": {
     "ReservationConfirmation": {

@@ -124,7 +124,8 @@
     "loadingDefault": "جاري التحميل...",
     "loadingAdmin": "جاري تحميل لوحة التحكم...",
     "whatsappLabel": "تواصل معنا",
-    "whatsappAriaLabel": "تواصل معنا عبر واتساب"
+    "whatsappAriaLabel": "تواصل معنا عبر واتساب",
+    "whatsappDefaultMessage": "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة."
   },
     "Email": {
     "ReservationConfirmation": {
@@ -456,7 +457,7 @@
       "message": "أنت تستعرض حساباً تجريبياً. جميع التغييرات (إضافة، تعديل، حذف) ستُعاد تعيينها تلقائياً كل 6 ساعات للحفاظ على تجربة العرض."
     }
   },
-      "Errors": {
+    "Errors": {
     "unauthorized": "غير مصرح",
     "adminRequired": "صلاحية المدير مطلوبة",
     "notFound": "العنصر غير موجود",
