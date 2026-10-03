@@ -2,6 +2,7 @@
 
 import { useState, type ChangeEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { Link } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import { StarRatingInput } from "@/components/ui/StarRatingInput";
@@ -29,6 +30,10 @@ export function ReviewForm() {
   });
 
   const [result, setResult] = useState<Result>({ kind: "idle" });
+  
+  useScrollToFirstError(
+    result.kind === "error" ? result.fieldErrors : undefined
+  );
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

@@ -1,11 +1,13 @@
-// قائمة الأطباق مع ربطها بالتصنيفات عبر categorySlug
-// الصور من Unsplash — مجانية للاستخدام التجاري
+// Menu items with bilingual names (Arabic + English)
+// English fields are shown in all non-Arabic locales as fallback.
 export const menuItems = [
-  // ─── مقبلات ───
+  // ─── مقبلات / Appetizers ───
   {
     name: "شوربة العدس",
+    nameEn: "Lentil Soup",
     slug: "lentil-soup",
     description: "شوربة عدس تقليدية مع الكمون والليمون",
+    descriptionEn: "Traditional lentil soup with cumin and lemon",
     price: 45,
     isFeatured: false,
     categorySlug: "appetizers",
@@ -14,8 +16,10 @@ export const menuItems = [
   },
   {
     name: "حمص بالطحينة",
+    nameEn: "Hummus with Tahini",
     slug: "hummus",
     description: "حمص كريمي مع زيت الزيتون والصنوبر",
+    descriptionEn: "Creamy hummus with olive oil and pine nuts",
     price: 55,
     isFeatured: true,
     categorySlug: "appetizers",
@@ -24,8 +28,10 @@ export const menuItems = [
   },
   {
     name: "متبل الباذنجان",
+    nameEn: "Baba Ghanoush",
     slug: "baba-ghanoush",
     description: "باذنجان مشوي مع الطحينة والثوم",
+    descriptionEn: "Grilled eggplant with tahini and garlic",
     price: 50,
     isFeatured: false,
     categorySlug: "appetizers",
@@ -33,11 +39,13 @@ export const menuItems = [
       "https://images.unsplash.com/photo-1541529086526-db283c563270?w=800&h=600&fit=crop&q=80",
   },
 
-  // ─── أطباق رئيسية ───
+  // ─── أطباق رئيسية / Main Courses ───
   {
     name: "كباب حلبي",
+    nameEn: "Aleppo Kebab",
     slug: "aleppo-kebab",
     description: "كباب لحم مشوي مع أرز بالشعرية",
+    descriptionEn: "Grilled meat kebab served with vermicelli rice",
     price: 180,
     isFeatured: true,
     categorySlug: "main-courses",
@@ -46,8 +54,10 @@ export const menuItems = [
   },
   {
     name: "ملوخية بالدجاج",
+    nameEn: "Molokhia with Chicken",
     slug: "molokhia-chicken",
     description: "ملوخية خضراء مع دجاج مشوي وأرز",
+    descriptionEn: "Green molokhia stew with grilled chicken and rice",
     price: 140,
     isFeatured: false,
     categorySlug: "main-courses",
@@ -56,8 +66,10 @@ export const menuItems = [
   },
   {
     name: "مسقعة بالباذنجان",
+    nameEn: "Moussaka",
     slug: "moussaka",
     description: "طبقات باذنجان ولحم مفروم بصلصة الطماطم",
+    descriptionEn: "Layers of eggplant and minced meat in tomato sauce",
     price: 130,
     isFeatured: false,
     categorySlug: "main-courses",
@@ -65,11 +77,13 @@ export const menuItems = [
       "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800&h=600&fit=crop&q=80",
   },
 
-  // ─── حلويات ───
+  // ─── حلويات / Desserts ───
   {
     name: "كنافة بالجبن",
+    nameEn: "Cheese Knafeh",
     slug: "knafeh",
     description: "كنافة ذهبية محشوة بالجبن مع القطر",
+    descriptionEn: "Golden knafeh stuffed with cheese and drizzled with syrup",
     price: 70,
     isFeatured: true,
     categorySlug: "desserts",
@@ -78,8 +92,10 @@ export const menuItems = [
   },
   {
     name: "أم علي",
+    nameEn: "Om Ali",
     slug: "om-ali",
     description: "حلوى مصرية بالحليب والمكسرات",
+    descriptionEn: "Traditional Egyptian dessert with milk and mixed nuts",
     price: 65,
     isFeatured: false,
     categorySlug: "desserts",
@@ -88,8 +104,10 @@ export const menuItems = [
   },
   {
     name: "بسبوسة بالقشطة",
+    nameEn: "Basbousa with Cream",
     slug: "basbousa",
     description: "بسبوسة طرية محشوة بالقشطة",
+    descriptionEn: "Tender basbousa stuffed with rich cream",
     price: 60,
     isFeatured: false,
     categorySlug: "desserts",
@@ -97,11 +115,13 @@ export const menuItems = [
       "https://images.unsplash.com/photo-1587241321921-91a834d6d191?w=800&h=600&fit=crop&q=80",
   },
 
-  // ─── مشروبات ───
+  // ─── مشروبات / Beverages ───
   {
     name: "عصير ليمون بالنعناع",
+    nameEn: "Lemon Mint Juice",
     slug: "lemon-mint",
     description: "ليمون طازج مع نعناع مثلج",
+    descriptionEn: "Fresh lemon juice with iced mint",
     price: 35,
     isFeatured: false,
     categorySlug: "beverages",
@@ -110,8 +130,10 @@ export const menuItems = [
   },
   {
     name: "شاي مغربي",
+    nameEn: "Moroccan Tea",
     slug: "moroccan-tea",
     description: "شاي أخضر بالنعناع في كوب تقليدي",
+    descriptionEn: "Green tea with fresh mint served in a traditional glass",
     price: 30,
     isFeatured: false,
     categorySlug: "beverages",
@@ -120,8 +142,10 @@ export const menuItems = [
   },
   {
     name: "قهوة عربية",
+    nameEn: "Arabic Coffee",
     slug: "arabic-coffee",
     description: "قهوة عربية بالهيل والزعفران",
+    descriptionEn: "Arabic coffee with cardamom and saffron",
     price: 40,
     isFeatured: true,
     categorySlug: "beverages",

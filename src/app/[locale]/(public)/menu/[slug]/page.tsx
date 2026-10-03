@@ -1,3 +1,4 @@
+// src/app/[locale]/(public)/menu/[slug]/page.tsx
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -30,22 +31,25 @@ export async function generateMetadata({
     notFound();
   }
 
-  // Translate category name
   const categoryName = getLocalizedName(
     item.category.name,
     item.category.nameEn,
     locale
   );
+  const localizedName = getLocalizedName(item.name, item.nameEn, locale);
+  const localizedDescription = item.description
+    ? getLocalizedName(item.description, item.descriptionEn, locale)
+    : null;
 
   const price = `${item.price} ${t("currency")}`;
   const description =
-    item.description ?? `${item.name} — ${categoryName} — ${price}`;
+    localizedDescription ?? `${localizedName} — ${categoryName} — ${price}`;
 
   return {
-    title: item.name,
+    title: localizedName,
     description,
     openGraph: {
-      title: `${item.name} | Lumière`,
+      title: `${localizedName} | Lumière`,
       description,
       type: "article",
     },
@@ -68,12 +72,15 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
 
   if (!item) notFound();
 
-  // Translate category name to current locale
   const categoryName = getLocalizedName(
     item.category.name,
     item.category.nameEn,
     locale
   );
+  const localizedName = getLocalizedName(item.name, item.nameEn, locale);
+  const localizedDescription = item.description
+    ? getLocalizedName(item.description, item.descriptionEn, locale)
+    : null;
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
@@ -95,7 +102,7 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
           {item.imageUrl ? (
             <Image
               src={item.imageUrl}
-              alt={item.name}
+              alt={localizedName}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               style={{ aspectRatio: "1 / 1" }}
@@ -122,12 +129,12 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
           </span>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            {item.name}
+            {localizedName}
           </h1>
 
-          {item.description && (
+          {localizedDescription && (
             <p className="text-muted leading-relaxed mb-6">
-              {item.description}
+              {localizedDescription}
             </p>
           )}
 

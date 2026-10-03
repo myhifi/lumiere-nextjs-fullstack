@@ -37,15 +37,7 @@ async function main() {
     }
 
     await prisma.menuItem.create({
-      data: {
-        name: itemData.name,
-        slug: itemData.slug,
-        description: itemData.description,
-        price: itemData.price,
-        isFeatured: itemData.isFeatured,
-        imageUrl: itemData.imageUrl,
-        categoryId: category.id,
-      },
+      data: { ...itemData, categoryId: category.id },
     })
   }
   console.log(`🍽️  تم إنشاء ${menuItems.length} أطباق`)

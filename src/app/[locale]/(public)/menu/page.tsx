@@ -72,6 +72,10 @@ export default async function MenuPage({
 
   const items = itemsRaw.map((item) => ({
     ...item,
+    name: getLocalizedName(item.name, item.nameEn, locale),
+    description: item.description
+      ? getLocalizedName(item.description, item.descriptionEn, locale)
+      : null,
     category: {
       ...item.category,
       name: getLocalizedName(

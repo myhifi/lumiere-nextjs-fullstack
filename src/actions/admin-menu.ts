@@ -194,10 +194,15 @@ export async function createMenuItem(
     const item = await prisma.menuItem.create({
       data: {
         name: data.name,
+        nameEn: data.nameEn && data.nameEn !== "" ? data.nameEn : null,
         slug: data.slug,
         description:
           data.description && data.description !== ""
             ? data.description
+            : null,
+        descriptionEn:
+          data.descriptionEn && data.descriptionEn !== ""
+            ? data.descriptionEn
             : null,
         price: data.price,
         imageUrl:
@@ -264,7 +269,13 @@ export async function updateMenuItem(
   try {
     const before = await prisma.menuItem.findUnique({
       where: { id: itemId },
-      select: { name: true, price: true, isAvailable: true, isFeatured: true },
+      select: {
+        name: true,
+        nameEn: true,
+        price: true,
+        isAvailable: true,
+        isFeatured: true,
+      },
     });
 
     if (!before) {
@@ -286,10 +297,15 @@ export async function updateMenuItem(
       where: { id: itemId },
       data: {
         name: data.name,
+        nameEn: data.nameEn && data.nameEn !== "" ? data.nameEn : null,
         slug: data.slug,
         description:
           data.description && data.description !== ""
             ? data.description
+            : null,
+        descriptionEn:
+          data.descriptionEn && data.descriptionEn !== ""
+            ? data.descriptionEn
             : null,
         price: data.price,
         imageUrl:
@@ -311,12 +327,14 @@ export async function updateMenuItem(
       changes: {
         before: {
           name: before.name,
+          nameEn: before.nameEn,
           price: before.price,
           isAvailable: before.isAvailable,
           isFeatured: before.isFeatured,
         },
         after: {
           name: item.name,
+          nameEn: item.nameEn,
           price: item.price,
           isAvailable: item.isAvailable,
           isFeatured: item.isFeatured,

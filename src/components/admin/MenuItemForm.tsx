@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
@@ -21,8 +22,10 @@ type Category = {
 type InitialData = {
   id?: string;
   name: string;
+  nameEn: string;
   slug: string;
   description: string;
+  descriptionEn: string;
   price: number;
   imageUrl: string;
   categoryId: string;
@@ -52,8 +55,10 @@ export function MenuItemForm({ categories, initialData }: Props) {
   const [formData, setFormData] = useState<InitialData>({
     id: initialData?.id,
     name: initialData?.name ?? "",
+    nameEn: initialData?.nameEn ?? "",
     slug: initialData?.slug ?? "",
     description: initialData?.description ?? "",
+    descriptionEn: initialData?.descriptionEn ?? "",
     price: initialData?.price ?? 0,
     imageUrl: initialData?.imageUrl ?? "",
     categoryId: initialData?.categoryId ?? categories[0]?.id ?? "",
@@ -65,6 +70,11 @@ export function MenuItemForm({ categories, initialData }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [, startTransition] = useTransition();
+
+  // Auto-scroll to the first errored field on validation failure
+  useScrollToFirstError(
+    Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined
+  );
 
   function handleChange(
     e: React.ChangeEvent<
@@ -96,8 +106,10 @@ export function MenuItemForm({ categories, initialData }: Props) {
 
     const payload = {
       name: formData.name,
+      nameEn: formData.nameEn,
       slug: formData.slug,
       description: formData.description,
+      descriptionEn: formData.descriptionEn,
       price: formData.price,
       imageUrl: formData.imageUrl,
       categoryId: formData.categoryId,
@@ -230,6 +242,44 @@ export function MenuItemForm({ categories, initialData }: Props) {
             {fieldErrors.description && (
               <p className="text-xs text-red-600 mt-1">
                 {fieldErrors.description[0]}
+              </p>
+            )}
+          </FormField>
+        </div>
+
+                <div className="md:col-span-2">
+          <FormField label={t("nameEnLabel")}>
+            <input
+              type="text"
+              name="nameEn"
+              value={formData.nameEn}
+              onChange={handleChange}
+              placeholder={t("nameEnPlaceholder")}
+              dir="ltr"
+              className={inputClasses}
+            />
+            {fieldErrors.nameEn && (
+              <p className="text-xs text-red-600 mt-1">
+                {fieldErrors.nameEn[0]}
+              </p>
+            )}
+          </FormField>
+        </div>
+
+        <div className="md:col-span-2">
+          <FormField label={t("descriptionEnLabel")}>
+            <textarea
+              name="descriptionEn"
+              value={formData.descriptionEn}
+              onChange={handleChange}
+              rows={3}
+              placeholder={t("descriptionEnPlaceholder")}
+              dir="ltr"
+              className={inputClasses}
+            />
+            {fieldErrors.descriptionEn && (
+              <p className="text-xs text-red-600 mt-1">
+                {fieldErrors.descriptionEn[0]}
               </p>
             )}
           </FormField>

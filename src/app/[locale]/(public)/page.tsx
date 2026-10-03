@@ -29,6 +29,10 @@ export default async function HomePage({
   // Translate category names to the current locale
   const featuredItems = featuredItemsRaw.map((item) => ({
     ...item,
+    name: getLocalizedName(item.name, item.nameEn, locale),
+    description: item.description
+      ? getLocalizedName(item.description, item.descriptionEn, locale)
+      : null,
     category: {
       ...item.category,
       name: getLocalizedName(

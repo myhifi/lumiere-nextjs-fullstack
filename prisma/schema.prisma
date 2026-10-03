@@ -36,11 +36,13 @@ model Category {
 // 🍽️ MenuItem — الأطباق
 // ═══════════════════════════════════════════════════
 model MenuItem {
-  id          String   @id @default(cuid())
-  name        String
-  slug        String   @unique
-  description String?
-  price       Float
+  id             String   @id @default(cuid())
+  name           String
+  nameEn         String?
+  slug           String   @unique
+  description    String?
+  descriptionEn  String?
+  price          Float
   imageUrl    String?
   isAvailable Boolean  @default(true)
   isFeatured  Boolean  @default(false)

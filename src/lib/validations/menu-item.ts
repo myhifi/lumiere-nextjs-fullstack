@@ -18,7 +18,21 @@ export function createMenuItemSchema(t: TranslateFn) {
       .max(80, t("slugTooLong"))
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, t("slugInvalidFormat")),
 
+    nameEn: z
+      .string()
+      .trim()
+      .max(80, t("itemNameTooLong"))
+      .optional()
+      .or(z.literal("")),
+
     description: z
+      .string()
+      .trim()
+      .max(500, t("itemDescriptionTooLong"))
+      .optional()
+      .or(z.literal("")),
+
+    descriptionEn: z
       .string()
       .trim()
       .max(500, t("itemDescriptionTooLong"))

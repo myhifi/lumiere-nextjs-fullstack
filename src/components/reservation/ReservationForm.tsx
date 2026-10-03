@@ -2,6 +2,7 @@
 
 import { useState, type ChangeEvent } from "react";
 import { useTranslations } from "next-intl";
+import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import {
   createReservation,
@@ -41,6 +42,10 @@ export function ReservationForm() {
   });
 
   const [result, setResult] = useState<Result>({ kind: "idle" });
+  
+  useScrollToFirstError(
+    result.kind === "error" ? result.fieldErrors : undefined
+  );
 
   function handleChange(
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>

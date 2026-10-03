@@ -2,6 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { MenuItemForm } from "@/components/admin/MenuItemForm";
+import { getLocalizedName } from "@/lib/utils/locale";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -13,10 +14,16 @@ export default async function NewMenuItemPage({ params }: PageProps) {
 
   const t = await getTranslations("Admin.menuForm");
 
-  const categories = await prisma.category.findMany({
+  const categoriesRaw = await prisma.category.findMany({
     orderBy: { displayOrder: "asc" },
-    select: { id: true, name: true, slug: true },
+    select: { id: true, name: true, nameEn: true, slug: true },
   });
+
+  const categories = categoriesRaw.map((cat) => ({
+    id: cat.id,
+    name: getLocalizedName(cat.name, cat.nameEn, locale),
+    slug: cat.slug,
+  }));
 
   if (categories.length === 0) {
     return (

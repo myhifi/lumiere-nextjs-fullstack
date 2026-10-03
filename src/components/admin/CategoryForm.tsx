@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
 import {
@@ -47,6 +48,10 @@ export function CategoryForm({ initialData }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
+
+  useScrollToFirstError(
+    Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined
+  );
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 
 export function ErrorFallback({
   error,
@@ -10,6 +11,14 @@ export function ErrorFallback({
   reset: () => void;
 }) {
   const t = useTranslations("UI");
+  const router = useRouter();
+
+  function handleRetry() {
+    // Bust the router cache first, then reset the boundary —
+    // otherwise the same cached error payload re-renders.
+    router.refresh();
+    reset();
+  }
 
   return (
     <div className="flex items-center justify-center min-h-[60vh] px-4">
@@ -24,7 +33,7 @@ export function ErrorFallback({
         )}
         <button
           type="button"
-          onClick={reset}
+          onClick={handleRetry}
           className="bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"
         >
           {t("errorRetry")}
