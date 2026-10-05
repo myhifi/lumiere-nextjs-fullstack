@@ -167,7 +167,8 @@
     "loadingAdmin": "Chargement du tableau de bord...",
     "whatsappLabel": "Contactez-nous",
     "whatsappAriaLabel": "Contactez-nous sur WhatsApp",
-    "whatsappDefaultMessage": "Bonjour Lumière ! Je souhaite me renseigner sur la réservation d'une table."
+    "whatsappDefaultMessage": "Bonjour Lumière ! Je souhaite me renseigner sur la réservation d'une table.",
+    "scrollToTop": "Retour en haut"
   },
     "Email": {
     "ReservationConfirmation": {

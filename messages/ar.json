@@ -167,7 +167,8 @@
     "loadingAdmin": "جاري تحميل لوحة التحكم...",
     "whatsappLabel": "تواصل معنا",
     "whatsappAriaLabel": "تواصل معنا عبر واتساب",
-    "whatsappDefaultMessage": "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة."
+    "whatsappDefaultMessage": "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة.",
+    "scrollToTop": "العودة للأعلى"
   },
     "Email": {
     "ReservationConfirmation": {

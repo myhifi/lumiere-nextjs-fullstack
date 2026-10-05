@@ -167,7 +167,8 @@
     "loadingAdmin": "Dashboard wird geladen...",
     "whatsappLabel": "Kontaktieren Sie uns",
     "whatsappAriaLabel": "Kontaktieren Sie uns über WhatsApp",
-    "whatsappDefaultMessage": "Hallo Lumière! Ich möchte mich über eine Tischreservierung informieren."
+    "whatsappDefaultMessage": "Hallo Lumière! Ich möchte mich über eine Tischreservierung informieren.",
+    "scrollToTop": "Nach oben"
   },
     "Email": {
     "ReservationConfirmation": {

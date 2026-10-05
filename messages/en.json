@@ -167,7 +167,8 @@
     "loadingAdmin": "Loading dashboard...",
     "whatsappLabel": "Contact Us",
     "whatsappAriaLabel": "Contact us on WhatsApp",
-    "whatsappDefaultMessage": "Hello Lumière! I'd like to inquire about reserving a table."
+    "whatsappDefaultMessage": "Hello Lumière! I'd like to inquire about reserving a table.",
+    "scrollToTop": "Back to top"
   },
     "Email": {
     "ReservationConfirmation": {
