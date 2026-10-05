@@ -3,6 +3,7 @@
     "home": "Accueil",
     "menu": "Menu",
     "reserve": "Réserver une table",
+    "about": "À propos",    
     "review": "Laisser un avis"
   },
     "Home": {
@@ -106,6 +107,47 @@
       "kicker": "TÉMOIGNAGES",
       "title": "Ce que disent nos clients",
       "reviewsCount": "{count, plural, =0 {Aucun avis} =1 {sur 1 avis} other {sur # avis}}"
+    }
+  },
+    "About": {
+    "Hero": {
+      "kicker": "NOTRE HISTOIRE",
+      "title": "À propos de Lumière",
+      "subtitle": "Une histoire de passion, de tradition et de l'art de l'hospitalité"
+    },
+    "Story": {
+      "kicker": "DEPUIS 2026",
+      "title": "Où chaque repas raconte une histoire",
+      "paragraph1": "Lumière est née d'une conviction simple : un grand repas est bien plus que de la nourriture — c'est un moment. Un moment où saveurs, ambiance et convivialité se rejoignent pour créer quelque chose d'inoubliable.",
+      "paragraph2": "Fondé en 2026 au cœur du Caire, nous avons entrepris de réinventer la cuisine égyptienne et levantine classique avec une sensibilité moderne. Chaque plat qui quitte notre cuisine porte le poids des générations — les recettes, les techniques, la patience — tout en semblant résolument contemporain.",
+      "paragraph3": "Nous sommes fiers d'être plus qu'un restaurant. Nous sommes un lieu de rassemblement — pour les célébrations, les premiers rendez-vous, les dîners de famille et les soirées tranquilles en solitaire."
+    },
+    "Chef": {
+      "kicker": "RENCONTREZ LE CHEF",
+      "title": "Les mains derrière les assiettes",
+      "chefName": "Mohamed Yehia",
+      "chefRole": "Fondateur & Chef Exécutif",
+      "bio1": "Le chef Mohamed Yehia a passé des années à perfectionner l'équilibre entre tradition et innovation. Formé à la technique classique, inspiré par la cuisine de sa grand-mère, il croit qu'une grande cuisine, c'est 10 % de technique et 90 % d'attention.",
+      "bio2": "Sa philosophie signature : choisir le meilleur, respecter l'ingrédient et ne jamais précipiter un bon plat."
+    },
+    "Values": {
+      "kicker": "NOS VALEURS",
+      "title": "Ce qui nous définit",
+      "qualityTitle": "Qualité",
+      "qualityBody": "Nous sélectionnons chaque ingrédient avec intention. Aucun raccourci, aucun compromis.",
+      "authenticityTitle": "Authenticité",
+      "authenticityBody": "Des recettes transmises et perfectionnées. L'âme de chaque plat reste fidèle à son origine.",
+      "hospitalityTitle": "Hospitalité",
+      "hospitalityBody": "Vous arrivez en invité et repartez comme un membre de la famille. Chaque détail, chaque accueil, compte."
+    },
+    "CTA": {
+      "title": "Rejoignez-nous à table",
+      "subtitle": "Nous avons hâte de vous accueillir",
+      "button": "Réservez votre table"
+    },
+    "meta": {
+      "title": "À propos de Lumière",
+      "description": "Découvrez l'histoire de Lumière — un restaurant au cœur du Caire qui allie tradition et modernité, dirigé par le chef Mohamed Yehia."
     }
   },
     "ItemDetail": {

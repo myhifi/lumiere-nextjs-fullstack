@@ -13,7 +13,7 @@ const SITE_URL =
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Static paths shared across all locales
-  const staticPaths = ["", "/menu", "/reserve"] as const;
+  const staticPaths = ["", "/menu", "/about", "/reserve"] as const;
   const staticPages: MetadataRoute.Sitemap = routing.locales.flatMap(
     (locale) =>
       staticPaths.map((path) => ({
