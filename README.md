@@ -1,9 +1,9 @@
 # 🍽️ Lumière Restaurant — Full-Stack Next.js Application
 
-> A production-ready restaurant website with an intelligent table-assignment engine, complete admin dashboard, authentication, and email notifications. Deployed on Vercel with Neon PostgreSQL, featuring full RTL Arabic UI.
+> A production-ready, bilingual (Arabic + English), 5-locale restaurant platform with an intelligent table-assignment engine, complete admin dashboard, authentication, email notifications, and About page. Deployed on Vercel with Neon PostgreSQL. Full RTL/LTR support, zero paid services, zero credit card.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-10%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-12%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -11,24 +11,30 @@
 [![Prisma](https://img.shields.io/badge/Prisma-6-2d3748?style=flat-square&logo=prisma)](https://www.prisma.io)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169e1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![next-intl](https://img.shields.io/badge/next--intl-4-1a1a1a?style=flat-square&logo=i18next&logoColor=white)](https://next-intl-docs.vercel.app)
 [![CI](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml)
 
 ---
 
 ## 🌐 Live Demo
 
-| Environment | URL |
+| Page | URL |
 |---|---|
-| **Production** | https://lumiere-nextjs-fullstack.vercel.app |
-| **Menu** | https://lumiere-nextjs-fullstack.vercel.app/menu |
-| **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/reserve |
-| **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/admin |
-| **Full Project Walkthrough** | [Phase 1 → Phase 10](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html) |
+| **Homepage** | https://lumiere-nextjs-fullstack.vercel.app |
+| **Menu** | https://lumiere-nextjs-fullstack.vercel.app/en/menu |
+| **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/en/reserve |
+| **About** | https://lumiere-nextjs-fullstack.vercel.app/en/about |
+| **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/en/admin |
+| **Full Project Walkthrough** | [Phase 1 → Phase 12](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) |
+
+> **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es` prefixes. Arabic is RTL; the rest are LTR.
+
 ---
 
 ## 📸 Screenshots
 
 ### Customer-Facing
+
 ![Homepage](./public/screenshots/public/01-homepage.jpg)
 ![Menu Grid](./public/screenshots/public/02-menu-grid.jpg)
 ![Menu Filtered](./public/screenshots/public/03-menu-filtered.jpg)
@@ -36,15 +42,17 @@
 ![Reserve Form](./public/screenshots/public/05-reserve-form.jpg)
 
 ### Admin Dashboard
+
 ![Overview](./public/screenshots/admin/06-admin-overview.jpg)
 ![Reservations](./public/screenshots/admin/07-admin-reservations.jpg)
 ![Menu Management](./public/screenshots/admin/08-admin-menu.jpg)
 ![Login](./public/screenshots/admin/10-login.jpg)
 
 ### Documentation
+
 ![Portfolio Page](./public/screenshots/docs/portfolio-page.jpg)
 
-
+---
 ## ✨ Features
 
 ### Customer-Facing
@@ -54,28 +62,37 @@
 - 📅 **Smart reservation engine** — auto-assigns the optimal table based on party size, time slot, and existing bookings (interval-overlap algorithm)
 - 📧 **Email confirmation** on reservation (console provider in development)
 - 💬 **WhatsApp integration** — floating button on every page
-- 🌍 **Full RTL Arabic UI** — right-to-left layout, Arabic typography, culturally-aware design
+- 🌍 **5 languages** — Arabic, English, French, German, Spanish, with automatic RTL/LTR direction switching
+- 🎨 **Bilingual content** — menu items and categories have Arabic + English names, with graceful fallback in the other 3 locales
+- 📖 **About page** — the story of Lumière, chef biography, values, and full-page storytelling in 5 locales
+- ⭐ **Customer reviews** — star ratings with admin moderation
+- ⬆️ **Scroll-to-top button** — appears after 400px of scrolling, elegant fade-in
+- 📱 **Fully responsive** — mobile-first design with three breakpoints
 
 ### Admin Dashboard
 
 - 📊 **Dashboard overview** with real-time statistics
 - 📅 **Reservations management** — status lifecycle: pending → confirmed → completed (or cancelled)
-- 🍽️ **Menu management** — full CRUD with availability toggle, featured toggle, auto-slugs
+- 🍽️ **Menu management** — full CRUD with availability toggle, featured toggle, auto-slugs, and bilingual fields
 - 📂 **Categories management** — with cascade-delete protection
 - 🪑 **Tables management** — with reservation-history protection
 - 👥 **Users management** — role-based access (ADMIN/STAFF) with three-tier safety rules
+- ⭐ **Reviews moderation** — approve, reject, or delete customer reviews
 - 📋 **Audit Log** — tracks every staff action (create/update/delete) with before/after diffs, severity levels (info/warning/critical), and filtering by entity or severity
 - 📊 **Analytics Dashboard** — interactive donut and bar charts (Recharts) showing category distribution, price ranges, and featured balance
 - 🔐 **Authentication** — Auth.js v5 with credentials, bcrypt hashing, JWT sessions
+- 🌍 **Fully translated admin** — every label, button, and error message localized in 5 languages
 
 ### Engineering
 
 - ⚡ **Server Components** — zero client JavaScript for static content
 - 🔒 **Defense-in-depth security** — five layers from client to business rule
-- ✅ **Zod validation** — Arabic error messages, custom refinements
+- ✅ **Zod validation** — cross-field refinements, per-locale error messages via schema factories
+- 🎯 **Auto-scroll to first error** — reusable hook applied to all 6 forms for accessible validation UX
+- 🌐 **Per-locale SEO** — 80-URL sitemap (16 pages × 5 locales), locale-aware robots.txt, hreflang links
 - 🔄 **Auto-deploy** — one `git push` triggers full CI/CD pipeline
 - 📱 **Responsive** — mobile-first with three breakpoints
-- ♿ **Accessibility** — ARIA labels, semantic HTML, keyboard navigation
+- ♿ **Accessibility** — ARIA labels, semantic HTML, keyboard navigation, focus management
 
 ---
 
@@ -88,27 +105,28 @@
 | **Database** | PostgreSQL 17 (Neon) | Serverless relational database |
 | **ORM** | Prisma 6 | Type-safe database client |
 | **Validation** | Zod 4 | Runtime schema validation |
+| **i18n** | next-intl 4 | 5-locale routing and messages |
 | **Styling** | Tailwind CSS 4 | Utility-first CSS with RTL support |
 | **Auth** | Auth.js v5 (NextAuth) | Credential-based authentication |
 | **Charts** | Recharts | Interactive analytics dashboards |
-| **Email** | React Email + Resend | Transactional email templates |
+| **Email** | React Email | Transactional email templates |
 | **Hosting** | Vercel | Serverless deployment with CDN |
-| **Source Control** | GitHub | Version control and collaboration |
+| **Source Control** | GitHub | Version control and CI/CD |
 
 ---
 
 ## 🗺️ Architecture
-
 ```
 Browser
-   │
-   ├── Public pages      → Server Components → Prisma → PostgreSQL
-   ├── Reservation form  → Server Action     → Smart engine → Prisma
-   └── Admin dashboard   → Auth.js + RBAC    → Server Actions → Prisma
-
+│
+├── Public pages → Server Components → Prisma → PostgreSQL
+├── Reservation form → Server Action → Smart engine → Prisma
+├── About page → Server Component → i18n messages
+└── Admin dashboard → Auth.js + RBAC → Server Actions → Prisma
 Deployment:
 Git push → GitHub → Vercel Build → Production URL
 ```
+
 
 ### Key Architectural Decisions
 
@@ -117,12 +135,14 @@ Git push → GitHub → Vercel Build → Production URL
 - **Pure business logic** — `findBestTable()` has no knowledge of HTTP or the database
 - **Server Actions over API routes** — for internal mutations
 - **Route Handlers for external consumers** — `/api/menu/*` for third parties
+- **Locale-prefixed routing** — every URL carries its language (`/en/menu`, `/ar/menu`)
+- **Bilingual content strategy** — Arabic + English in the DB, with graceful fallback for FR/DE/ES
+- **Schema factories** — Zod schemas receive a translator and return localized errors
 
 ---
-
 ## 📚 Project Documentation
 
-This project was built in **10 documented phases**, each with a self-contained HTML portfolio page:
+This project was built in **12 documented phases**, each with a self-contained HTML portfolio page:
 
 | Phase | Topic | Documentation |
 |---|---|---|
@@ -136,8 +156,10 @@ This project was built in **10 documented phases**, each with a self-contained H
 | 8 | Admin Dashboard (Full CRUD) | [Open](./public/portfolio/phase-08-admin-dashboard.html) |
 | 9 | Deployment (Vercel + Neon) | [Open](./public/portfolio/phase-09-deployment.html) |
 | 10 | Polishing & Production Readiness | [Open](./public/portfolio/phase-10-polishing.html) |
+| 11 | Internationalization (5 locales) | [Open](./public/portfolio/phase-11-i18n.html) |
+| 12 | Menu EN + About + UX Polish | [Open](./public/portfolio/phase-12-menu-about.html) |
 
-> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the live version](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-10-polishing.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
+> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 
 ---
 
@@ -158,6 +180,7 @@ cd lumiere-nextjs-fullstack
 npm install
 
 cp .env.example .env
+# Fill in DATABASE_URL, DIRECT_URL, AUTH_SECRET
 
 npx prisma migrate dev
 
@@ -170,6 +193,7 @@ npm run dev
 
 Open http://localhost:3000 in your browser.
 
+---
 ### Demo Access
 
 For portfolio review, use this account to explore the full admin dashboard:
@@ -185,66 +209,96 @@ For portfolio review, use this account to explore the full admin dashboard:
 
 | Variable | Purpose | Required |
 |---|---|---|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ |
+| `DATABASE_URL` | PostgreSQL connection string (direct endpoint) | ✅ |
 | `DIRECT_URL` | Direct connection for migrations | ✅ |
 | `AUTH_SECRET` | JWT signing secret (64+ chars) | ✅ |
-| `EMAIL_PROVIDER` | `console` (dev) or `resend` (prod) | ✅ |
+| `EMAIL_PROVIDER` | `console` (dev) or `resend` (production) | ✅ |
 | `NEXT_PUBLIC_SITE_URL` | Public URL for OG images and sitemap | Optional |
 
 Generate `AUTH_SECRET` with:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-```
 
+```
 ---
 
 ## 📁 Project Structure
 
 ```
 lumiere-nextjs-fullstack/
+├── messages/                     # 5 translation files (ar, en, fr, de, es)
 ├── public/
-│   ├── portfolio/          # 10 HTML portfolio pages (one per phase)
-│   └── screenshots/        # Curated screenshots (public, admin, docs)
+│   ├── portfolio/                # 12 HTML portfolio pages
+│   └── screenshots/              # Curated screenshots (public, admin, docs)
 ├── prisma/
-│   ├── schema.prisma       # Database schema (6 models)
-│   ├── migrations/         # Versioned migrations
-│   ├── seed.ts             # Seed script
-│   └── data/               # Seed data (categories, items, tables)
+│   ├── schema.prisma             # 8 models (incl. AuditLog, Review)
+│   ├── migrations/               # Versioned migrations
+│   ├── seed.ts                   # Seed script
+│   └── data/                     # Seed data (categories, items, tables)
 ├── scripts/
-│   ├── create-admin.ts     # Idempotent admin seeder
-│   └── test-*.ts           # Test scripts for pure functions
+│   ├── create-admin.ts           # Idempotent admin seeder
+│   ├── update-categories.ts      # Backfill EN category names
+│   ├── update-menu-items-en.ts   # Backfill EN menu item names
+│   └── test-*.ts                 # Test scripts for pure functions
 ├── src/
-│   ├── actions/            # Server Actions
+│   ├── actions/                  # 6 Server Action files
 │   ├── app/
-│   │   ├── (public)/       # Customer-facing pages
-│   │   ├── (auth)/         # Login page
-│   │   ├── admin/          # Protected admin dashboard
-│   │   └── api/            # Route Handlers
-│   ├── components/         # Reusable React components
-│   ├── lib/                # Business logic + utilities
-│   ├── types/              # TypeScript augmentations
-│   ├── auth.config.ts      # Edge-safe Auth.js config
-│   ├── auth.ts             # Node-only Auth.js config
-│   └── proxy.ts            # Route protection (Next.js 16)
+│   │   ├── [locale]/             # Locale-prefixed routes
+│   │   │   ├── (auth)/           # Login page (centered layout)
+│   │   │   ├── (public)/         # Home, Menu, Reserve, Review, About
+│   │   │   └── admin/            # Protected admin dashboard
+│   │   ├── api/                  # Route Handlers
+│   │   ├── layout.tsx            # Passthrough root layout
+│   │   ├── not-found.tsx         # Bilingual root 404
+│   │   ├── opengraph-image.tsx   # Dynamic OG image
+│   │   ├── robots.ts             # Per-locale robots.txt
+│   │   └── sitemap.ts            # Per-locale sitemap.xml
+│   ├── components/               # React components (mostly Server Components)
+│   ├── i18n/                     # next-intl config (routing, request, navigation)
+│   ├── lib/
+│   │   ├── auth/                 # bcrypt utilities
+│   │   ├── email/                # Email subsystem (Strategy Pattern)
+│   │   ├── hooks/                # useScrollToFirstError
+│   │   ├── services/             # Pure business logic
+│   │   ├── utils/                # Helpers (getLocalizedName, tError)
+│   │   └── validations/          # Zod schemas (factories)
+│   ├── types/                    # TypeScript augmentations
+│   ├── auth.config.ts            # Edge-safe Auth.js config
+│   ├── auth.ts                   # Node-only Auth.js config
+│   └── proxy.ts                  # Route protection + i18n middleware
 └── package.json
 ```
 
 ---
-
 ## 🧪 Testing
 
 The project includes test scripts for pure business logic:
 
 ```bash
-npx tsx scripts/test-assignment.ts
+npx tsx scripts/test-assignment.ts    # 5 table-assignment scenarios
 
-npx tsx scripts/test-validation.ts
+npx tsx scripts/test-validation.ts    # 7 Zod validation scenarios
 
-npx tsx scripts/test-password.ts
+npx tsx scripts/test-password.ts      # 5 bcrypt scenarios
+
+npx tsx scripts/test-email.ts         # 5-locale email rendering
 ```
 
 All scripts print pass/fail for each scenario and exit with a non-zero code on failure.
+
+---
+
+## 🛠️ Available Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Local dev server with webpack |
+| `npm run build` | Production build |
+| `npm run start` | Serve the production build |
+| `npm run lint` | Run ESLint |
+| `npm run db:seed` | Wipe + re-seed the database |
+| `npm run db:admin` | Create/update admin + demo accounts |
 
 ---
 
@@ -268,6 +322,8 @@ This project is licensed under the MIT License.
 - Built as a portfolio project to demonstrate full-stack Next.js proficiency
 - Deployed entirely on free tiers: **Vercel**, **Neon**, **GitHub**
 - Zero external paid services, zero credit card requirements
+- Food photography from **Unsplash**
+- Language flags from **flagcdn.com**
 
 ---
 
