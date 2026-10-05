@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 12 — Menu EN &amp; About · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar nav a.part-label { color: var(--accent); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.75rem; padding: 0.35rem 0.75rem; pointer-events: none; }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .disabled { opacity: 0.35; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* File Tree */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* Flow */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* Layers */
+.layers { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+.layer { padding: 0.75rem 1.25rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; border-left: 4px solid; }
+.layer.client { background: #fdecea; border-color: #c0392b; color: #7a1c1c; }
+.layer.action { background: #fef5e7; border-color: #e67e22; color: #7a4a12; }
+.layer.db { background: #eaf0fa; border-color: #2e6fc0; color: #1a3d75; }
+.layer.success { background: #eaf7ef; border-color: #27ae60; color: #1e5a3a; }
+.layer strong { color: inherit; }
+
+/* Error Journey */
+.error-journey { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.error-journey::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%); }
+.error-item { position: relative; margin-bottom: 1.5rem; }
+.error-item::before { content: ""; position: absolute; left: -2rem; top: 8px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); background: var(--success); }
+.error-item h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.error-item .error-msg { background: var(--bg-code); color: #ff9b8a; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.75rem; margin: 0.5rem 0; border-left: 3px solid var(--danger); }
+.error-item .error-fix { background: #eaf7ef; color: #1e5a3a; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; border-left: 3px solid var(--success); }
+.error-item .error-fix strong { color: #1e7e45; }
+
+/* Decision Cards */
+.decisions { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.decision-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 10px; padding: 1.25rem; }
+.decision-card h4 { font-size: 0.95rem; margin-bottom: 0.5rem; }
+.decision-card p { font-size: 0.82rem; color: var(--fg-muted); margin: 0; }
+
+/* Code Terminal */
+.terminal { background: #0d1117; color: #c9d1d9; border-radius: 10px; overflow: hidden; margin: 1rem 0; font-family: 'Consolas', monospace; font-size: 0.8rem; border: 1px solid #30363d; }
+.terminal-bar { background: #161b22; padding: 0.5rem 0.75rem; display: flex; gap: 0.4rem; border-bottom: 1px solid #30363d; }
+.terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+.terminal-dot.red { background: #ff5f56; } .terminal-dot.yellow { background: #ffbd2e; } .terminal-dot.green { background: #27c93f; }
+.terminal-body { padding: 1rem 1.25rem; line-height: 1.7; }
+.terminal-body .cmd { color: #79c0ff; }
+.terminal-body .out { color: #c9d1d9; }
+.terminal-body .ok { color: #7ee787; }
+.terminal-body .warn { color: #ffa657; }
+.terminal-body .dim { color: #8b949e; }
+.terminal-body .accent { color: #d2a8ff; }
+
+/* Two Col */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+.col-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
+.col-card.before { border-left: 4px solid var(--danger); }
+.col-card.after { border-left: 4px solid var(--success); }
+.col-card h5 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); margin-bottom: 0.5rem; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .two-col { grid-template-columns: 1fr; }
+  .error-journey { padding-left: 1.5rem; }
+  .error-item::before { left: -1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 12</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#scope">Three Features, One Phase</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+
+      <a class="part-label">Part 1 · Menu English</a>
+      <a href="#schema">Schema: nameEn + descriptionEn</a>
+      <a href="#migration">Migration + Seed</a>
+      <a href="#backfill">Idempotent Backfill Script</a>
+      <a href="#helper">getLocalizedName Extension</a>
+      <a href="#public-pages">Public Pages Update</a>
+      <a href="#admin-form">Admin Form Bilingual</a>
+      <a href="#dropdown">Category Dropdown Fix</a>
+      <a href="#tradeoff">The "English Admin" Trade-off</a>
+
+      <a class="part-label">Part 2 · Auto-Scroll UX</a>
+      <a href="#ux-problem">The Real Problem</a>
+      <a href="#industry">Why "Error Near Button" is Wrong</a>
+      <a href="#hook">The useScrollToFirstError Hook</a>
+      <a href="#six-forms">Applied to 6 Forms</a>
+
+      <a class="part-label">Part 3 · About Page</a>
+      <a href="#about-structure">5-Section Structure</a>
+      <a href="#chef">Chef Mohamed Yehia</a>
+      <a href="#about-i18n">5-Locale Translations</a>
+
+      <a class="part-label">Bonus</a>
+      <a href="#scroll-top">Scroll-to-Top Button</a>
+      <a href="#root-404">Root 404 Pages</a>
+
+      <a href="#errors">The Errors Journey</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 12 · Menu EN + About + UX Polish</div>
+      <h1>Content, UX, and Storytelling</h1>
+      <p class="lede">Extend the internationalized foundation with three coordinated deliverables: bilingual menu items (Arabic + English fallback), an accessible auto-scroll UX pattern that turns validation errors into guided corrections, and a fully translated About page that tells the story of Lumière and its chef. Plus two small polish items: a fade-in scroll-to-top button and bilingual 404 pages for both Next.js and Vercel's CDN.</p>
+      <div class="stack">
+        <span>Bilingual Content</span><span>Auto-Scroll UX</span>
+        <span>5-Locale About</span><span>Reusable Hook</span>
+        <span>404 Handling</span><span>Production-Safe Migration</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Close three user-experience gaps that surfaced after Phase 11 shipped: menu items still showing Arabic on English pages, form errors hidden below the fold, and a missing About page. Each is a distinct problem requiring a distinct fix — all delivered in one cohesive phase.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Bilingual menu items</strong> — add <code>nameEn</code> + <code>descriptionEn</code> columns to <code>MenuItem</code>, populate 12 dishes, and localize rendering via <code>getLocalizedName()</code>.</li>
+        <li><strong>Admin form upgrade</strong> — two new optional English fields per dish, with a clear explanation of the edge case when the admin interface is in English.</li>
+        <li><strong>Category dropdown localization</strong> — admin category selects show English names on non-Arabic locales.</li>
+        <li><strong>Auto-scroll to first error</strong> — reusable hook applied to all 6 forms, using smooth scroll + delayed focus.</li>
+        <li><strong>About page</strong> — 5-section story page with hero, story, chef bio, values, and CTA, fully translated in 5 locales.</li>
+        <li><strong>Navbar 5th link</strong> — About between Menu and Reserve, with per-locale labels.</li>
+        <li><strong>Scroll-to-top button</strong> — fade-in after 400px, positioned bottom-right (opposite WhatsApp).</li>
+        <li><strong>Bilingual 404 handling</strong> — two layers: Next.js root fallback + Vercel static page for missing files.</li>
+      </ol>
+    </section>
+
+    <section id="scope">
+      <h2><span class="num">2</span> Three Features, One Phase</h2>
+      <p>Three seemingly separate requests converged into one cohesive phase, because they share infrastructure and design patterns.</p>
+      <div class="decisions">
+        <div class="decision-card">
+          <h4>🍽️ Bilingual Menu</h4>
+          <p>Extends the <code>getLocalizedName()</code> pattern already proven with <code>Category.nameEn</code>. Same migration strategy, same helper, same admin UX.</p>
+        </div>
+        <div class="decision-card">
+          <h4>🎯 Auto-Scroll UX</h4>
+          <p>Built once as a hook. Applied to 6 forms. Solves a real-world problem: silent errors that hide below the fold after submit.</p>
+        </div>
+        <div class="decision-card">
+          <h4>📖 About Page</h4>
+          <p>Fully integrated with the 5-locale architecture from Phase 11. Same translation pattern, same metadata approach, same sitemap inclusion.</p>
+        </div>
+      </div>
+      <div class="callout info">
+        <strong>Why bundle them?</strong>
+        Each feature is small enough to fit in one session, and all three share the same release commit — keeping the git history clean and the Vercel deploy atomic.
+      </div>
+    </section>
+
+    <section id="commands">
+      <h2><span class="num">3</span> Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>npx prisma migrate dev --name add_menu_item_name_en</code></td><td>Add bilingual columns to MenuItem</td></tr>
+          <tr><td>2</td><td><code>npm run db:seed</code></td><td>Re-seed with English names included</td></tr>
+          <tr><td>3</td><td><code>npx tsx scripts/update-menu-items-en.ts</code></td><td>Backfill production data safely (idempotent)</td></tr>
+          <tr><td>4</td><td><code>npx tsc --noEmit</code></td><td>Type-check after each unit</td></tr>
+          <tr><td>5</td><td><code>npx eslint</code></td><td>Lint — silent on success</td></tr>
+          <tr><td>6</td><td><code>npm run build</code></td><td>Verify production build</td></tr>
+          <tr><td>7</td><td><code>npm run dev</code></td><td>Local dev server with webpack</td></tr>
+          <tr><td>8</td><td><code>git add . &amp;&amp; git commit -m "..." &amp;&amp; git push</code></td><td>Deploy cycle</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">4</span> Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">lumiere-nextjs-fullstack/</span></div>
+        <div class="indent-1"><span class="dir">prisma/</span></div>
+        <div class="indent-2"><span class="file upd">schema.prisma</span> <span class="note">← +2 fields on MenuItem</span></div>
+        <div class="indent-2"><span class="dir new">migrations/20261002075553_add_menu_item_name_en/</span></div>
+        <div class="indent-2"><span class="file upd">data/menu-items.ts</span> <span class="note">← English values added</span></div>
+        <div class="indent-2"><span class="file upd">seed.ts</span> <span class="note">← spread pattern</span></div>
+        <div class="indent-1"><span class="dir new">scripts/</span></div>
+        <div class="indent-2"><span class="file new">update-menu-items-en.ts</span> <span class="note">← idempotent backfill</span></div>
+        <div class="indent-1"><span class="dir">src/</span></div>
+        <div class="indent-2"><span class="dir new">lib/hooks/</span></div>
+        <div class="indent-3"><span class="file new">use-scroll-to-first-error.ts</span></div>
+        <div class="indent-2"><span class="dir">app/[locale]/(public)/</span></div>
+        <div class="indent-3"><span class="dir new">about/</span></div>
+        <div class="indent-3" style="padding-left:5rem"><span class="file new">page.tsx</span></div>
+        <div class="indent-3"><span class="file upd">page.tsx</span> <span class="note">← featured items localized</span></div>
+        <div class="indent-3"><span class="file upd">menu/page.tsx</span></div>
+        <div class="indent-3"><span class="file upd">menu/[slug]/page.tsx</span></div>
+        <div class="indent-2"><span class="dir">app/</span></div>
+        <div class="indent-3"><span class="file new">not-found.tsx</span> <span class="note">← root fallback with &lt;html&gt;</span></div>
+        <div class="indent-2"><span class="dir">components/</span></div>
+        <div class="indent-3"><span class="dir">admin/</span></div>
+        <div class="indent-4"><span class="file upd">MenuItemForm.tsx</span> <span class="note">← +2 English fields</span></div>
+        <div class="indent-3"><span class="dir new">layout/</span></div>
+        <div class="indent-4"><span class="file new">ScrollToTopButton.tsx</span></div>
+        <div class="indent-3"><span class="dir">ui/</span></div>
+        <div class="indent-4"><span class="file upd">ErrorFallback.tsx</span> <span class="note">← router.refresh() fix</span></div>
+        <div class="indent-1"><span class="dir">public/</span></div>
+        <div class="indent-2"><span class="file new">404.html</span> <span class="note">← Vercel static fallback</span></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         PART 1 — MENU ENGLISH
+         ══════════════════════════════════════════════════ -->
+
+    <section id="schema">
+      <h2><span class="num">5</span> Part 1 · Schema — Add Two Nullable Columns</h2>
+      <p><strong>The pattern:</strong> Extend the existing <code>Category.nameEn</code> approach to the <code>MenuItem</code> model. Two new <code>String?</code> fields — optional, never blocking, backward compatible.</p>
+      <pre><code>model MenuItem {
+  id             String   @id @default(cuid())
+  name           String
+  nameEn         String?           // ← NEW
+  slug           String   @unique
+  description    String?
+  descriptionEn  String?           // ← NEW
+  price          Float
+  imageUrl       String?
+  isAvailable    Boolean  @default(true)
+  isFeatured     Boolean  @default(false)
+  ...
+}</code></pre>
+
+      <h3>Why these are nullable</h3>
+      <table>
+        <thead><tr><th>Scenario</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>Existing dish has no English translation</td><td>DB stores <code>null</code></td></tr>
+          <tr><td>Admin skips the English field</td><td>DB stores <code>null</code></td></tr>
+          <tr><td>Non-Arabic user views the dish</td><td>Falls back to Arabic via <code>??</code> in the helper</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <strong>Zero-downtime migration</strong>
+        Because the columns are nullable, the migration is non-breaking. Production data continues to work; only new writes populate the English fields.
+      </div>
+    </section>
+
+    <section id="migration">
+      <h2><span class="num">6</span> Part 1 · Migration + Seed</h2>
+      <pre><code>npx prisma migrate dev --name add_menu_item_name_en</code></pre>
+
+      <div class="terminal">
+        <div class="terminal-bar"><span class="terminal-dot red"></span><span class="terminal-dot yellow"></span><span class="terminal-dot green"></span></div>
+        <div class="terminal-body">
+          <div class="out">Applying migration <span class="dim">`20261002075553_add_menu_item_name_en`</span></div>
+          <div class="out">Your database is now in sync with your schema.</div>
+          <div class="out"><span class="ok">✔ Generated Prisma Client (v6.19.3) to .\node_modules\@prisma\client in 580ms</span></div>
+        </div>
+      </div>
+
+      <h3>Seed data strategy</h3>
+      <p>Each dish in <code>prisma/data/menu-items.ts</code> gains <code>nameEn</code> and <code>descriptionEn</code>. Example for one dish:</p>
+      <pre><code>{
+  name: "شوربة العدس",
+  nameEn: "Lentil Soup",
+  slug: "lentil-soup",
+  description: "شوربة عدس تقليدية مع الكمون والليمون",
+  descriptionEn: "Traditional lentil soup with cumin and lemon",
+  price: 45,
+  isFeatured: false,
+  categorySlug: "appetizers",
+  imageUrl: "https://images.unsplash.com/photo-1547592180-...",
+}</code></pre>
+
+      <h3>The seed.ts simplification</h3>
+      <p>Instead of listing every field explicitly, the create loop now spreads the object directly:</p>
+      <div class="two-col">
+        <div class="col-card before">
+          <h5>Before</h5>
+          <pre style="margin:0.5rem 0;border:none;padding:0.75rem;font-size:0.7rem"><code>await prisma.menuItem.create({
+  data: {
+    name: itemData.name,
+    slug: itemData.slug,
+    description: itemData.description,
+    price: itemData.price,
+    isFeatured: itemData.isFeatured,
+    imageUrl: itemData.imageUrl,
+    categoryId: category.id,
+  },
+})</code></pre>
+        </div>
+        <div class="col-card after">
+          <h5>After</h5>
+          <pre style="margin:0.5rem 0;border:none;padding:0.75rem;font-size:0.7rem"><code>await prisma.menuItem.create({
+  data: {
+    ...itemData,
+    categoryId: category.id,
+  },
+})</code></pre>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>Why the spread is better here</strong>
+        Adding future fields (e.g., <code>nameFr</code>, <code>nameDe</code>) requires zero changes to <code>seed.ts</code>. The data file is the only place that grows.
+      </div>
+    </section>
+
+    <section id="backfill">
+      <h2><span class="num">7</span> Part 1 · Idempotent Backfill Script</h2>
+      <p><strong>The problem:</strong> Vercel production has live data. Running <code>npm run db:seed</code> would wipe reservations and demo history.</p>
+      <p><strong>The solution:</strong> A dedicated script that <em>updates in place</em> — one row at a time, matched by <code>slug</code>.</p>
+      <pre><code>// scripts/update-menu-items-en.ts
+const UPDATES = [
+  { slug: "lentil-soup", nameEn: "Lentil Soup",
+    descriptionEn: "Traditional lentil soup with cumin and lemon" },
+  // ... 11 more entries
+];
+
+for (const update of UPDATES) {
+  await prisma.menuItem.update({
+    where: { slug: update.slug },
+    data: {
+      nameEn: update.nameEn,
+      descriptionEn: update.descriptionEn,
+    },
+  });
+}</code></pre>
+
+      <table>
+        <thead><tr><th>Property</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Destructive?</td><td>❌ No — only touches 2 columns</td></tr>
+          <tr><td>Idempotent?</td><td>✅ Yes — running twice is safe</td></tr>
+          <tr><td>Prod-safe?</td><td>✅ Yes — no DELETE, no TRUNCATE</td></tr>
+          <tr><td>Fails loudly?</td><td>✅ <code>process.exit(1)</code> on any error</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="helper">
+      <h2><span class="num">8</span> Part 1 · <code>getLocalizedName()</code> Extension</h2>
+      <p><strong>The core insight:</strong> A single helper function decides which value to render, based on the current locale.</p>
+      <pre><code>export function getLocalizedName(
+  name: string,
+  nameEn: string | null | undefined,
+  locale: string
+): string {
+  if (locale === "ar") return name;
+  return nameEn ?? name;
+}</code></pre>
+
+      <h3>Behavior table</h3>
+      <table>
+        <thead><tr><th>Locale</th><th>nameEn present?</th><th>Renders</th></tr></thead>
+        <tbody>
+          <tr><td>ar</td><td>—</td><td>Arabic <code>name</code> (always)</td></tr>
+          <tr><td>en/fr/de/es</td><td>✅ Yes</td><td>English <code>nameEn</code></td></tr>
+          <tr><td>en/fr/de/es</td><td>❌ No</td><td>Falls back to Arabic <code>name</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <strong>One helper, all content types</strong>
+        The same function handles <code>Category.name</code>, <code>MenuItem.name</code>, and <code>MenuItem.description</code> — the shape of the arguments is identical: (arValue, enValue, locale).
+      </div>
+    </section>
+
+    <section id="public-pages">
+      <h2><span class="num">9</span> Part 1 · Public Pages Update</h2>
+      <p>Three pages needed localization. All follow the same pattern: fetch both columns, map results through <code>getLocalizedName()</code>, pass localized values to the presentation component.</p>
+
+      <h3>Which pages changed</h3>
+      <div class="layers">
+        <div class="layer client"><strong>/[locale]/(public)/menu</strong> · menu grid — name + description localized per card</div>
+        <div class="layer client"><strong>/[locale]/(public)/menu/[slug]</strong> · item detail — name in <code>&lt;h1&gt;</code>, description, metadata title, and <code>alt</code> attribute</div>
+        <div class="layer client"><strong>/[locale]/(public)</strong> · homepage — featured dishes shown in current locale</div>
+      </div>
+
+      <h3>Why the presentation components stayed untouched</h3>
+      <p><code>MenuItemCard.tsx</code> receives <code>item.name</code>, <code>item.description</code>, <code>item.category.name</code> — all already localized by the parent. The card is locale-agnostic and doesn't need to know about i18n.</p>
+
+      <div class="callout success">
+        <strong>Layer separation preserved</strong>
+        Data fetching + localization lives in the page (Server Component). Presentation lives in the card. Neither knows about the other's concerns.
+      </div>
+
+      <h3>Detail page — three places, not two</h3>
+      <p>The <code>[slug]</code> page needed four total localizations, easy to miss the last one:</p>
+      <ol>
+        <li><code>&lt;h1&gt;</code> — item name</li>
+        <li><code>&lt;p&gt;</code> — item description</li>
+        <li><code>generateMetadata</code> — title + OpenGraph</li>
+        <li><code>alt</code> attribute on the hero <code>&lt;Image&gt;</code> — <strong>the one that got missed initially</strong></li>
+      </ol>
+    </section>
+
+    <section id="admin-form">
+      <h2><span class="num">10</span> Part 1 · Admin Form — Bilingual Fields</h2>
+      <p>Two optional fields added to <code>MenuItemForm.tsx</code>, aligned to the <code>dir="ltr"</code> attribute (English is always left-to-right, even on RTL admin pages).</p>
+
+      <h3>The four files touched</h3>
+      <table>
+        <thead><tr><th>File</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td><code>messages/*.json</code> × 5</td><td>+4 keys: <code>nameEnLabel</code>, <code>nameEnPlaceholder</code>, <code>descriptionEnLabel</code>, <code>descriptionEnPlaceholder</code></td></tr>
+          <tr><td><code>validations/menu-item.ts</code></td><td>+2 Zod fields (optional, max 80 / 500)</td></tr>
+          <tr><td><code>actions/admin-menu.ts</code></td><td>create + update + audit log before/after</td></tr>
+          <tr><td><code>MenuItemForm.tsx</code></td><td>+2 input fields + payload + initial state</td></tr>
+          <tr><td><code>admin/menu/[id]/edit/page.tsx</code></td><td>Pass <code>nameEn</code>, <code>descriptionEn</code> to <code>initialData</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>Audit log integration</h3>
+      <p>The <code>before</code> and <code>after</code> snapshots now include <code>nameEn</code>, so the Audit Log shows a diff when English names change:</p>
+      <pre><code>before: { name: "حمص", nameEn: "Hummus", price: 55, ... }
+after:  { name: "حمص", nameEn: "Hummus with Tahini", price: 55, ... }
+//        └─ nameEn changed → visible in admin /audit-log</code></pre>
+    </section>
+
+    <section id="dropdown">
+      <h2><span class="num">11</span> Part 1 · Category Dropdown Fix</h2>
+      <div class="callout danger">
+        <strong>Bug caught during manual testing</strong>
+        The menu item form's category dropdown showed Arabic names (<code>مقبلات</code>, <code>أطباق رئيسية</code>) even on English admin pages.
+      </div>
+      <p><strong>Root cause:</strong> The admin pages fetched categories with <code>select: { id, name, slug }</code> — no <code>nameEn</code> — so the data was Arabic by default.</p>
+      <p><strong>Fix:</strong> Add <code>nameEn</code> to the select, then map through <code>getLocalizedName()</code> before passing to <code>MenuItemForm</code>.</p>
+      <pre><code>const categoriesRaw = await prisma.category.findMany({
+  orderBy: { displayOrder: "asc" },
+  select: { id: true, name: true, nameEn: true, slug: true },
+});
+
+const categories = categoriesRaw.map((cat) => ({
+  id: cat.id,
+  name: getLocalizedName(cat.name, cat.nameEn, locale),
+  slug: cat.slug,
+}));</code></pre>
+
+      <h3>Where the fix was applied</h3>
+      <table>
+        <thead><tr><th>File</th></tr></thead>
+        <tbody>
+          <tr><td><code>src/app/[locale]/admin/menu/new/page.tsx</code></td></tr>
+          <tr><td><code>src/app/[locale]/admin/menu/[id]/edit/page.tsx</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Lesson</strong>
+        Whenever admin pages surface DB content as labels for other admins, they must run through <code>getLocalizedName()</code> just like public pages. The rule isn't "public pages localize" — it's "any content the user sees localizes."
+      </div>
+    </section>
+
+    <section id="tradeoff">
+      <h2><span class="num">12</span> Part 1 · The "English Admin" Trade-off</h2>
+      <p><strong>The situation:</strong> An English admin logs into <code>/en/admin/menu/[id]/edit</code>. The form shows both a main "Dish Name" field (containing the Arabic name) and an "English Name" field (containing the English name).</p>
+
+      <div class="two-col">
+        <div class="col-card before">
+          <h5>Option A — Hide the EN fields</h5>
+          <p style="font-size:0.85rem;margin:0.5rem 0">On <code>/en/admin/*</code>, hide the EN fields entirely. Mirror the main fields into the EN columns on submit.</p>
+          <p style="font-size:0.82rem;color:var(--danger);margin-top:0.5rem"><strong>Problem:</strong> If the admin edits a bilingual dish, the Arabic name overwrites the English one when they save. Silent data loss.</p>
+        </div>
+        <div class="col-card after">
+          <h5>Option B — Keep them visible ✅</h5>
+          <p style="font-size:0.85rem;margin:0.5rem 0">Always show both fields. Accept the "duplicate-looking" UI on English admin. Document the trade-off.</p>
+          <p style="font-size:0.82rem;color:var(--success);margin-top:0.5rem"><strong>Chosen because:</strong> Zero silent data loss. Theoretical edge case documented for a future Phase 13 refinement.</p>
+        </div>
+      </div>
+
+      <p><strong>Why this is the right call for now:</strong> The real admin is Arabic-speaking. The "English admin" is a portfolio-demo scenario. Hiding fields to solve a cosmetic "duplication" issue silently corrupts bilingual data — the wrong trade-off.</p>
+
+      <div class="callout warn">
+        <strong>Future refinement (Phase 13 candidate)</strong>
+        On <code>/en/admin/*</code>, rename the main field label from "Dish Name" to "Arabic Dish Name" and the EN field to "English Dish Name". This makes the purpose explicit without hiding data.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         PART 2 — AUTO-SCROLL UX
+         ══════════════════════════════════════════════════ -->
+
+    <section id="ux-problem">
+      <h2><span class="num">13</span> Part 2 · The Real Problem</h2>
+      <div class="callout danger">
+        <strong>Observed in manual testing</strong>
+        Admin fills a form. Clicks "Add Dish". Nothing visible happens — the error message is 700px above, off-screen. Admin assumes the internet broke, or the app is stuck, or the button didn't register.
+      </div>
+      <p><strong>Root cause:</strong> When validation fails, errors appear inline <em>next to their fields</em>. If the field is scrolled out of view, the user has no signal about what happened.</p>
+
+      <h3>Who this affects</h3>
+      <table>
+        <thead><tr><th>Form</th><th>Length</th><th>Risk of hidden error</th></tr></thead>
+        <tbody>
+          <tr><td>Menu item (new/edit)</td><td>~8 fields, 2 screens tall</td><td>High — errors can be 800px above</td></tr>
+          <tr><td>Category</td><td>~5 fields</td><td>Medium</td></tr>
+          <tr><td>Table</td><td>~4 fields</td><td>Low</td></tr>
+          <tr><td>User</td><td>~6 fields</td><td>Medium</td></tr>
+          <tr><td>Reservation</td><td>~7 fields</td><td>Medium</td></tr>
+          <tr><td>Review</td><td>~4 fields</td><td>Low</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="industry">
+      <h2><span class="num">14</span> Part 2 · Why "Error Near Button" is Wrong</h2>
+      <p>The instinctive fix — a badge near the submit button saying "3 errors" — is a common anti-pattern. It was proposed but rejected. Here's why.</p>
+
+      <table>
+        <thead><tr><th>Approach</th><th>User steps needed</th><th>Verdict</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Badge near button</strong></td><td>1. Notice badge · 2. Scroll up · 3. Find field · 4. Read error · 5. Fix</td><td>❌ 5 steps</td></tr>
+          <tr><td><strong>Auto-scroll to error</strong></td><td>1. See scroll · 2. Read error · 3. Fix</td><td>✅ 3 steps</td></tr>
+          <tr><td><strong>Toast notification</strong></td><td>1. Read toast · 2. Scroll up · 3. Find field · 4. Fix</td><td>❌ Toast disappears before scroll</td></tr>
+        </tbody>
+      </table>
+
+      <h3>What real products do</h3>
+      <ul>
+        <li><strong>Stripe Checkout</strong> — scrolls to first error field</li>
+        <li><strong>GitHub settings</strong> — scrolls + focuses the first invalid input</li>
+        <li><strong>Shopify admin</strong> — scrolls + focuses</li>
+        <li><strong>Google Forms</strong> — scrolls + red highlight</li>
+        <li><strong>Vercel deployments</strong> — same pattern</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>The industry standard</strong>
+        Auto-scroll is universal. Users' eyes follow the scroll motion; they land on the error naturally. No second action required.
+      </div>
+    </section>
+
+    <section id="hook">
+      <h2><span class="num">15</span> Part 2 · The <code>useScrollToFirstError</code> Hook</h2>
+      <p>A single hook, applied to all 6 forms. Built once, used everywhere — modular design.</p>
+      <pre><code>export function useScrollToFirstError(
+  fieldErrors: Record&lt;string, string[]&gt; | undefined
+) {
+  useEffect(() => {
+    if (!fieldErrors) return;
+    const firstKey = Object.keys(fieldErrors)[0];
+    if (!firstKey) return;
+
+    const timer = setTimeout(() => {
+      const input = document.querySelector(`[name="${firstKey}"]`);
+      if (!(input instanceof HTMLElement)) return;
+
+      input.scrollIntoView({ behavior: "smooth", block: "center" });
+
+      setTimeout(() => {
+        if (input instanceof HTMLInputElement ||
+            input instanceof HTMLTextAreaElement ||
+            input instanceof HTMLSelectElement) {
+          input.focus({ preventScroll: true });
+        }
+      }, 400);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [fieldErrors]);
+}</code></pre>
+
+      <h3>The three clever details</h3>
+      <table>
+        <thead><tr><th>Detail</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td><code>setTimeout(…, 50)</code></td><td>Lets React paint the error message first — otherwise layout height shifts mid-scroll and the target moves</td></tr>
+          <tr><td><code>setTimeout(…, 400)</code> before focus</td><td>Lets the smooth-scroll animation finish before focus moves — otherwise focus triggers a second native scroll that fights the smooth one</td></tr>
+          <tr><td><code>focus({ preventScroll: true })</code></td><td>Focus the input without letting the browser scroll again. The user just watched the scroll — they don't need a second one</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Why <code>document.querySelector</code> instead of refs</h3>
+      <ul>
+        <li>Simpler — no ref threading through every form</li>
+        <li>Scoped to <code>[name="..."]</code> — collision risk is negligible since forms render one at a time</li>
+        <li>Server Actions return <code>fieldErrors</code> keyed by input <code>name</code> — perfect match</li>
+      </ul>
+    </section>
+
+    <section id="six-forms">
+      <h2><span class="num">16</span> Part 2 · Applied to 6 Forms</h2>
+      <p>Two lines per form. Same pattern across all of them.</p>
+
+      <h3>The pattern (4 forms with local state)</h3>
+      <pre><code>const [fieldErrors, setFieldErrors] = useState({});
+
+useScrollToFirstError(
+  Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined
+);</code></pre>
+
+      <h3>The pattern (2 forms with result state)</h3>
+      <p>Reservation and Review use a discriminated union <code>result</code> — the errors live under <code>result.fieldErrors</code>:</p>
+      <pre><code>const [result, setResult] = useState&lt;Result&gt;({ kind: "idle" });
+
+useScrollToFirstError(
+  result.kind === "error" ? result.fieldErrors : undefined
+);</code></pre>
+
+      <h3>Forms updated</h3>
+      <table>
+        <thead><tr><th>Form</th><th>State pattern</th></tr></thead>
+        <tbody>
+          <tr><td>MenuItemForm</td><td>local <code>fieldErrors</code></td></tr>
+          <tr><td>CategoryForm</td><td>local <code>fieldErrors</code></td></tr>
+          <tr><td>TableForm</td><td>local <code>fieldErrors</code></td></tr>
+          <tr><td>UserForm</td><td>local <code>fieldErrors</code></td></tr>
+          <tr><td>ReservationForm</td><td>discriminated <code>result</code></td></tr>
+          <tr><td>ReviewForm</td><td>discriminated <code>result</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>The ReviewForm exception</h3>
+      <p>Review's "Please select a star rating" error lives at the bottom of the form, right above the submit button. Since users are already at the bottom when they click submit, the error is <strong>already visible</strong>. No scroll needed.</p>
+      <div class="callout">
+        <strong>Why the hook silently does nothing here</strong>
+        The star rating error is a cross-field <code>result.message</code>, not a <code>result.fieldErrors[fieldName]</code>. The hook looks for <code>fieldErrors</code> — finds none — returns early. Perfect.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         PART 3 — ABOUT PAGE
+         ══════════════════════════════════════════════════ -->
+
+    <section id="about-structure">
+      <h2><span class="num">17</span> Part 3 · About Page — 5-Section Structure</h2>
+      <p>A marketing page that tells the restaurant's story. Server Component, fully localized, no client JavaScript required.</p>
+
+      <div class="layers">
+        <div class="layer success"><strong>1 · HERO</strong> · Kicker ("OUR STORY") + title + subtitle, gradient background</div>
+        <div class="layer success"><strong>2 · STORY</strong> · Three paragraphs on a narrow centered column (max-w-3xl)</div>
+        <div class="layer success"><strong>3 · CHEF</strong> · Photo (aspect 4/5) + bio, two-column grid, accent background</div>
+        <div class="layer success"><strong>4 · VALUES</strong> · Three cards: Quality · Authenticity · Hospitality</div>
+        <div class="layer success"><strong>5 · CTA</strong> · Reserve button, matching other pages' style</div>
+      </div>
+
+      <h3>Bonus — interior photo</h3>
+      <p>Between Values and CTA, a full-width <code>aspect-video</code> restaurant photo. Adds visual breathing room without requiring any interactive element.</p>
+
+      <h3>Reusable <code>ValueCard</code> component</h3>
+      <pre><code>function ValueCard({ icon, title, body }) {
+  return (
+    &lt;div className="bg-card border border-border rounded-2xl p-8 text-center"&gt;
+      &lt;div className="text-3xl text-accent mb-4"&gt;{icon}&lt;/div&gt;
+      &lt;h3 className="text-xl font-bold mb-3"&gt;{title}&lt;/h3&gt;
+      &lt;p className="text-muted leading-relaxed text-sm"&gt;{body}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+    </section>
+
+    <section id="chef">
+      <h2><span class="num">18</span> Part 3 · Chef Mohamed Yehia</h2>
+      <p><strong>Chef name:</strong> Mohamed Yehia (the project's developer, in a fictional restaurateur role).</p>
+      <p><strong>Established:</strong> 2026 — chosen because it's both the portfolio's date and a plausible "recent opening" for the fictional restaurant.</p>
+
+      <h3>Content strategy</h3>
+      <table>
+        <thead><tr><th>Element</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Kicker</td><td>"MEET THE CHEF"</td></tr>
+          <tr><td>Title</td><td>"The Hands Behind the Plates"</td></tr>
+          <tr><td>Name</td><td>Mohamed Yehia</td></tr>
+          <tr><td>Role</td><td>Founder &amp; Executive Chef</td></tr>
+          <tr><td>Bio part 1</td><td>"Chef Mohamed Yehia has spent years perfecting the balance between tradition and innovation. Trained in classical technique, inspired by his grandmother's kitchen..."</td></tr>
+          <tr><td>Bio part 2 (italic)</td><td>"His signature philosophy: source the finest, respect the ingredient, and never rush a good dish."</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout info">
+        <strong>Why this works for a portfolio</strong>
+        The chef bio mirrors the developer's actual philosophy — respect the craft, do it right, don't rush. It's autobiographical without being obvious.
+      </div>
+    </section>
+
+    <section id="about-i18n">
+      <h2><span class="num">19</span> Part 3 · 5-Locale Translations</h2>
+      <p>The About page introduces a new top-level <code>About</code> namespace in each of the 5 message files. 26 keys per locale — the same shape, different values.</p>
+
+      <h3>Namespace structure</h3>
+      <table>
+        <thead><tr><th>Sub-namespace</th><th>Keys</th></tr></thead>
+        <tbody>
+          <tr><td><code>Hero</code></td><td>kicker · title · subtitle</td></tr>
+          <tr><td><code>Story</code></td><td>kicker · title · paragraph1 · paragraph2 · paragraph3</td></tr>
+          <tr><td><code>Chef</code></td><td>kicker · title · chefName · chefRole · bio1 · bio2</td></tr>
+          <tr><td><code>Values</code></td><td>kicker · title · quality{Title,Body} · authenticity{Title,Body} · hospitality{Title,Body}</td></tr>
+          <tr><td><code>CTA</code></td><td>title · subtitle · button</td></tr>
+          <tr><td><code>meta</code></td><td>title · description (for generateMetadata)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <strong>Content, not translation strings</strong>
+        The About page contains full prose paragraphs, not short labels. This is a real translation exercise — 3 long paragraphs per locale × 5 locales = 15 paragraph translations. Google Translate assisted, then human-refined.
+      </div>
+
+      <h3>Navbar and sitemap updates</h3>
+      <ul>
+        <li><strong>Navbar</strong> — a 5th link <code>{ href: "/about", label: t("about") }</code> inserted between Menu and Reserve</li>
+        <li><strong>Sitemap</strong> — <code>/about</code> added to <code>staticPaths</code>, producing 5 additional URLs (one per locale)</li>
+      </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         BONUS
+         ══════════════════════════════════════════════════ -->
+
+    <section id="scroll-top">
+      <h2><span class="num">20</span> Bonus · Scroll-to-Top Button</h2>
+      <p>A small circular button that appears after 400px of scroll, positioned bottom-right (opposite the WhatsApp button on the bottom-left).</p>
+
+      <h3>Design decisions</h3>
+      <table>
+        <thead><tr><th>Decision</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td><code>SHOW_AFTER_PX = 400</code></td><td>Industry standard (Stripe, Tailwind docs use 300-500px)</td></tr>
+          <tr><td>Fade + slide-in</td><td>Opacity + 12px translate — subtle motion, not jarring</td></tr>
+          <tr><td>Physical <code>right-6</code> (not logical <code>end-6</code>)</td><td>WhatsApp is also physically at <code>left-6</code>. Keeping both physical preserves ergonomics across RTL/LTR</td></tr>
+          <tr><td>48×48px circular</td><td>Big enough to tap on mobile, small enough not to compete with content</td></tr>
+          <tr><td>Icon only (SVG chevron)</td><td>No text label — <code>aria-label</code> handles accessibility</td></tr>
+          <tr><td><code>pointer-events-none</code> when hidden</td><td>Invisible button doesn't intercept clicks</td></tr>
+        </tbody>
+      </table>
+
+      <pre><code>useEffect(() => {
+  function handleScroll() {
+    setVisible(window.scrollY > SHOW_AFTER_PX);
+  }
+  handleScroll();
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);</code></pre>
+
+      <div class="callout">
+        <strong>Passive scroll listener</strong>
+        <code>{ passive: true }</code> tells the browser the handler won't <code>preventDefault()</code> — enables the browser's hardware-accelerated scroll optimizations.
+      </div>
+    </section>
+
+    <section id="root-404">
+      <h2><span class="num">21</span> Bonus · Root 404 Pages</h2>
+      <p>Two independent 404 layers — one for Next.js routes, one for Vercel's CDN.</p>
+
+      <h3>Layer 1 — Next.js route 404</h3>
+      <p><code>src/app/not-found.tsx</code> catches any unmatched route not inside a valid <code>[locale]</code> prefix.</p>
+      <div class="callout danger">
+        <strong>Requirement discovered the hard way</strong>
+        Root-level <code>not-found.tsx</code> must include its own <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags — because the root layout is a passthrough (returns <code>children</code>), not a full document. Without these tags, Next.js throws "Missing &lt;html&gt; and &lt;body&gt; tags in the root layout."
+      </div>
+
+      <h3>The Client Component conversion</h3>
+      <p>Two ESLint/TypeScript errors surfaced:</p>
+      <table>
+        <thead><tr><th>Error</th><th>Cause</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><code>react/no-unescaped-entities</code></td><td>Raw apostrophes in "you're" / "Don't"</td><td>Use <code>&amp;apos;</code></td></tr>
+          <tr><td>Type 'string' is not assignable to 'MouseEventHandler'</td><td><code>onClick="history.back()"</code> — string form works in HTML, not JSX</td><td>Convert to <code>"use client"</code> + arrow function</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Layer 2 — Vercel static 404</h3>
+      <p><code>public/404.html</code> is served by Vercel's CDN <em>before</em> Next.js runs, for missing static files. It has no access to <code>NEXT_LOCALE</code> or URL context — so it's bilingual English + Arabic with inline CSS.</p>
+
+      <div class="callout info">
+        <strong>Two layers, two purposes</strong>
+        <ul style="margin-top:0.5rem;margin-bottom:0">
+          <li><strong>Next.js layer</strong> — for missing app routes (<code>/en/wrong-page</code>)</li>
+          <li><strong>Vercel layer</strong> — for missing static files (<code>/old-image.png</code>, <code>/legacy.html</code>)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         ERRORS
+         ══════════════════════════════════════════════════ -->
+
+    <section id="errors">
+      <h2><span class="num">22</span> The Errors Journey</h2>
+      <p>Nine distinct issues surfaced during Phase 12 — each one teaches a specific lesson.</p>
+
+      <div class="error-journey">
+        <div class="error-item">
+          <h4>🎯 Error 1 — Prisma Studio shows English names in DB</h4>
+          <div class="error-msg">Migration + seed work, but Prisma Studio shows nameEn filled — expected this time ✅</div>
+          <div class="error-fix"><strong>Lesson:</strong> When a migration adds nullable columns, <code>db:seed</code> populates them; <code>update-menu-items-en.ts</code> fills existing prod rows. Two paths for two environments.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 2 — VS Code stale TS after migration</h4>
+          <div class="error-msg">Property 'nameEn' does not exist on type 'MenuItem'</div>
+          <div class="error-fix"><strong>Fix:</strong> <code>Ctrl + Shift + P → TypeScript: Restart TS Server</code>. Terminal <code>tsc --noEmit</code> was silent — the IDE was holding a stale Prisma Client in memory.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 3 — alt attribute still Arabic in English pages</h4>
+          <div class="error-msg">Right-click image on /en/menu/hummus → alt="حمص بالطحينة"</div>
+          <div class="error-fix"><strong>Fix:</strong> The <code>&lt;Image alt={item.name}&gt;</code> on the item detail page was the "hidden 4th" localization spot. Changed to <code>alt={localizedName}</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 4 — "Try again" button didn't recover</h4>
+          <div class="error-msg">Clicking Try Again re-renders the same error — user must refresh browser</div>
+          <div class="error-fix"><strong>Fix:</strong> <code>router.refresh()</code> before <code>reset()</code>. The RSC payload was cached with the error state; refreshing busts the cache, then reset clears the boundary.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 5 — Root 404 missing document tags</h4>
+          <div class="error-msg">Missing &lt;html&gt; and &lt;body&gt; tags in the root layout.</div>
+          <div class="error-fix"><strong>Fix:</strong> Root <code>not-found.tsx</code> must provide its own <code>&lt;html&gt;</code> + <code>&lt;body&gt;</code>, because the root layout is a passthrough, not a full document.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 6 — ESLint no-unescaped-entities</h4>
+          <div class="error-msg">`'` can be escaped with `&amp;apos;`, `&amp;lsquo;`, `&amp;#39;`, `&amp;rsquo;`</div>
+          <div class="error-fix"><strong>Fix:</strong> Replace <code>you're</code> → <code>you&amp;apos;re</code>, <code>Don't</code> → <code>Don&amp;apos;t</code>. ESLint's React rules require escaped entities for cleanliness.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 7 — onClick string in Server Component</h4>
+          <div class="error-msg">Type 'string' is not assignable to type 'MouseEventHandler&lt;HTMLButtonElement&gt;'</div>
+          <div class="error-fix"><strong>Fix:</strong> <code>onClick="history.back()"</code> works in plain HTML but not JSX. Convert file to <code>"use client"</code> + <code>onClick={() =&gt; window.history.back()}</code>. Also replaces the <code>metadata</code> export with explicit <code>&lt;meta&gt;</code> tags.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 8 — AboutPageProps removed but still used</h4>
+          <div class="error-msg">Cannot find name 'AboutPageProps'</div>
+          <div class="error-fix"><strong>Fix:</strong> Restore the type declaration. Only the page body should drop <code>params</code>; <code>generateMetadata</code> still needs the type to extract <code>locale</code>.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 9 — Tailwind canonical class hint</h4>
+          <div class="error-msg">The class `aspect-16/9` can be written as `aspect-video`</div>
+          <div class="error-fix"><strong>Fix:</strong> Rename to <code>aspect-video</code>. Warning only, but matches Tailwind's canonical vocabulary.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">23</span> Verification</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>Migration applied</td><td><code>npx prisma migrate dev</code></td><td><code>add_menu_item_name_en</code> applied</td></tr>
+          <tr><td>Prisma Studio shows nameEn</td><td><code>npx prisma studio</code></td><td>12 dishes with English names visible</td></tr>
+          <tr><td>TypeScript clean</td><td><code>npx tsc --noEmit</code></td><td>Silent</td></tr>
+          <tr><td>ESLint clean</td><td><code>npx eslint</code></td><td>Silent</td></tr>
+          <tr><td>Build passes</td><td><code>npm run build</code></td><td>30 routes, 0 warnings</td></tr>
+          <tr><td>Menu shows English on /en</td><td>Visit <code>/en/menu</code></td><td>"Lentil Soup", "Hummus with Tahini"...</td></tr>
+          <tr><td>Menu shows Arabic on /ar</td><td>Visit <code>/ar/menu</code></td><td>"شوربة العدس", "حمص بالطحينة"...</td></tr>
+          <tr><td>Fallback works</td><td>Visit <code>/fr/menu</code></td><td>English names (fallback), not Arabic</td></tr>
+          <tr><td>Item detail localized</td><td>Visit <code>/en/menu/hummus</code></td><td>"Hummus with Tahini" in H1 + browser tab</td></tr>
+          <tr><td>Admin form shows EN fields</td><td>Visit <code>/en/admin/menu/new</code></td><td>Two extra fields visible</td></tr>
+          <tr><td>Category dropdown localized</td><td>Same page</td><td>"Appetizers / Main Courses / Desserts / Beverages"</td></tr>
+          <tr><td>Auto-scroll works</td><td>Empty name → submit</td><td>Page scrolls to name field, focuses it</td></tr>
+          <tr><td>About renders</td><td><code>/en/about</code></td><td>Full page, chef photo, values cards</td></tr>
+          <tr><td>About localized</td><td><code>/fr/about</code></td><td>French prose throughout</td></tr>
+          <tr><td>Navbar has About link</td><td>Any public page</td><td>5th link visible between Menu and Reserve</td></tr>
+          <tr><td>Scroll-to-top shows</td><td>Scroll 500px on <code>/en/about</code></td><td>Gold button fades in bottom-right</td></tr>
+          <tr><td>Scroll-to-top hides</td><td>Back to top</td><td>Button fades out</td></tr>
+          <tr><td>404 works</td><td><code>/en/wrong-page</code></td><td>Bilingual 404 page, no runtime error</td></tr>
+          <tr><td>Static 404 works</td><td><code>/nonexistent.html</code></td><td>Vercel CDN bilingual 404</td></tr>
+          <tr><td>Sitemap updated</td><td><code>curl /sitemap.xml</code></td><td>80 URLs (16 × 5 locales)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">24</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Running <code>db:seed</code> on prod</td><td>Wipes reservations</td><td>Use <code>update-menu-items-en.ts</code> instead</td></tr>
+          <tr><td>Forgetting <code>getLocalizedName</code> on one page</td><td>Arabic shows up in one specific place</td><td>Grep for <code>item.name</code> / <code>item.description</code></td></tr>
+          <tr><td>Hiding EN fields on English admin</td><td>Silent overwrite of English names</td><td>Keep them visible, accept cosmetic duplication</td></tr>
+          <tr><td>Auto-scroll without focus delay</td><td>Page scrolls then jumps back</td><td>400ms delay before <code>focus({ preventScroll: true })</code></td></tr>
+          <tr><td>Missing <code>&lt;html&gt;/&lt;body&gt;</code> in root 404</td><td>"Missing tags" runtime error</td><td>Include them in the self-contained file</td></tr>
+          <tr><td>String <code>onClick</code> in JSX</td><td>TypeScript rejects it</td><td>Convert to <code>"use client"</code> + arrow function</td></tr>
+          <tr><td>Raw apostrophes in JSX text</td><td>ESLint <code>no-unescaped-entities</code></td><td>Use <code>&amp;apos;</code></td></tr>
+          <tr><td>Scroll button on short forms</td><td>Button appears where it's useless</td><td>400px threshold auto-hides it on short pages</td></tr>
+          <tr><td>Prisma schema changed, VS Code stale</td><td>Red squiggles but <code>tsc</code> clean</td><td><code>Restart TS Server</code></td></tr>
+          <tr><td>Running migration before committing code</td><td>Server code references columns that don't exist in prod</td><td>Commit both migration + code before pushing</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">25</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>UX</td><td>User Experience</td><td>How pleasant it feels to use an app</td></tr>
+          <tr><td>a11y</td><td>Accessibility</td><td>Making apps usable for everyone, including disabilities</td></tr>
+          <tr><td>CDN</td><td>Content Delivery Network</td><td>Geographically distributed cache servers</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>Components rendered on the server</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic, Hebrew, Farsi</td></tr>
+          <tr><td>LTR</td><td>Left-to-Right</td><td>Text direction for Latin scripts</td></tr>
+          <tr><td>Hook</td><td>(React concept)</td><td>Reusable function that taps into React state</td></tr>
+          <tr><td>Idempotent</td><td>—</td><td>Safe to run multiple times — same result each run</td></tr>
+          <tr><td>Nullable</td><td>—</td><td>A DB column that can hold NULL (no value)</td></tr>
+          <tr><td>Spread</td><td><code>...obj</code></td><td>JS syntax to expand object properties inline</td></tr>
+          <tr><td>Smooth scroll</td><td>—</td><td>Browser animation between scroll positions</td></tr>
+          <tr><td>Threshold</td><td>—</td><td>A minimum amount before something activates</td></tr>
+          <tr><td>Passive listener</td><td>—</td><td>Event listener that won't call preventDefault()</td></tr>
+          <tr><td>Focus</td><td>—</td><td>Which element receives keyboard input</td></tr>
+          <tr><td>Edge case</td><td>—</td><td>Unusual scenario that most users won't hit</td></tr>
+          <tr><td>WCAG</td><td>Web Content Accessibility Guidelines</td><td>International a11y standard</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">26</span> Phase 12 Summary</h2>
+      <h3>Part 1 — Menu English Localization</h3>
+      <ul>
+        <li><strong>Schema:</strong> +2 nullable columns (<code>nameEn</code>, <code>descriptionEn</code>)</li>
+        <li><strong>Migration:</strong> <code>add_menu_item_name_en</code> applied</li>
+        <li><strong>Seed:</strong> 12 dishes populated with English values</li>
+        <li><strong>Backfill:</strong> <code>update-menu-items-en.ts</code> idempotent for prod</li>
+        <li><strong>Public pages:</strong> menu grid, item detail, homepage featured</li>
+        <li><strong>Admin form:</strong> two optional EN fields with Zod validation</li>
+        <li><strong>Category dropdown:</strong> now locale-aware in admin</li>
+        <li><strong>Trade-off:</strong> kept EN fields visible to prevent silent data loss</li>
+      </ul>
+
+      <h3>Part 2 — Auto-Scroll UX</h3>
+      <ul>
+        <li><strong>Hook:</strong> <code>useScrollToFirstError</code> — reusable, 3 smart details</li>
+        <li><strong>Applied to 6 forms:</strong> MenuItem, Category, Table, User, Reservation, Review</li>
+        <li><strong>Delays:</strong> 50ms paint + 400ms scroll complete</li>
+        <li><strong>Focus:</strong> <code>preventScroll: true</code> avoids fighting the smooth scroll</li>
+        <li><strong>Verified:</strong> category, table, user, reservation, review forms</li>
+      </ul>
+
+      <h3>Part 3 — About Page</h3>
+      <ul>
+        <li><strong>5 sections:</strong> Hero, Story, Chef, Values, CTA (+ interior photo)</li>
+        <li><strong>Chef Mohamed Yehia:</strong> Founder &amp; Executive Chef</li>
+        <li><strong>Content:</strong> 3 long paragraphs per locale × 5 locales</li>
+        <li><strong>Navbar:</strong> 5th link added between Menu and Reserve</li>
+        <li><strong>Sitemap:</strong> 5 additional URLs</li>
+      </ul>
+
+      <h3>Bonus</h3>
+      <ul>
+        <li><strong>Scroll-to-top button:</strong> fade-in after 400px, physical right position</li>
+        <li><strong>Root 404:</strong> bilingual Next.js page + Vercel static HTML</li>
+        <li><strong>ErrorFallback fix:</strong> <code>router.refresh()</code> before <code>reset()</code></li>
+      </ul>
+
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Extensible bilingual content</strong> — pattern established for future Category or User name translations</li>
+        <li><strong>Production-safe migrations</strong> — idempotent backfill means zero downtime on Vercel</li>
+        <li><strong>Reusable UX hook</strong> — one line per form, applied to all 6 with consistent behavior</li>
+        <li><strong>Storytelling for the portfolio</strong> — About page transforms the demo from "functional app" to "brand with a story"</li>
+        <li><strong>Complete 404 coverage</strong> — two layers catch every miss</li>
+        <li><strong>Small accessibility wins</strong> — auto-focus, aria-labels, keyboard-navigable scroll button</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>Phase 12 completes the customer experience</strong>
+        Every page — home, menu, item detail, reserve, review, about — is now bilingual (AR + EN fallback), fully localized across 5 locales, polished with auto-scroll UX, and reachable through proper 404 handling. The project moved from "deployed" to "feels complete."
+      </div>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-11-i18n.html">← Phase 11 (i18n)</a>
+      <span class="center">Phase 12 of 12</span>
+      <span class="disabled">Roadmap Continues →</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
