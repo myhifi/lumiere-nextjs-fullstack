@@ -150,6 +150,17 @@
       "description": "Discover the story of Lumière — a restaurant in the heart of Cairo blending tradition and modernity, led by Chef Mohamed Yehia."
     }
   },
+  "Login": {
+    "title": "Sign In",
+    "metaDescription": "Sign in to the Lumière admin panel — for staff only.",
+    "subtitle": "Admin Panel",
+    "emailLabel": "Email Address",
+    "passwordLabel": "Password",
+    "submitButton": "Sign In",
+    "submitting": "Signing in...",
+    "errorInvalidCredentials": "Invalid email or password",
+    "staffOnly": "This page is for staff only"
+  },
   "Assistant": {
   "title": "How can I help?",
   "subtitle": "Ask about hours, reservations, parking...",

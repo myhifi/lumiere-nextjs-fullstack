@@ -150,6 +150,17 @@
 "description": "探索 Lumière 的故事——一家位于开罗市中心、将传统与现代完美融合的餐厅，由 Mohamed Yehia 主厨领衔。"
 }
 },
+    "Login": {
+    "title": "登录",
+    "metaDescription": "登录 Lumière 管理后台 — 仅限员工使用。",
+    "subtitle": "管理后台",
+    "emailLabel": "电子邮箱",
+    "passwordLabel": "密码",
+    "submitButton": "登录",
+    "submitting": "登录中...",
+    "errorInvalidCredentials": "电子邮箱或密码不正确",
+    "staffOnly": "此页面仅供员工使用"
+    },
 "Assistant": {
 "title": "有什么我可以帮您的？",
 "subtitle": "询问营业时间、预订、停车位...",

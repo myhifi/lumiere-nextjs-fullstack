@@ -150,6 +150,17 @@
       "description": "Entdecken Sie die Geschichte von Lumière — einem Restaurant im Herzen von Kairo, das Tradition und Moderne verbindet, geführt von Chef Mohamed Yehia."
     }
   },
+  "Login": {
+    "title": "Anmelden",
+    "metaDescription": "Melden Sie sich beim Lumière-Verwaltungsbereich an — nur für Personal.",
+    "subtitle": "Verwaltungsbereich",
+    "emailLabel": "E-Mail-Adresse",
+    "passwordLabel": "Passwort",
+    "submitButton": "Anmelden",
+    "submitting": "Anmeldung läuft...",
+    "errorInvalidCredentials": "Ungültige E-Mail-Adresse oder Passwort",
+    "staffOnly": "Diese Seite ist nur für Personal"
+  },  
 "Assistant":{
 "title": "Wie kann ich helfen?",
 "subtitle": "Fragen Sie nach Öffnungszeiten, Reservierungen, Parkplätzen...",

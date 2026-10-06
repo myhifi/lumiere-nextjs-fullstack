@@ -150,6 +150,17 @@
       "description": "Découvrez l'histoire de Lumière — un restaurant au cœur du Caire qui allie tradition et modernité, dirigé par le chef Mohamed Yehia."
     }
   },
+  "Login": {
+    "title": "Connexion",
+    "metaDescription": "Connectez-vous au panneau d'administration Lumière — réservé au personnel.",
+    "subtitle": "Panneau d'administration",
+    "emailLabel": "Adresse e-mail",
+    "passwordLabel": "Mot de passe",
+    "submitButton": "Se connecter",
+    "submitting": "Connexion...",
+    "errorInvalidCredentials": "Adresse e-mail ou mot de passe incorrect",
+    "staffOnly": "Cette page est réservée au personnel"
+  },  
 "Assistant":{
 "title": "Comment puis-je vous aider ?",
 "subtitle": "Posez vos questions sur les horaires, les réservations, le parking...",

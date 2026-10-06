@@ -1,7 +1,7 @@
-// src/components/auth/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
@@ -13,6 +13,7 @@ type Result =
   | { kind: "error"; message: string };
 
 export function LoginForm() {
+  const t = useTranslations("Login");
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/admin";
@@ -28,22 +29,19 @@ export function LoginForm() {
     const response = await signIn("credentials", {
       email,
       password,
-      redirect: false, // نتعامل مع التحويل يدوياً
+      redirect: false,
     });
 
-    // signIn من next-auth/react يعيد undefined عند النجاح
-    // ويعيد { error: "..." } عند الفشل
     if (!response || response.error) {
       setResult({
         kind: "error",
-        message: "البريد الإلكتروني أو كلمة السر غير صحيحة",
+        message: t("errorInvalidCredentials"),
       });
       return;
     }
 
-    // نجاح — تحويل إلى callbackUrl
     router.push(callbackUrl);
-    router.refresh(); // لتحديث Server Components بالجلسة الجديدة
+    router.refresh();
   }
 
   return (
@@ -52,7 +50,7 @@ export function LoginForm() {
       className="bg-card border border-border rounded-2xl p-8 shadow-sm"
     >
       <div className="space-y-5">
-        <FormField label="البريد الإلكتروني" required>
+        <FormField label={t("emailLabel")} required>
           <input
             type="email"
             value={email}
@@ -65,7 +63,7 @@ export function LoginForm() {
           />
         </FormField>
 
-        <FormField label="كلمة السر" required>
+        <FormField label={t("passwordLabel")} required>
           <input
             type="password"
             value={password}
@@ -90,7 +88,7 @@ export function LoginForm() {
         disabled={result.kind === "submitting"}
         className="mt-6 w-full bg-accent hover:bg-accent-dark text-white font-medium py-3 px-8 rounded-full transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
       >
-        {result.kind === "submitting" ? "جاري التحقق..." : "تسجيل الدخول"}
+        {result.kind === "submitting" ? t("submitting") : t("submitButton")}
       </button>
     </Form>
   );

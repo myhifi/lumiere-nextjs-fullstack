@@ -150,6 +150,17 @@
       "description": "Descubre la historia de Lumière — un restaurante en el corazón de El Cairo que combina tradición y modernidad, dirigido por el chef Mohamed Yehia."
     }
   },
+  "Login": {
+    "title": "Iniciar sesión",
+    "metaDescription": "Inicie sesión en el panel de administración de Lumière — solo para personal.",
+    "subtitle": "Panel de administración",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "submitButton": "Iniciar sesión",
+    "submitting": "Iniciando sesión...",
+    "errorInvalidCredentials": "Correo electrónico o contraseña incorrectos",
+    "staffOnly": "Esta página es solo para el personal"
+  },  
 "Assistant":{
 "title": "¿En qué puedo ayudarte?",
 "subtitle": "Pregunta sobre horarios, reservas, estacionamiento...",
