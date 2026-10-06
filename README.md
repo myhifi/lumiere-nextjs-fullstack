@@ -1,6 +1,6 @@
 # 🍽️ Lumière Restaurant — Full-Stack Next.js Application
 
-> A production-ready, bilingual (Arabic + English), 5-locale restaurant platform with an intelligent table-assignment engine, complete admin dashboard, authentication, email notifications, and About page. Deployed on Vercel with Neon PostgreSQL. Full RTL/LTR support, zero paid services, zero credit card.
+> A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, email notifications, and About page. Deployed on Vercel with Neon PostgreSQL. Full RTL/LTR support, zero paid services, zero credit card.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
 [![Portfolio Phases](https://img.shields.io/badge/Portfolio-12%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html)
@@ -12,6 +12,8 @@
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169e1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-06b6d4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
 [![next-intl](https://img.shields.io/badge/next--intl-4-1a1a1a?style=flat-square&logo=i18next&logoColor=white)](https://next-intl-docs.vercel.app)
+[![Locales](https://img.shields.io/badge/Locales-7-c9a961?style=flat-square)](https://lumiere-nextjs-fullstack.vercel.app)
+[![Assistant](https://img.shields.io/badge/Smart%20Assistant-Zero%20Download-1a1a1a?style=flat-square)](https://lumiere-nextjs-fullstack.vercel.app/en/about)
 [![CI](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/myhifi/lumiere-nextjs-fullstack/actions/workflows/ci.yml)
 
 ---
@@ -27,7 +29,23 @@
 | **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/en/admin |
 | **Full Project Walkthrough** | [Phase 1 → Phase 12](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) |
 
-> **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es` prefixes. Arabic is RTL; the rest are LTR.
+> **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es`, `/it`, `/zh` prefixes. Arabic is RTL; the rest are LTR.
+
+---
+
+## 🤖 Smart FAQ Assistant
+
+A floating chat panel that answers common restaurant questions in **all 7 supported languages** — with **zero external API**, **zero download**, and **sub-50ms responses**.
+
+**How it works:**
+- The user types a question in any language (`what time do you open?`, `إيه مواعيد العمل؟`, `营业时间是什么？`)
+- A pure TypeScript **intent matcher** scores the query against 10 keyword lists (one per intent)
+- The winning intent's response is pulled from the current locale's translation file
+- The whole thing runs server-side as a Next.js **Server Action** — no LLM, no third-party service, no runtime cost
+
+**Coverage:** `hours` · `location` · `parking` · `reservation` · `cancel` · `menu` · `allergies` · `vegetarian` · `halal` · `events`
+
+**Why not an LLM:** LLM providers require either API keys with usage limits, paid tiers, or credit cards — all forbidden by the project's free-only constraint. A keyword matcher delivers 90% of the value at 0% of the cost, and ships in ~200 lines of code.
 
 ---
 
@@ -62,9 +80,10 @@
 - 📅 **Smart reservation engine** — auto-assigns the optimal table based on party size, time slot, and existing bookings (interval-overlap algorithm)
 - 📧 **Email confirmation** on reservation (console provider in development)
 - 💬 **WhatsApp integration** — floating button on every page
-- 🌍 **5 languages** — Arabic, English, French, German, Spanish, with automatic RTL/LTR direction switching
+- 🌍 **7 languages** — Arabic, English, French, German, Spanish, Italian, Chinese — with automatic RTL/LTR direction switching
 - 🎨 **Bilingual content** — menu items and categories have Arabic + English names, with graceful fallback in the other 3 locales
-- 📖 **About page** — the story of Lumière, chef biography, values, and full-page storytelling in 5 locales
+- 📖 **About page** — the story of Lumière, chef biography, values, and full-page storytelling in 7 locales
+- 🤖 **Smart FAQ Assistant** — floating chat panel that answers common questions in all 7 languages. Zero download, zero external API, sub-50ms responses
 - ⭐ **Customer reviews** — star ratings with admin moderation
 - ⬆️ **Scroll-to-top button** — appears after 400px of scrolling, elegant fade-in
 - 📱 **Fully responsive** — mobile-first design with three breakpoints
@@ -105,7 +124,8 @@
 | **Database** | PostgreSQL 17 (Neon) | Serverless relational database |
 | **ORM** | Prisma 6 | Type-safe database client |
 | **Validation** | Zod 4 | Runtime schema validation |
-| **i18n** | next-intl 4 | 5-locale routing and messages |
+| **i18n** | next-intl 4 | 7-locale routing and messages |
+| **Assistant** | Pure TS intent matcher | Zero-dependency FAQ chatbot |
 | **Styling** | Tailwind CSS 4 | Utility-first CSS with RTL support |
 | **Auth** | Auth.js v5 (NextAuth) | Credential-based authentication |
 | **Charts** | Recharts | Interactive analytics dashboards |
@@ -122,6 +142,7 @@ Browser
 ├── Public pages → Server Components → Prisma → PostgreSQL
 ├── Reservation form → Server Action → Smart engine → Prisma
 ├── About page → Server Component → i18n messages
+├── Smart Assistant → Server Action → Intent matcher → i18n messages
 └── Admin dashboard → Auth.js + RBAC → Server Actions → Prisma
 Deployment:
 Git push → GitHub → Vercel Build → Production URL
@@ -138,11 +159,12 @@ Git push → GitHub → Vercel Build → Production URL
 - **Locale-prefixed routing** — every URL carries its language (`/en/menu`, `/ar/menu`)
 - **Bilingual content strategy** — Arabic + English in the DB, with graceful fallback for FR/DE/ES
 - **Schema factories** — Zod schemas receive a translator and return localized errors
+- **Zero-API assistant** — Smart FAQ uses a pure TypeScript intent matcher, not an LLM. Zero downloads, zero cost, sub-50ms responses, works in all 7 locales.
 
 ---
 ## 📚 Project Documentation
 
-This project was built in **12 documented phases**, each with a self-contained HTML portfolio page:
+This project was built in **13 documented phases**, each with a self-contained HTML portfolio page:
 
 | Phase | Topic | Documentation |
 |---|---|---|
@@ -158,8 +180,9 @@ This project was built in **12 documented phases**, each with a self-contained H
 | 10 | Polishing & Production Readiness | [Open](./public/portfolio/phase-10-polishing.html) |
 | 11 | Internationalization (5 locales) | [Open](./public/portfolio/phase-11-i18n.html) |
 | 12 | Menu EN + About + UX Polish | [Open](./public/portfolio/phase-12-menu-about.html) |
+| 13 | Italian + Chinese + Smart Assistant | [Open](./public/portfolio/phase-13-locales-assistant.html) |
 
-> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
+> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-13-locales-assistant.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 
 ---
 
@@ -322,6 +345,7 @@ This project is licensed under the MIT License.
 - Built as a portfolio project to demonstrate full-stack Next.js proficiency
 - Deployed entirely on free tiers: **Vercel**, **Neon**, **GitHub**
 - Zero external paid services, zero credit card requirements
+- Zero external AI APIs — the Smart FAQ Assistant runs on a pure TypeScript intent matcher
 - Food photography from **Unsplash**
 - Language flags from **flagcdn.com**
 
