@@ -12,6 +12,8 @@ const LOCALES_DATA: Record<string, { label: string; code: string }> = {
   fr: { label: "Français", code: "fr" },
   de: { label: "Deutsch", code: "de" },
   es: { label: "Español", code: "es" },
+  it: { label: "Italiano", code: "it" },
+  zh: { label: "中文", code: "cn" },
 };
 
 type Props = {

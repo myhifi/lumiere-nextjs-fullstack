@@ -150,6 +150,28 @@
       "description": "Discover the story of Lumière — a restaurant in the heart of Cairo blending tradition and modernity, led by Chef Mohamed Yehia."
     }
   },
+  "Assistant": {
+  "title": "How can I help?",
+  "subtitle": "Ask about hours, reservations, parking...",
+  "placeholder": "Type your question...",
+  "send": "Send",
+  "close": "Close",
+  "open": "Open assistant",
+  "typing": "Thinking...",
+  "fallback": "I'm not sure about that. Try asking about: hours, reservations, location, or contact us on WhatsApp.",
+  "intents": {
+    "hours": "We're open daily from 12:00 PM to 11:00 PM — last reservations accepted until 10:00 PM.",
+    "location": "Find us at Qaryat El Asad on the Cairo-Alexandria Desert Road. See the map on our homepage.",
+    "parking": "Free parking is available on-site for all guests.",
+    "reservation": "You can reserve a table directly from the Reserve page — the system assigns the best available table for your party size and time.",
+    "cancel": "To cancel or modify a reservation, please contact us via WhatsApp at least 4 hours before your booking.",
+    "menu": "Browse our full menu — appetizers, main courses, desserts, and beverages — on the Menu page.",
+    "allergies": "Please mention any allergies in the notes field when booking, or contact us via WhatsApp so our chef can accommodate you.",
+    "vegetarian": "We offer several vegetarian and vegan dishes — look for the marked options on our menu.",
+    "halal": "All our meat is 100% halal certified.",
+    "events": "For private events or groups over 10 guests, please contact us via WhatsApp for a custom arrangement."
+  }
+},
     "ItemDetail": {
     "backToMenu": "Back to Menu",
     "currency": "EGP",

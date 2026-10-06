@@ -150,6 +150,28 @@
       "description": "Entdecken Sie die Geschichte von Lumière — einem Restaurant im Herzen von Kairo, das Tradition und Moderne verbindet, geführt von Chef Mohamed Yehia."
     }
   },
+"Assistant":{
+"title": "Wie kann ich helfen?",
+"subtitle": "Fragen Sie nach Öffnungszeiten, Reservierungen, Parkplätzen...",
+"placeholder": "Geben Sie Ihre Frage ein...",
+"send": "Senden",
+"close": "Schließen",
+"open": "Assistenten öffnen",
+"typing": "Überlegt...",
+"fallback": "Da bin ich mir nicht sicher. Fragen Sie nach: Öffnungszeiten, Reservierungen, Standort oder kontaktieren Sie uns auf WhatsApp.",
+"intents": {
+"hours": "Wir haben täglich von 12:00 bis 23:00 Uhr geöffnet — letzte Reservierungen werden bis 22:00 Uhr angenommen.",
+"location": "Sie finden uns in Qaryat El Asad an der Wüstenstraße Kairo–Alexandria. Sehen Sie sich die Karte auf unserer Homepage an.",
+"parking": "Kostenlose Parkplätze stehen allen Gästen vor Ort zur Verfügung.",
+"reservation": "Sie können einen Tisch direkt über die Seite „Tisch reservieren“ buchen — das System weist Ihnen den besten verfügbaren Tisch für Ihre Gruppengröße und Uhrzeit zu.",
+"cancel": "Um eine Reservierung zu stornieren oder zu ändern, kontaktieren Sie uns bitte mindestens 4 Stunden vor Ihrer Buchung über WhatsApp.",
+"menu": "Stöbern Sie auf der Seite „Speisekarte“ in unserem vollständigen Angebot — Vorspeisen, Hauptgerichte, Desserts und Getränke.",
+"allergies": "Bitte geben Sie etwaige Allergien bei der Buchung im Anmerkungsfeld an oder kontaktieren Sie uns über WhatsApp, damit unser Küchenchef darauf eingehen kann.",
+"vegetarian": "Wir bieten verschiedene vegetarische und vegane Gerichte an — achten Sie auf die gekennzeichneten Optionen auf unserer Speisekarte.",
+"halal": "Unser gesamtes Fleisch ist zu 100 % halal-zertifiziert.",
+"events": "Für private Veranstaltungen oder Gruppen von mehr als 10 Personen kontaktieren Sie uns bitte über WhatsApp für eine individuelle Vereinbarung."
+}
+},
   "ItemDetail": {
     "backToMenu": "Zurück zur Speisekarte",
     "currency": "EGP",

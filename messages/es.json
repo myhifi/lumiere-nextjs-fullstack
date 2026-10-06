@@ -150,6 +150,28 @@
       "description": "Descubre la historia de Lumière — un restaurante en el corazón de El Cairo que combina tradición y modernidad, dirigido por el chef Mohamed Yehia."
     }
   },
+"Assistant":{
+"title": "¿En qué puedo ayudarte?",
+"subtitle": "Pregunta sobre horarios, reservas, estacionamiento...",
+"placeholder": "Escribe tu pregunta...",
+"send": "Enviar",
+"close": "Cerrar",
+"open": "Abrir asistente",
+"typing": "Pensando...",
+"fallback": "No estoy seguro de eso. Intenta preguntar sobre: horarios, reservas, ubicación, o contáctanos por WhatsApp.",
+"intents": {
+"hours": "Abrimos todos los días de 12:00 PM a 11:00 PM — se aceptan últimas reservas hasta las 10:00 PM.",
+"location": "Encuéntranos en Qaryat El Asad, en la carretera desértica El Cairo-Alejandría. Consulta el mapa en nuestra página de inicio.",
+"parking": "Estacionamiento gratuito disponible en el establecimiento para todos los clientes.",
+"reservation": "Puedes reservar una mesa directamente desde la página de Reservas — el sistema asignará la mejor mesa disponible para el tamaño de tu grupo y horario.",
+"cancel": "Para cancelar o modificar una reserva, contáctanos a través de WhatsApp al menos 4 horas antes de tu reserva.",
+"menu": "Explora nuestro menú completo — aperitivos, platos principales, postres y bebidas — en la página Menú.",
+"allergies": "Por favor, menciona cualquier alergia en el campo de notas al hacer la reserva, o contáctanos por WhatsApp para que nuestro chef pueda adaptarlo.",
+"vegetarian": "Ofrecemos varios platos vegetarianos y veganos — busca las opciones marcadas en nuestro menú.",
+"halal": "Toda nuestra carne cuenta con certificación 100 % halal.",
+"events": "Para eventos privados o grupos de más de 10 personas, contáctanos a través de WhatsApp para una organización personalizada."
+}
+},
   "ItemDetail": {
     "backToMenu": "Volver al menú",
     "currency": "EGP",

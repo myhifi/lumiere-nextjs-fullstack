@@ -150,6 +150,28 @@
       "description": "Découvrez l'histoire de Lumière — un restaurant au cœur du Caire qui allie tradition et modernité, dirigé par le chef Mohamed Yehia."
     }
   },
+"Assistant":{
+"title": "Comment puis-je vous aider ?",
+"subtitle": "Posez vos questions sur les horaires, les réservations, le parking...",
+"placeholder": "Posez votre question...",
+"send": "Envoyer",
+"close": "Fermer",
+"open": "Ouvrir l'assistant",
+"typing": "Réflexion en cours...",
+"fallback": "Je ne suis pas sûr de comprendre. Essayez de me poser des questions sur : les horaires, les réservations, l'emplacement, ou contactez-nous sur WhatsApp.",
+"intents": {
+"hours": "Nous sommes ouverts tous les jours de 12h00 à 23h00 — dernières réservations acceptées jusqu'à 22h00.",
+"location": "Retrouvez-nous à Qaryat El Asad sur la route du désert Le Caire-Alexandrie. Consultez la carte sur notre page d'accueil.",
+"parking": "Un parking gratuit est disponible sur place pour tous nos clients.",
+"reservation": "Vous pouvez réserver une table directement depuis la page Réservation — le système vous attribue la meilleure table disponible selon la taille de votre groupe et l'horaire.",
+"cancel": "Pour annuler ou modifier une réservation, veuillez nous contacter via WhatsApp au moins 4 heures avant votre réservation.",
+"menu": "Découvrez notre menu complet — entrées, plats principaux, desserts et boissons — sur la page Menu.",
+"allergies": "Veuillez indiquer vos allergies dans le champ remarques lors de la réservation, ou contactez-nous via WhatsApp afin que notre chef puisse s'adapter.",
+"vegetarian": "Nous proposons plusieurs plats végétariens et végétaliens — repérez les options indiquées sur notre menu.",
+"halal": "Toutes nos viandes sont certifiées 100 % halal.",
+"events": "Pour des événements privés ou des groupes de plus de 10 personnes, veuillez nous contacter via WhatsApp pour une organisation sur mesure."
+}
+},
     "ItemDetail": {
     "backToMenu": "Retour au menu",
     "currency": "EGP",

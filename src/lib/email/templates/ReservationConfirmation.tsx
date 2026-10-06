@@ -41,6 +41,8 @@ function getDateLocale(locale: string): string {
     fr: "fr-FR",
     de: "de-DE",
     es: "es-ES",
+    it: "it-IT",
+    zh: "zh-CN",
   };
   return map[locale] ?? locale;
 }

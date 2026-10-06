@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { ScrollToTopButton } from "@/components/layout/ScrollToTopButton";
+import { AssistantButton } from "@/components/assistant/AssistantButton";
 
 export default function PublicLayout({
   children,
@@ -13,6 +14,7 @@ export default function PublicLayout({
       <main className="flex-1">{children}</main>
       <WhatsAppButton />
       <ScrollToTopButton />
+      <AssistantButton />
     </div>
   );
 }
