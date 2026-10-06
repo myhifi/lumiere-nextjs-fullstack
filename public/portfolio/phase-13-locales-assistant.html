@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 13 — Locales &amp; Smart Assistant · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar nav a.part-label { color: var(--accent); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.75rem; padding: 0.35rem 0.75rem; pointer-events: none; }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero .flag-row { display: flex; gap: 0.75rem; margin-bottom: 1rem; font-size: 2.2rem; flex-wrap: wrap; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.screenshot { border: 2px dashed var(--border); border-radius: 8px; padding: 2rem; text-align: center; color: var(--fg-muted); font-size: 0.85rem; margin: 1rem 0; background: var(--bg-card); }
+.screenshot::before { content: "📸  "; font-size: 1.2rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .disabled { opacity: 0.35; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+/* File Tree */
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .upd { color: #ffa657; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+/* Flow */
+.flow { display: flex; flex-direction: column; align-items: center; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem 1.5rem; margin: 1rem 0; }
+.flow-step { background: var(--bg); border: 2px solid var(--accent); border-radius: 8px; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-family: 'Consolas', monospace; text-align: center; min-width: 320px; color: var(--fg); }
+.flow-step.code { background: var(--bg-code); color: #e8e8e8; border-color: var(--accent-dark); }
+.flow-step.success { border-color: var(--success); background: #eaf7ef; color: #1e7e45; }
+.flow-step.danger { border-color: var(--danger); background: #fdecea; color: var(--danger); }
+.flow-arrow { width: 2px; height: 24px; background: var(--accent); position: relative; }
+.flow-arrow::after { content: ""; position: absolute; bottom: -1px; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-top: 8px solid var(--accent); }
+.flow-label { font-size: 0.75rem; color: var(--fg-muted); margin: 0.25rem 0; font-style: italic; }
+
+/* Error Journey */
+.error-journey { position: relative; padding-left: 2rem; margin: 1.5rem 0; }
+.error-journey::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: linear-gradient(180deg, var(--danger) 0%, var(--warning) 50%, var(--success) 100%); }
+.error-item { position: relative; margin-bottom: 1.5rem; }
+.error-item::before { content: ""; position: absolute; left: -2rem; top: 8px; width: 18px; height: 18px; border-radius: 50%; border: 3px solid var(--bg); background: var(--success); }
+.error-item h4 { font-size: 0.95rem; margin-bottom: 0.25rem; }
+.error-item .error-msg { background: var(--bg-code); color: #ff9b8a; padding: 0.5rem 0.75rem; border-radius: 6px; font-family: 'Consolas', monospace; font-size: 0.75rem; margin: 0.5rem 0; border-left: 3px solid var(--danger); }
+.error-item .error-fix { background: #eaf7ef; color: #1e5a3a; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.82rem; border-left: 3px solid var(--success); }
+.error-item .error-fix strong { color: #1e7e45; }
+
+/* Locale Grid */
+.locale-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.locale-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; text-align: center; }
+.locale-card.new-card { border: 2px solid var(--success); background: #eaf7ef; }
+.locale-card .lc-flag { font-size: 2rem; margin-bottom: 0.5rem; }
+.locale-card .lc-code { font-family: 'Consolas', monospace; font-size: 0.75rem; color: var(--accent-dark); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 0.25rem; }
+.locale-card .lc-name { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.5rem; }
+.locale-card .lc-dir { font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: var(--accent-light); color: var(--accent-dark); font-weight: 700; display: inline-block; }
+.locale-card .lc-dir.rtl { background: rgba(39,174,96,0.15); color: #1e7e45; }
+.locale-card .lc-dir.new-dir { background: var(--success); color: #fff; }
+
+/* Chat preview mock */
+.chat-mock { max-width: 380px; margin: 1rem auto; background: #fff; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+.chat-mock .cm-header { background: var(--accent); color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+.chat-mock .cm-header .cm-title { font-weight: 700; font-size: 0.85rem; }
+.chat-mock .cm-header .cm-sub { font-size: 0.7rem; opacity: 0.9; }
+.chat-mock .cm-body { padding: 16px; background: var(--bg); min-height: 200px; }
+.chat-mock .cm-msg { margin-bottom: 10px; display: flex; }
+.chat-mock .cm-msg.user { justify-content: flex-end; }
+.chat-mock .cm-msg.assistant { justify-content: flex-start; }
+.chat-mock .cm-bubble { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 0.82rem; line-height: 1.5; }
+.chat-mock .cm-msg.user .cm-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.chat-mock .cm-msg.assistant .cm-bubble { background: #fff; border: 1px solid var(--border); color: var(--fg); border-bottom-left-radius: 4px; }
+.chat-mock .cm-input { padding: 10px 12px; border-top: 1px solid var(--border); background: #fff; display: flex; gap: 8px; }
+.chat-mock .cm-input input { flex: 1; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; background: var(--bg); }
+.chat-mock .cm-input button { padding: 8px 16px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 500; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+  .flow-step { min-width: auto; width: 100%; font-size: 0.75rem; }
+  .error-journey { padding-left: 1.5rem; }
+  .error-item::before { left: -1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 13</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#scope">Two Features, One Phase</a>
+      <a href="#commands">Commands Table</a>
+      <a href="#structure">Folder Structure</a>
+
+      <a class="part-label">Part 1 · Italian + Chinese</a>
+      <a href="#locales">From 5 to 7 Locales</a>
+      <a href="#routing">routing.ts Update</a>
+      <a href="#switcher">LanguageSwitcher Update</a>
+      <a href="#date-locale">Email Date Locale</a>
+      <a href="#cache-issue">The .next Cache Issue</a>
+
+      <a class="part-label">Part 2 · Smart FAQ Assistant</a>
+      <a href="#why-no-llm">Why Not an LLM</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#knowledge">Knowledge Base</a>
+      <a href="#matcher">Intent Matcher</a>
+      <a href="#priority">Priority Tie-Break</a>
+      <a href="#dedupe">The Duplicate Keyword Bug</a>
+      <a href="#action">Server Action</a>
+      <a href="#ui">AssistantButton UI</a>
+      <a href="#mounting">Public Layout Mount</a>
+      <a href="#testing">Testing Across 7 Languages</a>
+
+      <a href="#errors">The Errors Journey</a>
+      <a href="#verify">Verification</a>
+      <a href="#pitfalls">Pitfalls</a>
+      <a href="#glossary">Glossary</a>
+      <a href="#summary">Summary</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 13 · Locales &amp; Smart Assistant</div>
+      <div class="flag-row">🇪🇬 🇬🇧 🇫🇷 🇩🇪 🇪🇸 🇮🇹 🇨🇳</div>
+      <h1>Seven Locales, Zero-Download Chatbot</h1>
+      <p class="lede">Extend the platform from 5 to 7 locales by adding Italian and Mandarin Chinese, then introduce the Smart FAQ Assistant — a floating chat panel that answers common restaurant questions in every language with zero external API, zero download, and sub-50ms responses. Pure TypeScript intent matching, no LLM.</p>
+      <div class="stack">
+        <span>next-intl 7 locales</span><span>Italian 🇮🇹</span>
+        <span>Chinese 🇨🇳</span><span>Zero-API Assistant</span>
+        <span>Intent Matcher</span><span>Priority Tie-Break</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Extend the reach of the existing 5-locale infrastructure to 7, and add a genuinely useful interactive feature that demonstrates a different class of engineering — algorithmic matching under tight cost and latency constraints.</p>
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Italian locale</strong> — <code>messages/it.json</code> (~400 keys) + routing + switcher + email date locale.</li>
+        <li><strong>Chinese locale</strong> — <code>messages/zh.json</code> with ICU plural rules adapted for Chinese (single-form <code>other</code>).</li>
+        <li><strong>Smart FAQ Assistant</strong> — a floating chat panel with 10 intents supported in 7 languages.</li>
+        <li><strong>Zero-cost engine</strong> — pure TypeScript keyword matcher, no LLM, no external API, no data download.</li>
+        <li><strong>Priority tie-break</strong> — explicit policy for when two intents match a single query.</li>
+        <li><strong>Duplicate-keyword dedupe</strong> — defensive fix for cross-language keyword collisions.</li>
+        <li><strong>Responsive UI</strong> — bottom-left trigger above WhatsApp, panel that works on phones and desktops.</li>
+        <li><strong>Full test matrix</strong> — verification across all 7 locales for all 10 intents.</li>
+      </ol>
+    </section>
+
+    <section id="scope">
+      <h2><span class="num">2</span> Two Features, One Phase</h2>
+      <p>Both features share the same release cycle, and their paths converge on the same underlying principle: <strong>the network boundary is a cost you pay for no reason when the answer is already in your codebase</strong>.</p>
+      <div class="callout info">
+        <strong>The shared principle</strong>
+        <ul style="margin-top:0.5rem;margin-bottom:0">
+          <li><strong>Locales</strong> — never call a translation API at runtime; every string lives in a JSON file.</li>
+          <li><strong>Assistant</strong> — never call an LLM at runtime; every answer lives in a translation file too, chosen by a pure matcher.</li>
+        </ul>
+      </div>
+    </section>
+    <section id="commands">
+      <h2><span class="num">3</span> Commands Table</h2>
+      <table>
+        <thead><tr><th>#</th><th>Command</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><code>Remove-Item -Recurse -Force .next</code></td><td>Clear Next.js cache after adding new locale files</td></tr>
+          <tr><td>2</td><td><code>npm run dev</code></td><td>Start dev server</td></tr>
+          <tr><td>3</td><td><code>npx tsc --noEmit</code></td><td>Type check after each unit</td></tr>
+          <tr><td>4</td><td><code>npx eslint</code></td><td>Lint — silent on success</td></tr>
+          <tr><td>5</td><td><code>npx tsx -e "import('./src/lib/assistant/matcher.ts').then(...)"</code></td><td>Test the intent matcher in isolation</td></tr>
+          <tr><td>6</td><td><code>npm run build</code></td><td>Verify production build with all 7 locales</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="structure">
+      <h2><span class="num">4</span> Folder Structure</h2>
+      <div class="filetree">
+        <div><span class="dir">lumiere-nextjs-fullstack/</span></div>
+        <div class="indent-1"><span class="dir">messages/</span></div>
+        <div class="indent-2"><span class="file">ar.json</span> <span class="file">en.json</span> <span class="file">fr.json</span></div>
+        <div class="indent-2"><span class="file">de.json</span> <span class="file">es.json</span></div>
+        <div class="indent-2"><span class="file new">it.json</span> <span class="note">← NEW: Italian</span></div>
+        <div class="indent-2"><span class="file new">zh.json</span> <span class="note">← NEW: Simplified Chinese</span></div>
+        <div class="indent-1"><span class="dir">src/</span></div>
+        <div class="indent-2"><span class="dir new">lib/assistant/</span> <span class="note">← NEW: Assistant engine</span></div>
+        <div class="indent-3"><span class="file new">knowledge-base.ts</span> <span class="note">← 10 intents × 7 languages</span></div>
+        <div class="indent-3"><span class="file new">matcher.ts</span> <span class="note">← pure detection + priority</span></div>
+        <div class="indent-2"><span class="dir new">components/assistant/</span></div>
+        <div class="indent-3"><span class="file new">AssistantButton.tsx</span> <span class="note">← floating UI + chat panel</span></div>
+        <div class="indent-2"><span class="dir">actions/</span></div>
+        <div class="indent-3"><span class="file new">assistant.ts</span> <span class="note">← Server Action</span></div>
+        <div class="indent-2"><span class="dir">components/layout/</span></div>
+        <div class="indent-3"><span class="file upd">LanguageSwitcher.tsx</span> <span class="note">← + it 🇮🇹 + zh 🇨🇳</span></div>
+        <div class="indent-2"><span class="dir">i18n/</span></div>
+        <div class="indent-3"><span class="file upd">routing.ts</span> <span class="note">← 5 → 7 locales</span></div>
+        <div class="indent-2"><span class="dir">lib/email/templates/</span></div>
+        <div class="indent-3"><span class="file upd">ReservationConfirmation.tsx</span> <span class="note">← + it-IT + zh-CN</span></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         PART 1 — ITALIAN + CHINESE
+         ══════════════════════════════════════════════════ -->
+
+    <section id="locales">
+      <h2><span class="num">5</span> Part 1 · From 5 to 7 Locales</h2>
+      <p>The infrastructure built in Phase 11 makes this expansion almost mechanical. Adding a locale requires only four coordinated changes — nothing architectural.</p>
+
+      <div class="locale-grid">
+        <div class="locale-card">
+          <div class="lc-flag">🇪🇬</div>
+          <div class="lc-code">ar</div>
+          <div class="lc-name">العربية</div>
+          <div class="lc-dir rtl">RTL</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇬🇧</div>
+          <div class="lc-code">en</div>
+          <div class="lc-name">English</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇫🇷</div>
+          <div class="lc-code">fr</div>
+          <div class="lc-name">Français</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇩🇪</div>
+          <div class="lc-code">de</div>
+          <div class="lc-name">Deutsch</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card">
+          <div class="lc-flag">🇪🇸</div>
+          <div class="lc-code">es</div>
+          <div class="lc-name">Español</div>
+          <div class="lc-dir">LTR</div>
+        </div>
+        <div class="locale-card new-card">
+          <div class="lc-flag">🇮🇹</div>
+          <div class="lc-code">it</div>
+          <div class="lc-name">Italiano</div>
+          <div class="lc-dir new-dir">NEW · LTR</div>
+        </div>
+        <div class="locale-card new-card">
+          <div class="lc-flag">🇨🇳</div>
+          <div class="lc-code">zh</div>
+          <div class="lc-name">中文</div>
+          <div class="lc-dir new-dir">NEW · LTR</div>
+        </div>
+      </div>
+
+      <h3>Why Italian + Chinese?</h3>
+      <table>
+        <thead><tr><th>Language</th><th>Why this choice</th></tr></thead>
+        <tbody>
+          <tr><td>🇮🇹 Italian</td><td>Real tourist market in Egypt — Italian visitors are common. Latin script, familiar plural rules, no surprises.</td></tr>
+          <tr><td>🇨🇳 Mandarin</td><td><strong>Proves the system scales to non-Latin scripts.</strong> Chinese tourism to Cairo is growing, and the ICU plural rules differ fundamentally (only one form: <code>other</code>).</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <strong>Portfolio impact</strong>
+        Adding Italian is easy. Adding Chinese is a demonstration — it proves the architecture handles CJK scripts, non-plural languages, and different date formats without any code path changes.
+      </div>
+    </section>
+
+    <section id="routing">
+      <h2><span class="num">6</span> Part 1 · routing.ts Update</h2>
+      <pre><code>export const routing = defineRouting({
+  locales: ['ar', 'en', 'fr', 'de', 'es', 'it', 'zh'],
+  defaultLocale: 'ar',
+  localePrefix: 'always'
+});</code></pre>
+      <p><strong>Everything else stays the same.</strong> The <code>RTL_LOCALES</code> constant remains <code>['ar']</code> — both Italian and Chinese are LTR.</p>
+      <p><strong>Why defaultLocale stays Arabic:</strong> Google's <code>x-default</code> hreflang points to the default locale's URL. Since the restaurant is physically in Cairo, Arabic-first is correct regardless of how many other locales exist.</p>
+    </section>
+
+    <section id="switcher">
+      <h2><span class="num">7</span> Part 1 · LanguageSwitcher Update</h2>
+      <pre><code>const LOCALES_DATA: Record&lt;string, { label: string; code: string }&gt; = {
+  ar: { label: "العربية", code: "eg" },
+  en: { label: "English", code: "gb" },
+  fr: { label: "Français", code: "fr" },
+  de: { label: "Deutsch", code: "de" },
+  es: { label: "Español", code: "es" },
+  it: { label: "Italiano", code: "it" },
+  zh: { label: "中文", code: "cn" },
+};</code></pre>
+      <p><strong>Two entries.</strong> The dropdown automatically iterates the new list because it reads from <code>routing.locales</code> (source of truth) — the <code>LOCALES_DATA</code> map only provides labels and flag codes.</p>
+    </section>
+
+    <section id="date-locale">
+      <h2><span class="num">8</span> Part 1 · Email Date Locale</h2>
+      <p>Email confirmation templates use <code>Intl.DateTimeFormat</code> to render the reservation date in the recipient's language. Two new BCP-47 codes required:</p>
+      <pre><code>function getDateLocale(locale: string): string {
+  const map: Record&lt;string, string&gt; = {
+    ar: "ar-EG", en: "en-US", fr: "fr-FR",
+    de: "de-DE", es: "es-ES",
+    it: "it-IT",  // ← NEW
+    zh: "zh-CN",  // ← NEW
+  };
+  return map[locale] ?? locale;
+}</code></pre>
+      <p><strong>The result:</strong> An Italian reservation confirmation shows dates like <code>giovedì 15 ottobre 2026, 20:30</code>, and a Chinese one shows <code>2026年10月15日星期四 20:30</code> — from a single formatting line.</p>
+    </section>
+
+    <section id="cache-issue">
+      <h2><span class="num">9</span> Part 1 · The .next Cache Issue</h2>
+      <div class="callout danger">
+        <strong>Symptom</strong>
+        After adding <code>it.json</code> and <code>zh.json</code>, navigating to <code>/it</code> and <code>/zh</code> throws:
+        <pre style="margin:0.5rem 0;background:transparent;border:none;padding:0;color:inherit;font-size:0.78rem"><code style="background:transparent;color:inherit;padding:0">Cannot find module './it.json'</code></pre>
+      </div>
+      <p><strong>Root cause:</strong> Next.js/webpack caches the module context for dynamic <code>import()</code> calls. When <code>request.ts</code> contains:</p>
+      <pre><code>messages: (await import(`../../messages/${locale}.json`)).default,</code></pre>
+      <p>Webpack builds a static list of files matching <code>../../messages/*.json</code> at build time. Adding a new file to that directory does not invalidate the cached context.</p>
+      <p><strong>Fix — always after adding a new locale file:</strong></p>
+      <pre><code>Ctrl+C
+Remove-Item -Recurse -Force .next
+npm run dev</code></pre>
+      <div class="callout success">
+        <strong>Rule to remember</strong>
+        Any time you add a file that's imported via a template-literal dynamic import, clear <code>.next</code> and restart. This is a Next.js quirk, not a bug in the project.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         PART 2 — SMART FAQ ASSISTANT
+         ══════════════════════════════════════════════════ -->
+
+    <section id="why-no-llm">
+      <h2><span class="num">10</span> Part 2 · Why Not an LLM</h2>
+      <p><strong>The instinctive design</strong> for a "Smart Assistant" is to plug in an LLM (ChatGPT, Claude, Gemini) via an API. Every option was evaluated and rejected:</p>
+      <table>
+        <thead><tr><th>Option</th><th>Why it doesn't fit</th></tr></thead>
+        <tbody>
+          <tr><td><strong>OpenAI / Anthropic API</strong></td><td>Paid only — requires a credit card even for the free tier. Violates the project's hard constraint.</td></tr>
+          <tr><td><strong>Vercel AI SDK + free tier</strong></td><td>The free tiers of LLM providers require card verification.</td></tr>
+          <tr><td><strong>WebLLM (Llama/Phi)</strong></td><td>1-2 GB download on first visit. Kills mobile users immediately.</td></tr>
+          <tr><td><strong>Transformers.js</strong></td><td>30-150 MB download, unreliable on mobile Safari (WebGL throttling).</td></tr>
+          <tr><td><strong>Self-hosted model</strong></td><td>Not viable on Vercel's free tier (no GPU, memory limits).</td></tr>
+        </tbody>
+      </table>
+      <div class="callout success">
+        <strong>The actual winner</strong>
+        A <strong>pure TypeScript intent matcher</strong> — ~200 lines, zero dependencies, zero download, sub-50 ms response, works offline, works on every device, costs $0.00 forever.
+      </div>
+      <p><strong>Is it "real AI"?</strong> No — and that's the point. It doesn't pretend to. It's a well-engineered <em>information retrieval system</em> — the same class of algorithm used by search autocomplete, airline FAQs, and IVR phone menus. For a restaurant FAQ, it delivers the same practical value as an LLM would, at 1/1000th the cost.</p>
+      <p><strong>For a portfolio:</strong> Interviewers consistently rate "built a system" higher than "wrapped an API". This feature demonstrates algorithmic thinking — normalization, scoring, priority, tie-breaks — not prompt engineering.</p>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">11</span> Part 2 · Architecture</h2>
+      <div class="flow">
+        <div class="flow-step">1. User types a question in any language</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">2. Client calls <code>askAssistant(query)</code> Server Action</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">3. <code>detectIntent(query)</code> normalizes + scores against 10 intents</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">4. Priority tie-break if two intents score equal</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step code">5. Winning intent's response pulled from current locale</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step success">6. Response returned in &lt; 50 ms, no external API</div>
+      </div>
+      <h3>Three files, three responsibilities</h3>
+      <table>
+        <thead><tr><th>File</th><th>Responsibility</th></tr></thead>
+        <tbody>
+          <tr><td><code>knowledge-base.ts</code></td><td>Pure data — 10 intents, each with keyword lists in all 7 languages</td></tr>
+          <tr><td><code>matcher.ts</code></td><td>Pure algorithm — normalize, score, dedupe, priority tie-break</td></tr>
+          <tr><td><code>actions/assistant.ts</code></td><td>Orchestration — call matcher, fetch translation, return reply</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Why this separation matters:</strong> The matcher is testable in isolation (<code>npx tsx -e "..."</code> — one command), and the knowledge base can grow to 30+ intents without touching any other file.</p>
+    </section>
+
+    <section id="knowledge">
+      <h2><span class="num">12</span> Part 2 · Knowledge Base</h2>
+      <p>Ten intents × 7 languages = ~70 keyword lists, but only ~120 total keywords because many are shared across Romance and Germanic languages.</p>
+      <pre><code>export const INTENT_KEYWORDS: Record&lt;IntentKey, string[]&gt; = {
+  cancel: [
+    "cancel", "cancellation", "modify", "change my", "reschedule",
+    "الغاء", "الغيت", "الغي", "تعديل", "اغير", "ااجل",
+    "annuler", "annulation", "modifier", "changer",
+    "stornieren", "stornierung", "andern", "verschieben",
+    "cancelar", "cancelacion", "cambiar", "modificar",
+    "annullare", "annullamento", "cambiare", "modificare",
+    "取消", "改期", "修改",
+  ],
+  // ... 9 more intents
+};</code></pre>
+      <p><strong>Two design decisions:</strong></p>
+      <ul>
+        <li><strong>Keywords are pre-normalized in the source.</strong> No accents, no diacritics, no Arabic tashkeel. The matcher normalizes user input the same way, so both sides compare on equal footing. This makes the file more readable and stable.</li>
+        <li><strong>Keywords list every plural form explicitly.</strong> Romance languages have inflected plurals (<code>vegetariano</code> / <code>vegetariani</code>), and the matcher uses word boundaries for Latin scripts — so <code>vegetarian</code> won't match <code>vegetarianos</code>. Listing plurals is simpler and more predictable than adding a stemmer.</li>
+      </ul>
+    </section>
+    <section id="matcher">
+      <h2><span class="num">13</span> Part 2 · Intent Matcher</h2>
+      <p>A pure function with no side effects. Give it a query string, get back an intent or <code>null</code>.</p>
+      <pre><code>export function detectIntent(rawQuery: string): IntentKey | null {
+  const query = normalize(rawQuery);
+  if (!query) return null;
+
+  let bestIntent: IntentKey | null = null;
+  let bestScore = 0;
+
+  for (const [intentKey, keywords] of Object.entries(INTENT_KEYWORDS)) {
+    const intent = intentKey as IntentKey;
+    let score = 0;
+    const seen = new Set&lt;string&gt;();
+
+    for (const keyword of keywords) {
+      const kw = normalize(keyword);
+      if (!kw || seen.has(kw)) continue;
+      seen.add(kw);
+
+      const isLatin = /^[a-z0-9 ]+$/.test(kw);
+      const matched = isLatin
+        ? new RegExp(`\\b${escapeRegex(kw)}\\b`).test(query)
+        : query.includes(kw);
+
+      if (matched) score += kw.length &gt;= 4 ? 2 : 1;
+    }
+
+    // ... priority tie-break (next section)
+  }
+
+  return bestScore &gt;= MIN_SCORE ? bestIntent : null;
+}</code></pre>
+
+      <h3>The normalize() function</h3>
+      <pre><code>function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")        // Latin diacritics: é → e
+    .replace(/[\u064B-\u065F\u0670]/g, "")  // Arabic tashkeel
+    .replace(/[إأآ]/g, "ا")                  // Arabic alef variants
+    .replace(/ى/g, "ي")                      // Arabic alef maqsura
+    .replace(/ة/g, "ه")                      // Arabic ta marbuta
+    .replace(/\s+/g, " ")
+    .trim();
+}</code></pre>
+      <p><strong>Why this is critical:</strong> A user typing <code>réservation</code> (French with accent) and a user typing <code>reservation</code> (no accent) should both match the same keyword list. Similarly, Arabic users typing <code>مواعيد</code> vs <code>مَوَاعِيد</code> (with tashkeel) should both match.</p>
+
+      <h3>Scoring rules</h3>
+      <table>
+        <thead><tr><th>Case</th><th>Score</th><th>Rationale</th></tr></thead>
+        <tbody>
+          <tr><td>Keyword length ≥ 4</td><td>+2</td><td>Longer keywords are more specific</td></tr>
+          <tr><td>Keyword length &lt; 4</td><td>+1</td><td>Short keywords like "map" could match unrelated words</td></tr>
+          <tr><td>Latin keywords</td><td>word-boundary match</td><td><code>reserve</code> won't match <code>preserved</code></td></tr>
+          <tr><td>Arabic / CJK keywords</td><td>substring match</td><td>No clear word boundaries in these scripts</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="priority">
+      <h2><span class="num">14</span> Part 2 · Priority Tie-Break</h2>
+      <div class="callout danger">
+        <strong>The subtle bug</strong>
+        Query: <code>"cancel my reservation"</code>. This matches <strong>both</strong> intents:
+        <ul style="margin:0.5rem 0 0">
+          <li><code>cancel</code> — via keyword <code>"cancel"</code> (score 2)</li>
+          <li><code>reservation</code> — via keyword <code>"reservation"</code> (score 2)</li>
+        </ul>
+        <p style="margin:0.5rem 0 0"><strong>Tie.</strong> Which one wins?</p>
+      </div>
+      <p><strong>The wrong approach:</strong> rely on the order of keys in <code>knowledge-base.ts</code>. This is fragile — reordering the file would silently break behavior.</p>
+      <p><strong>The right approach:</strong> an explicit <code>PRIORITY</code> array — priority as a policy decision, not an implementation detail.</p>
+      <pre><code>// Lower index = higher priority on tie
+const PRIORITY: IntentKey[] = [
+  "cancel",       // specific action on a booking
+  "allergies",    // safety concern
+  "halal",        // dietary requirement
+  "vegetarian",   // dietary preference
+  "events",       // specific occasion
+  "parking",      // specific facility
+  "location",     // info request
+  "hours",        // info request
+  "reservation",  // general topic
+  "menu",         // most general
+];
+
+const PRIORITY_INDEX = new Map&lt;IntentKey, number&gt;(
+  PRIORITY.map((k, i) =&gt; [k, i])
+);</code></pre>
+
+      <h3>Tie-break logic</h3>
+      <pre><code>const isBetter =
+  score &gt; bestScore ||
+  (score === bestScore &amp;&amp; score &gt; 0 &amp;&amp; candidatePriority &lt; currentPriority);
+
+if (isBetter) {
+  bestScore = score;
+  bestIntent = intent;
+}</code></pre>
+      <p><strong>Three cases:</strong></p>
+      <ol>
+        <li><strong>Higher score</strong> → always wins (<code>score &gt; bestScore</code>)</li>
+        <li><strong>Tie, higher priority</strong> → wins (<code>score === bestScore &amp;&amp; candidatePriority &lt; currentPriority</code>)</li>
+        <li><strong>Tie, lower priority</strong> → keeps the existing winner</li>
+      </ol>
+
+      <h3>Why "cancel beats reservation"</h3>
+      <p><strong>Cancelling is a specific action on a general concept.</strong> Every "cancel" query is also about a reservation, but not every "reservation" query is about cancelling. When a user types <code>cancel my reservation</code>, they're overwhelmingly asking about cancellation — the intent with the word <em>reservation</em> is just context.</p>
+      <div class="callout info">
+        <strong>The general principle</strong>
+        When two intents tie, the more <strong>specific</strong> one wins. This is a well-known heuristic in information retrieval — used in search engines, recommendation systems, and email spam filters. Being explicit about the priority order documents the policy in code.
+      </div>
+    </section>
+
+    <section id="dedupe">
+      <h2><span class="num">15</span> Part 2 · The Duplicate Keyword Bug</h2>
+      <div class="callout danger">
+        <strong>Discovered by adding debug logging</strong>
+        <pre style="margin:0.5rem 0;background:transparent;border:none;padding:0;color:inherit;font-size:0.78rem"><code style="background:transparent;color:inherit;padding:0">{ intent: 'cancel', score: 2, bestScore: 0, bestIntent: null }
+{ intent: 'reservation', score: 4, bestScore: 2, bestIntent: 'cancel' }
+                                              ↑↑↑ should be 2</code></pre>
+        Reservation scored <strong>4</strong> instead of 2 — so the priority tie-break never even ran.
+      </div>
+      <p><strong>Root cause:</strong> The keyword <code>"reservation"</code> appears <strong>twice</strong> in the array — once under the English comment, once under the French comment. Both got counted, doubling the score.</p>
+      <pre><code>reservation: [
+  "reserve", "reservation", "book", "booking", "table for",  // English
+  ...
+  "reserver", "reservation", "reserv",                       // French
+                ↑↑↑ duplicate
+],</code></pre>
+
+      <h3>The fix: dedupe at the matcher level</h3>
+      <pre><code>let score = 0;
+const seen = new Set&lt;string&gt;();
+
+for (const keyword of keywords) {
+  const kw = normalize(keyword);
+  if (!kw || seen.has(kw)) continue;   // ← dedupe here
+  seen.add(kw);
+  // ...
+}</code></pre>
+
+      <p><strong>Why this fix, and not the "obvious" one:</strong> We could have removed the duplicate from the knowledge base. But that only fixes today's bug. Tomorrow, adding a new language that shares a word with English (e.g., adding Portuguese, where "menu" is also "menu") would reintroduce it. Deduping in the matcher is <strong>idempotent, defensive, and forward-proof</strong>.</p>
+      <div class="callout success">
+        <strong>After the fix</strong>
+        <pre style="margin:0.5rem 0;background:transparent;border:none;padding:0;color:inherit;font-size:0.78rem"><code style="background:transparent;color:inherit;padding:0">cancel my reservation       → cancel    ✅
+je veux annuler ma réservation → cancel   ✅
+book a table                → reservation ✅</code></pre>
+      </div>
+    </section>
+
+    <section id="action">
+      <h2><span class="num">16</span> Part 2 · Server Action</h2>
+      <pre><code>"use server";
+
+import { getTranslations } from "next-intl/server";
+import { detectIntent } from "@/lib/assistant/matcher";
+import type { IntentKey } from "@/lib/assistant/knowledge-base";
+
+export type AssistantReply = {
+  intent: IntentKey | null;
+  text: string;
+};
+
+export async function askAssistant(query: string): Promise&lt;AssistantReply&gt; {
+  if (!query || typeof query !== "string" || query.trim().length &lt; 2) {
+    const t = await getTranslations("Assistant");
+    return { intent: null, text: t("fallback") };
+  }
+
+  const t = await getTranslations("Assistant");
+  const intent = detectIntent(query);
+
+  if (!intent) {
+    return { intent: null, text: t("fallback") };
+  }
+
+  const textMap: Record&lt;IntentKey, string&gt; = {
+    hours: t("intents.hours"),
+    location: t("intents.location"),
+    parking: t("intents.parking"),
+    reservation: t("intents.reservation"),
+    cancel: t("intents.cancel"),
+    menu: t("intents.menu"),
+    allergies: t("intents.allergies"),
+    vegetarian: t("intents.vegetarian"),
+    halal: t("intents.halal"),
+    events: t("intents.events"),
+  };
+
+  return { intent, text: textMap[intent] };
+}</code></pre>
+      <p><strong>Why an explicit map instead of a template literal:</strong> next-intl v4 has strict typing for <code>t()</code>. A dynamic key like <code>t(\`intents.${intent}\`)</code> may or may not satisfy the compiler depending on the project config. The explicit map is type-safe, self-documenting, and turns the intent list into a compile-time checklist — if you add an 11th intent, TypeScript errors until you add its entry.</p>
+    </section>
+
+    <section id="ui">
+      <h2><span class="num">17</span> Part 2 · AssistantButton UI</h2>
+      <p>A single Client Component that renders both the floating trigger and the chat panel. ~200 lines.</p>
+
+      <h3>Visual preview</h3>
+      <div class="chat-mock">
+        <div class="cm-header">
+          <div>
+            <div class="cm-title">🤖 How can I help?</div>
+            <div class="cm-sub">Ask about hours, reservations, parking...</div>
+          </div>
+          <span>✕</span>
+        </div>
+        <div class="cm-body">
+          <div class="cm-msg user">
+            <div class="cm-bubble">what time do you open?</div>
+          </div>
+          <div class="cm-msg assistant">
+            <div class="cm-bubble">We're open daily from 12:00 PM to 11:00 PM — last reservations accepted until 10:00 PM.</div>
+          </div>
+          <div class="cm-msg user">
+            <div class="cm-bubble">cancel my reservation</div>
+          </div>
+          <div class="cm-msg assistant">
+            <div class="cm-bubble">To cancel or modify a reservation, please contact us via WhatsApp at least 4 hours before your booking.</div>
+          </div>
+        </div>
+        <div class="cm-input">
+          <input type="text" placeholder="Type your question..." disabled />
+          <button>Send</button>
+        </div>
+      </div>
+
+      <h3>Key UI decisions</h3>
+      <table>
+        <thead><tr><th>Decision</th><th>Value</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Trigger position</td><td><code>fixed bottom-24 left-6</code></td><td>Physically above WhatsApp (which is at <code>bottom-6 left-6</code>) — no collision, consistent across RTL/LTR</td></tr>
+          <tr><td>Panel opens</td><td>Upward from trigger</td><td>Doesn't cover the trigger; keeps the "close" affordance reachable</td></tr>
+          <tr><td>Responsive width</td><td><code>left-4 right-4</code> on mobile → <code>sm:w-96</code> on desktop</td><td>Full-width sheet on phones, tidy 384px panel on desktops</td></tr>
+          <tr><td>Message IDs</td><td><code>crypto.randomUUID()</code></td><td>Native browser API — no dependency</td></tr>
+          <tr><td>Empty state</td><td>Shows the subtitle as a prompt</td><td>Gives the user a hint about what to ask</td></tr>
+          <tr><td>Typing indicator</td><td>Shown during <code>isPending</code></td><td>Even though replies are &lt;50ms, visual feedback feels natural</td></tr>
+          <tr><td>Escape key</td><td>Global keydown listener</td><td>Standard modal UX</td></tr>
+          <tr><td>Auto-focus</td><td>Input focused on open</td><td>Users can type immediately</td></tr>
+          <tr><td>Auto-scroll</td><td><code>messagesEndRef.scrollIntoView</code></td><td>New messages always visible</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Message state shape</h3>
+      <pre><code>type Message = {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+};</code></pre>
+      <p>Simple, discriminated by <code>role</code>. The rendering branches on <code>role</code> for alignment and styling.</p>
+    </section>
+
+    <section id="mounting">
+      <h2><span class="num">18</span> Part 2 · Public Layout Mount</h2>
+      <pre><code>// src/app/[locale]/(public)/layout.tsx
+import { Navbar } from "@/components/layout/Navbar";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+import { ScrollToTopButton } from "@/components/layout/ScrollToTopButton";
+import { AssistantButton } from "@/components/assistant/AssistantButton";
+
+export default function PublicLayout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;div className="min-h-screen flex flex-col"&gt;
+      &lt;Navbar /&gt;
+      &lt;main className="flex-1"&gt;{children}&lt;/main&gt;
+      &lt;WhatsAppButton /&gt;
+      &lt;ScrollToTopButton /&gt;
+      &lt;AssistantButton /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre>
+      <p><strong>Result:</strong> The assistant appears on every public page — homepage, menu, item detail, reserve, review, about — but not on admin or auth pages, where it would be distracting.</p>
+    </section>
+
+    <section id="testing">
+      <h2><span class="num">19</span> Part 2 · Testing Across 7 Languages</h2>
+      <p>Ten intents × 7 locales = 70 test cases. The critical 20:</p>
+      <table>
+        <thead><tr><th>Locale</th><th>Query</th><th>Expected Intent</th></tr></thead>
+        <tbody>
+          <tr><td>ar</td><td>إيه مواعيد العمل؟</td><td>hours</td></tr>
+          <tr><td>ar</td><td>أريد إلغاء الحجز</td><td>cancel</td></tr>
+          <tr><td>ar</td><td>عايز أحجز طاولة</td><td>reservation</td></tr>
+          <tr><td>ar</td><td>عندكم أكل نباتي؟</td><td>vegetarian</td></tr>
+          <tr><td>en</td><td>what time do you open?</td><td>hours</td></tr>
+          <tr><td>en</td><td>cancel my reservation</td><td>cancel</td></tr>
+          <tr><td>en</td><td>book a table</td><td>reservation</td></tr>
+          <tr><td>en</td><td>vegetarian dishes</td><td>vegetarian</td></tr>
+          <tr><td>fr</td><td>je veux annuler ma réservation</td><td>cancel</td></tr>
+          <tr><td>fr</td><td>je veux réserver une table</td><td>reservation</td></tr>
+          <tr><td>de</td><td>haben Sie Parkplatz?</td><td>parking</td></tr>
+          <tr><td>de</td><td>ich möchte stornieren</td><td>cancel</td></tr>
+          <tr><td>es</td><td>¿hay mesas vegetarianas?</td><td>vegetarian</td></tr>
+          <tr><td>es</td><td>cancelar mi reserva</td><td>cancel</td></tr>
+          <tr><td>it</td><td>come posso prenotare?</td><td>reservation</td></tr>
+          <tr><td>it</td><td>annullare la prenotazione</td><td>cancel</td></tr>
+          <tr><td>it</td><td>ci sono piatti vegetariani?</td><td>vegetarian</td></tr>
+          <tr><td>zh</td><td>营业时间是什么？</td><td>hours</td></tr>
+          <tr><td>zh</td><td>取消预订</td><td>cancel</td></tr>
+          <tr><td>zh</td><td>素食菜单</td><td>vegetarian</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Isolated matcher test (no browser needed)</h3>
+      <pre><code>npx tsx -e "import('./src/lib/assistant/matcher.ts').then(m =&gt; {
+  console.log(m.detectIntent('cancel my reservation'));
+  console.log(m.detectIntent('je veux annuler ma réservation'));
+})"</code></pre>
+      <p><strong>Why this test exists:</strong> When the tie-break bug was first found, running the matcher in isolation revealed the duplicate-keyword bug via a single debug line. Testing algorithms outside the browser is orders of magnitude faster.</p>
+    </section>
+
+    <section id="errors">
+      <h2><span class="num">20</span> The Errors Journey</h2>
+      <p>Five real bugs surfaced during Phase 13 — each one taught a specific lesson.</p>
+
+      <div class="error-journey">
+        <div class="error-item">
+          <h4>🎯 Error 1 — Cannot find module './it.json'</h4>
+          <div class="error-msg">GET /it 500 · MODULE_NOT_FOUND</div>
+          <div class="error-fix"><strong>Fix:</strong> Clear <code>.next</code> cache and restart. Webpack caches the module context for dynamic imports; adding a new locale file doesn't invalidate it.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 2 — IntentKey not exported from matcher</h4>
+          <div class="error-msg">Module '"./matcher"' declares 'IntentKey' locally, but it is not exported.</div>
+          <div class="error-fix"><strong>Fix:</strong> Import <code>IntentKey</code> from its source (<code>knowledge-base.ts</code>) where it's defined, not from the file that consumes it. Type definitions belong where they're created.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 3 — French cancel lost to French reservation</h4>
+          <div class="error-msg">"je veux annuler ma réservation" → returned reservation reply</div>
+          <div class="error-fix"><strong>Fix:</strong> Priority tie-break — explicit array, not object-key order. Cancel beats reservation on tie.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 4 — Spanish plural not matched</h4>
+          <div class="error-msg">"¿hay mesas vegetarianas?" → returned fallback</div>
+          <div class="error-fix"><strong>Fix:</strong> Added explicit plural forms to the vegetarian keyword list. Word boundaries don't stem — plural "vegetarianas" must be listed separately.</div>
+        </div>
+        <div class="error-item">
+          <h4>🎯 Error 5 — Duplicate keyword inflates score by 2×</h4>
+          <div class="error-msg">Debug log: reservation scored 4 (should be 2) because "reservation" appears in both English and French blocks</div>
+          <div class="error-fix"><strong>Fix:</strong> Dedupe keyword strings inside the matcher loop with a <code>Set&lt;string&gt;</code>. Defensive — prevents future languages from re-triggering the bug.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify">
+      <h2><span class="num">21</span> Verification</h2>
+      <table>
+        <thead><tr><th>Check</th><th>Action</th><th>Expected</th></tr></thead>
+        <tbody>
+          <tr><td>7 locales render</td><td>Visit <code>/it</code>, <code>/zh</code></td><td>200 · Italian/Chinese content</td></tr>
+          <tr><td>Language switcher</td><td>Any page → dropdown</td><td>7 languages with 🇮🇹 🇨🇳 flags</td></tr>
+          <tr><td>Sitemap count</td><td><code>curl /sitemap.xml</code></td><td>126 URLs (7 × 18)</td></tr>
+          <tr><td>Robots count</td><td><code>curl /robots.txt</code></td><td>14 admin rules</td></tr>
+          <tr><td>Assistant appears</td><td>Any public page</td><td>Gold floating button, bottom-left above WhatsApp</td></tr>
+          <tr><td>Panel opens</td><td>Click trigger</td><td>Chat panel opens upward, input focused</td></tr>
+          <tr><td>English reply</td><td>Type <code>what time do you open?</code></td><td>English hours response</td></tr>
+          <tr><td>Arabic reply</td><td>Switch to /ar → type <code>إيه مواعيد العمل؟</code></td><td>Arabic hours response, RTL layout</td></tr>
+          <tr><td>Chinese reply</td><td>Switch to /zh → type <code>营业时间是什么？</code></td><td>Chinese hours response</td></tr>
+          <tr><td>Cancel beats reservation</td><td>Type <code>cancel my reservation</code> on /en</td><td>Cancel response, not reservation</td></tr>
+          <tr><td>Fallback</td><td>Type <code>xyz abc qwerty</code></td><td>Fallback message in current language</td></tr>
+          <tr><td>Escape closes</td><td>Press <kbd>Esc</kbd></td><td>Panel closes</td></tr>
+          <tr><td>Mobile width</td><td>Resize &lt; 640px</td><td>Panel expands full width</td></tr>
+          <tr><td>Response speed</td><td>Watch dev log</td><td>askAssistant(...) in &lt; 100ms</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="pitfalls">
+      <h2><span class="num">22</span> Common Pitfalls &amp; Fixes</h2>
+      <table>
+        <thead><tr><th>Pitfall</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>New locale file not found</td><td>MODULE_NOT_FOUND after adding <code>xx.json</code></td><td>Clear <code>.next</code>, restart dev</td></tr>
+          <tr><td>Type imported from wrong file</td><td>TS2459 "declares X locally"</td><td>Import from source, not consumer</td></tr>
+          <tr><td>Two intents tie</td><td>Wrong reply for mixed queries</td><td>Explicit priority array</td></tr>
+          <tr><td>Plural not matching</td><td>Romance-language plurals miss</td><td>List explicit plural forms in keywords</td></tr>
+          <tr><td>Duplicate keywords</td><td>Score 2× expected → wrong winner</td><td>Dedupe with a <code>Set</code> inside the matcher</td></tr>
+          <tr><td>Assistant behind WhatsApp</td><td>Buttons overlap</td><td><code>bottom-24</code> for assistant, <code>bottom-6</code> for WhatsApp</td></tr>
+          <tr><td>Assistant on admin pages</td><td>Chat panel shows on /admin</td><td>Mount in <code>(public)/layout.tsx</code>, not root</td></tr>
+          <tr><td>Panel behind modal</td><td>Click doesn't reach input</td><td>Both trigger and panel use <code>z-50</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="glossary">
+      <h2><span class="num">23</span> Technical Abbreviations Glossary</h2>
+      <table>
+        <thead><tr><th>Abbr.</th><th>Full Form</th><th>Plain-English Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>ICU</td><td>International Components for Unicode</td><td>Standard for plurals, dates, numbers in messages</td></tr>
+          <tr><td>LLM</td><td>Large Language Model</td><td>AI model trained on text (ChatGPT, Claude, etc.)</td></tr>
+          <tr><td>NFC</td><td>Normalization Form Canonical</td><td>Unicode normalization — composes characters</td></tr>
+          <tr><td>NFD</td><td>Normalization Form Canonical Decomposition</td><td>Unicode normalization — decomposes characters</td></tr>
+          <tr><td>CJK</td><td>Chinese, Japanese, Korean</td><td>Scripts that share ideographic characters</td></tr>
+          <tr><td>LTR</td><td>Left-to-Right</td><td>Text direction for Latin scripts</td></tr>
+          <tr><td>RTL</td><td>Right-to-Left</td><td>Text direction for Arabic, Hebrew, Farsi</td></tr>
+          <tr><td>API</td><td>Application Programming Interface</td><td>Contract for program-to-program calls</td></tr>
+          <tr><td>RSC</td><td>React Server Components</td><td>Components rendered on the server</td></tr>
+          <tr><td>SEO</td><td>Search Engine Optimization</td><td>Practices to rank in search results</td></tr>
+          <tr><td>UX</td><td>User Experience</td><td>Overall feel of using an app</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="summary">
+      <h2><span class="num">24</span> Phase 13 Summary</h2>
+      <h3>Part 1 — Italian + Chinese</h3>
+      <ul>
+        <li>Added <code>messages/it.json</code> (~400 keys)</li>
+        <li>Added <code>messages/zh.json</code> with Chinese-adapted ICU plurals (single <code>other</code> form)</li>
+        <li>Updated <code>routing.ts</code> from 5 to 7 locales</li>
+        <li>Added 🇮🇹 🇨🇳 to LanguageSwitcher</li>
+        <li>Added <code>it-IT</code> + <code>zh-CN</code> to email date locale map</li>
+        <li>Sitemap grew from 90 to 126 URLs; robots grew from 10 to 14 disallow rules</li>
+      </ul>
+
+      <h3>Part 2 — Smart FAQ Assistant</h3>
+      <ul>
+        <li><code>knowledge-base.ts</code> — 10 intents × 7 languages keyword lists</li>
+        <li><code>matcher.ts</code> — pure <code>detectIntent()</code> with normalization, scoring, dedupe, and priority tie-break</li>
+        <li><code>actions/assistant.ts</code> — Server Action returning the localized reply</li>
+        <li><code>AssistantButton.tsx</code> — floating trigger + chat panel Client Component</li>
+        <li>Mounted in public layout, absent from admin/auth pages</li>
+        <li>Sub-50ms responses across all 7 locales, zero external API</li>
+      </ul>
+
+      <h3>Engineering Outcomes</h3>
+      <ul>
+        <li><strong>Proven scalability</strong> — the i18n architecture absorbed 2 additional locales without a single code path change</li>
+        <li><strong>Portfolio-grade algorithmic feature</strong> — a real system, not an API wrapper</li>
+        <li><strong>Zero-cost, zero-download, offline-capable</strong> — enforced by design, not by promise</li>
+        <li><strong>Priority as code</strong> — policy explicit and reviewable, not implicit in iteration order</li>
+        <li><strong>Defensive deduplication</strong> — prevents a whole class of future bugs from cross-language keyword overlap</li>
+        <li><strong>Testability</strong> — matcher runs in Node via <code>npx tsx</code>, no browser required</li>
+      </ul>
+
+      <div class="callout success">
+        <strong>Phase 13 completes the international story</strong>
+        Lumière now serves 7 languages with a Smart Assistant that speaks them all — and it does so with zero external dependencies, zero downloads, and zero cost. Two features, one architecture, one commit.
+      </div>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-12-menu-about.html">← Phase 12 (Menu EN + About)</a>
+      <span class="center">Phase 13 of 13</span>
+      <span class="disabled">Roadmap Continues →</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
