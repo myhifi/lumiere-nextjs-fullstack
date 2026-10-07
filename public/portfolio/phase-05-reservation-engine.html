@@ -532,7 +532,6 @@ return a.reservations.length - b.reservations.length;</code></pre>
 📋 السيناريو 5: طاولتان بنفس السعة، إحداهما محجوزة
    🎯 النتيجة: طاولة رقم 5                    ← fewest-reservations tiebreak ✅</code></pre>
       <p><strong>All 5 rules verified.</strong> Any regression in future edits will produce a mismatch here.</p>
-      <div class="screenshot">Screenshot: test-assignment.ts terminal output with all 5 scenarios</div>
     </section>
 
     <section id="formfield">
@@ -675,7 +674,6 @@ export default function ReservePage() {
   );
 }</code></pre>
       <p><strong>Why this file is a Server Component:</strong> The page shell (headers, wrapper) is static — no state, no events. Only <code>&lt;ReservationForm /&gt;</code> needs to be Client. <strong>Result:</strong> The page's HTML ships instantly; only the form's JS hydrates.</p>
-      <div class="screenshot">Screenshot: /reserve page with elegant form and Arabic labels</div>
     </section>
 
     <section id="zod">
@@ -764,7 +762,6 @@ export const reservationSchema = z.object({
 ✅ ملاحظات فارغة (حقل اختياري)
    ✓ نجح التحقق</code></pre>
       <p><strong>Note:</strong> <code>✅</code> in this output means "test behaved as expected" — not "data passed". Both valid and invalid inputs return <code>✅</code> when they produce the expected verdict.</p>
-      <div class="screenshot">Screenshot: test-validation.ts terminal output with all 7 scenarios</div>
     </section>
 
     <section id="action">
@@ -932,7 +929,6 @@ const windowEnd = new Date(
           <tr><td>Dev log</td><td>Inspect <code>npm run dev</code> terminal</td><td><code>POST /reserve 200</code> + <code>ƒ createReservation(...)</code></td></tr>
         </tbody>
       </table>
-      <div class="screenshot">Screenshot: Success screen after /reserve submission + Prisma Studio row</div>
     </section>
 
     <section id="pitfalls">

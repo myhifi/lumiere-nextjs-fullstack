@@ -314,6 +314,11 @@
       "currency": "EGP"
     },
     "menuForm": {
+      "imageLabel": "Image (optional)",
+      "imageModeLocal": "From library",
+      "imageModeUrl": "Custom URL",
+      "imageNone": "— No image —",
+      "imagePreview": "Preview",
       "newTitle": "🍽️ New Dish",
       "editTitle": "✎ Edit: {name}",
       "newSubtitle": "Fill the data and the dish will appear in the menu immediately",

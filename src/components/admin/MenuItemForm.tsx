@@ -6,6 +6,7 @@ import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { FormField, inputClasses } from "@/components/ui/FormField";
+import { ImagePicker } from "./ImagePicker";
 import {
   createMenuItem,
   updateMenuItem,
@@ -211,22 +212,13 @@ export function MenuItemForm({ categories, initialData }: Props) {
         </FormField>
 
         <div className="md:col-span-2">
-          <FormField label={t("imageUrlLabel")}>
-            <input
-              type="url"
-              name="imageUrl"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              placeholder={t("imageUrlPlaceholder")}
-              dir="ltr"
-              className={inputClasses}
-            />
-            {fieldErrors.imageUrl && (
-              <p className="text-xs text-red-600 mt-1">
-                {fieldErrors.imageUrl[0]}
-              </p>
-            )}
-          </FormField>
+          <ImagePicker
+            value={formData.imageUrl}
+            onChange={(val) =>
+              setFormData((prev) => ({ ...prev, imageUrl: val }))
+            }
+            error={fieldErrors.imageUrl?.[0]}
+          />
         </div>
 
         <div className="md:col-span-2">

@@ -314,6 +314,11 @@
       "currency": "ج.م"
     },
     "menuForm": {
+      "imageLabel": "الصورة (اختياري)",
+      "imageModeLocal": "من المكتبة",
+      "imageModeUrl": "رابط خارجي",
+      "imageNone": "— بدون صورة —",
+      "imagePreview": "معاينة",
       "newTitle": "🍽️ إضافة طبق جديد",
       "editTitle": "✎ تعديل: {name}",
       "newSubtitle": "املأ البيانات وسيظهر الطبق في القائمة فوراً",

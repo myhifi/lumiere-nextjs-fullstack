@@ -314,6 +314,11 @@
       "currency": "EGP"
     },
     "menuForm": {
+      "imageLabel": "Immagine (opzionale)",
+      "imageModeLocal": "Dalla libreria",
+      "imageModeUrl": "URL personalizzato",
+      "imageNone": "— Nessuna immagine —",
+      "imagePreview": "Anteprima",
       "newTitle": "🍽️ Nuovo Piatto",
       "editTitle": "✎ Modifica: {name}",
       "newSubtitle": "Inserisci i dati e il piatto apparirà immediatamente nel menu",

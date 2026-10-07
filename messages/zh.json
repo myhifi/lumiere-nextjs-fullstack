@@ -314,6 +314,11 @@
 "currency": "EGP"
 },
 "menuForm": {
+"imageLabel": "图片（选填）",
+"imageModeLocal": "从图库选择",
+"imageModeUrl": "自定义链接",
+"imageNone": "— 无图片 —",
+"imagePreview": "预览",
 "newTitle": "🍽️ 新增菜品",
 "editTitle": "✎ 编辑：{name}",
 "newSubtitle": "填写数据后，菜品将立即显示在菜单中",

@@ -44,12 +44,19 @@ export function createMenuItemSchema(t: TranslateFn) {
       .positive(t("priceMustBePositive"))
       .max(10000, t("priceTooLarge")),
 
+    // Accepts: empty string | local path ("/images/x.jpg") | absolute URL (http/https)
     imageUrl: z
       .string()
       .trim()
-      .url(t("imageUrlInvalid"))
       .optional()
-      .or(z.literal("")),
+      .refine(
+        (val) =>
+          val === undefined ||
+          val === "" ||
+          val.startsWith("/images/") ||
+          /^https?:\/\/.+/.test(val),
+        { message: t("imageUrlInvalid") }
+      ),
 
     categoryId: z.string().min(1, t("categoryRequired")),
 
