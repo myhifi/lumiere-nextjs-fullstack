@@ -8,7 +8,7 @@ import type { IntentKey } from "@/lib/assistant/knowledge-base";
 // 🤖 Server Action: Ask the FAQ Assistant
 // ═══════════════════════════════════════════════════
 // Pure detection + translation lookup. No external API.
-// Response time: < 50 ms. Cost: $0.00 forever.
+// Response time: < 50 ms.
 
 export type AssistantReply = {
   intent: IntentKey | null;

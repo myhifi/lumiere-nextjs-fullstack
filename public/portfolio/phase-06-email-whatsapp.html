@@ -205,7 +205,7 @@ li { margin-bottom: 0.4rem; }
     <header class="hero">
       <div class="kicker">Phase 06 · Email + WhatsApp</div>
       <h1>Email Notifications &amp; WhatsApp Integration</h1>
-      <p class="lede">Deliver transactional emails to guests after every successful reservation and provide a one-tap WhatsApp channel for inquiries — all without requiring any paid service or credit card. Uses the Strategy Pattern for swappable providers and fail-safe delivery so email failures never break a reservation.</p>
+      <p class="lede">Deliver transactional emails to guests after every successful reservation and provide a one-tap WhatsApp channel for inquiries. Uses the Strategy Pattern for swappable providers and fail-safe delivery so email failures never break a reservation.</p>
       <div class="stack">
         <span>React Email</span><span>Resend (deferred)</span>
         <span>Console Provider</span><span>Strategy Pattern</span>
@@ -279,7 +279,6 @@ li { margin-bottom: 0.4rem; }
       <h3>Why start with console</h3>
       <ul>
         <li><strong>Zero signup required</strong> — no email address, no verification</li>
-        <li><strong>Zero credit card</strong> — absolute compliance with project constraint</li>
         <li><strong>Instant feedback</strong> — terminal shows email within milliseconds</li>
         <li><strong>Deterministic testing</strong> — email content reproducible across runs</li>
         <li><strong>Drop-in replacement</strong> — <code>Resend</code> provider added later without refactoring</li>
@@ -1028,7 +1027,7 @@ export default function RootLayout({ children }: LayoutProps&lt;"/"&gt;) {
       <h3>Engineering Outcomes</h3>
       <ul>
         <li><strong>Fail-safe email delivery</strong> — reservation saves even if email fails</li>
-        <li><strong>Zero paid services</strong> — all functionality available on free tiers</li>
+        <li><strong>Managed infrastructure</strong></li>
         <li><strong>Zero client JavaScript for WhatsApp button</strong> — Server Component</li>
         <li><strong>Portability</strong> — switching email providers requires one <code>.env</code> line</li>
         <li>Ready for Phase 7: Authentication (Auth.js + Prisma adapter)</li>

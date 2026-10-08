@@ -217,11 +217,11 @@ li { margin-bottom: 0.4rem; }
 
     <section id="overview">
       <h2><span class="num">1</span> Overview</h2>
-      <p><strong>Goal:</strong> Deploy the complete Lumière application — database, backend, frontend, and authentication — to a public URL with HTTPS, using only free-tier services and zero credit card requirements.</p>
+      <p><strong>Goal:</strong> Deploy the complete Lumière application — database, backend, frontend, and authentication — to a public URL with HTTPS.</p>
       <h3>Deliverables</h3>
       <ol>
         <li><strong>Git repository</strong> initialized with a clean <code>.gitignore</code> and committed to GitHub.</li>
-        <li><strong>Neon PostgreSQL database</strong> provisioned on the free tier with a separate <code>lumiere_db</code> inside the existing project.</li>
+        <li><strong>Neon PostgreSQL database</strong> provisioned a separate <code>lumiere_db</code> inside the existing project.</li>
         <li><strong>SQLite → PostgreSQL migration</strong> with updated Prisma schema and regenerated migrations.</li>
         <li><strong>Vercel deployment</strong> connected to the GitHub repository with auto-deploy on every push.</li>
         <li><strong>Environment variables</strong> configured for <code>DATABASE_URL</code>, <code>DIRECT_URL</code>, <code>AUTH_SECRET</code>, and <code>EMAIL_PROVIDER</code>.</li>
@@ -256,14 +256,12 @@ li { margin-bottom: 0.4rem; }
 
     <section id="stack">
       <h2><span class="num">3</span> The Three Pillars</h2>
-      <p>Three free services working together to host Lumière on the internet.</p>
       <div class="pillars">
         <div class="pillar">
           <div class="pillar-logo github">🐙</div>
           <h4>GitHub</h4>
           <div class="pillar-role">Source of Truth</div>
           <p>Version control and public repository. Vercel pulls from here on every push.</p>
-          <div class="pillar-free">Free forever</div>
         </div>
         <div class="pillar">
           <div class="pillar-logo vercel">▲</div>
@@ -277,12 +275,10 @@ li { margin-bottom: 0.4rem; }
           <h4>Neon</h4>
           <div class="pillar-role">PostgreSQL Database</div>
           <p>Serverless PostgreSQL with auto-scaling compute and instant branching.</p>
-          <div class="pillar-free">Free tier</div>
         </div>
       </div>
       <div class="callout success">
-        <strong>Zero cost guarantee</strong>
-        All three services used here are 100% free without any credit card requirement. This was a hard constraint throughout the entire project.
+        <strong>Deployment architecture</strong>
       </div>
     </section>
 
@@ -393,7 +389,6 @@ git remote -v</code></pre>
       </table>
       <div class="callout info">
         <strong>Portfolio architecture benefit</strong>
-        Additional portfolio projects can reuse the same Neon project, each with its own isolated database. This preserves the free tier for years of portfolio growth.
       </div>
       <h3>Connection string anatomy</h3>
       <pre><code>postgresql://neondb_owner:YOUR_PASSWORD@
@@ -801,7 +796,6 @@ export default nextConfig;</code></pre>
       <h3>Engineering Outcomes</h3>
       <ul>
         <li><strong>Full CI/CD pipeline</strong> — one <code>git push</code> triggers build and deploy</li>
-        <li><strong>Zero cost deployment</strong> — all three pillars on free tiers without cards</li>
         <li><strong>Production-grade Prisma configuration</strong> — <code>prisma-client-js</code> with correct binary targets</li>
         <li><strong>Serverless-aware database connection</strong> — direct endpoint instead of pooler</li>
         <li><strong>Force-dynamic rendering</strong> for DB-driven pages</li>

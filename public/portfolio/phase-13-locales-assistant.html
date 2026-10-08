@@ -186,7 +186,7 @@ li { margin-bottom: 0.4rem; }
         <li><strong>Italian locale</strong> — <code>messages/it.json</code> (~400 keys) + routing + switcher + email date locale.</li>
         <li><strong>Chinese locale</strong> — <code>messages/zh.json</code> with ICU plural rules adapted for Chinese (single-form <code>other</code>).</li>
         <li><strong>Smart FAQ Assistant</strong> — a floating chat panel with 10 intents supported in 7 languages.</li>
-        <li><strong>Zero-cost engine</strong> — pure TypeScript keyword matcher, no LLM, no external API, no data download.</li>
+        <li><strong>Serverless</strong> — pure TypeScript keyword matcher, no LLM, no external API, no data download.</li>
         <li><strong>Priority tie-break</strong> — explicit policy for when two intents match a single query.</li>
         <li><strong>Duplicate-keyword dedupe</strong> — defensive fix for cross-language keyword collisions.</li>
         <li><strong>Responsive UI</strong> — bottom-left trigger above WhatsApp, panel that works on phones and desktops.</li>
@@ -196,7 +196,7 @@ li { margin-bottom: 0.4rem; }
 
     <section id="scope">
       <h2><span class="num">2</span> Two Features, One Phase</h2>
-      <p>Both features share the same release cycle, and their paths converge on the same underlying principle: <strong>the network boundary is a cost you pay for no reason when the answer is already in your codebase</strong>.</p>
+      <p>Both features share the same release cycle, and their paths converge on the same underlying principle: <strong>Direct server-side data access</strong>.</p>
       <div class="callout info">
         <strong>The shared principle</strong>
         <ul style="margin-top:0.5rem;margin-bottom:0">
@@ -383,18 +383,15 @@ npm run dev</code></pre>
       <table>
         <thead><tr><th>Option</th><th>Why it doesn't fit</th></tr></thead>
         <tbody>
-          <tr><td><strong>OpenAI / Anthropic API</strong></td><td>Paid only — requires a credit card even for the free tier. Violates the project's hard constraint.</td></tr>
-          <tr><td><strong>Vercel AI SDK + free tier</strong></td><td>The free tiers of LLM providers require card verification.</td></tr>
           <tr><td><strong>WebLLM (Llama/Phi)</strong></td><td>1-2 GB download on first visit. Kills mobile users immediately.</td></tr>
           <tr><td><strong>Transformers.js</strong></td><td>30-150 MB download, unreliable on mobile Safari (WebGL throttling).</td></tr>
-          <tr><td><strong>Self-hosted model</strong></td><td>Not viable on Vercel's free tier (no GPU, memory limits).</td></tr>
         </tbody>
       </table>
       <div class="callout success">
         <strong>The actual winner</strong>
-        A <strong>pure TypeScript intent matcher</strong> — ~200 lines, zero dependencies, zero download, sub-50 ms response, works offline, works on every device, costs $0.00 forever.
+        A <strong>pure TypeScript intent matcher</strong> — ~200 lines, zero dependencies, zero download, sub-50 ms response, works offline, works on every device.
       </div>
-      <p><strong>Is it "real AI"?</strong> No — and that's the point. It doesn't pretend to. It's a well-engineered <em>information retrieval system</em> — the same class of algorithm used by search autocomplete, airline FAQs, and IVR phone menus. For a restaurant FAQ, it delivers the same practical value as an LLM would, at 1/1000th the cost.</p>
+      <p><strong>Is it "real AI"?</strong> No — and that's the point. It doesn't pretend to. It's a well-engineered <em>information retrieval system</em>.</p>
       <p><strong>For a portfolio:</strong> Interviewers consistently rate "built a system" higher than "wrapped an API". This feature demonstrates algorithmic thinking — normalization, scoring, priority, tie-breaks — not prompt engineering.</p>
     </section>
 
@@ -879,7 +876,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <ul>
         <li><strong>Proven scalability</strong> — the i18n architecture absorbed 2 additional locales without a single code path change</li>
         <li><strong>Portfolio-grade algorithmic feature</strong> — a real system, not an API wrapper</li>
-        <li><strong>Zero-cost, zero-download, offline-capable</strong> — enforced by design, not by promise</li>
+        <li><strong>Zero-download, offline-capable</strong> — enforced by design, not by promise</li>
         <li><strong>Priority as code</strong> — policy explicit and reviewable, not implicit in iteration order</li>
         <li><strong>Defensive deduplication</strong> — prevents a whole class of future bugs from cross-language keyword overlap</li>
         <li><strong>Testability</strong> — matcher runs in Node via <code>npx tsx</code>, no browser required</li>
@@ -887,7 +884,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <div class="callout success">
         <strong>Phase 13 completes the international story</strong>
-        Lumière now serves 7 languages with a Smart Assistant that speaks them all — and it does so with zero external dependencies, zero downloads, and zero cost. Two features, one architecture, one commit.
+        Lumière now serves 7 languages with a Smart Assistant that speaks them all — and it does so with zero external dependencies, zero downloads. Two features, one architecture, one commit.
       </div>
     </section>
 

@@ -199,7 +199,7 @@ li { margin-bottom: 0.4rem; }
 
     <section id="overview">
       <h2><span class="num">1</span> Overview</h2>
-      <p><strong>Goal:</strong> Protect the admin dashboard behind a real login system that requires zero external services, zero paid tiers, and zero credit cards.</p>
+      <p><strong>Goal:</strong> Protect the admin dashboard behind a real login system that requires zero external services.</p>
       <h3>Deliverables</h3>
       <ol>
         <li><code>User</code> model in <code>schema.prisma</code> with <code>email</code>, <code>passwordHash</code>, <code>role</code>, <code>isActive</code>.</li>
@@ -227,11 +227,10 @@ li { margin-bottom: 0.4rem; }
         </tbody>
       </table>
       <div class="callout success">
-        <strong>Zero cost guarantees</strong>
+        <strong>Deployment architecture</strong>
         <ul style="margin:0.5rem 0 0">
           <li>No Google Cloud console setup.</li>
           <li>No Resend API key required (for login).</li>
-          <li>No credit card anywhere.</li>
           <li>No <code>Account</code>, <code>Session</code>, or <code>VerificationToken</code> tables.</li>
         </ul>
       </div>
@@ -414,7 +413,7 @@ declare module "next-auth/jwt" {
       <h3>Salt is embedded in the hash</h3>
       <pre><code>$2b$10$NvjaWGsGkR9bq54pMMeZauWy3UIgHPYsTdwwX/mf6LqCyB9YauCW
  │   │  └─── 22-char salt + hash payload
- │   └────── cost factor (10)
+ │   └────── cost factor
  └────────── algorithm version (2b)</code></pre>
 
       <h3>Verification flow</h3>
@@ -1081,7 +1080,7 @@ main()
       <h3>Engineering Outcomes</h3>
       <ul>
         <li><strong>Zero external auth services</strong> — no Google, GitHub, Auth0, or paid tiers</li>
-        <li><strong>Zero credit card</strong> — pure local bcrypt + JWT</li>
+        <li><strong>pure local bcrypt + JWT</strong></li>
         <li><strong>Edge + Node runtime separation</strong> — Prisma kept out of Edge bundles</li>
         <li><strong>Role-based access ready</strong> — <code>ADMIN</code> vs <code>STAFF</code> foundation laid</li>
         <li><strong>Fail-safe login</strong> — <code>lastLoginAt</code> update cannot block authentication</li>

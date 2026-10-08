@@ -187,7 +187,7 @@ li { margin-bottom: 0.4rem; }
       <div class="kicker">Phase 11 · Internationalization</div>
       <div class="flag-row">🇪🇬 🇬🇧 🇫🇷 🇩🇪 🇪🇸</div>
       <h1>Five Locales, One Codebase</h1>
-      <p class="lede">Transform a single-language Arabic application into a fully internationalized product supporting Arabic, English, French, German, and Spanish — with automatic RTL/LTR direction switching, locale-prefixed routing, translated emails, localized error messages, and per-locale SEO. Zero paid services, zero browser extensions, and full type-safety preserved across all 5 locales.</p>
+      <p class="lede">Transform a single-language Arabic application into a fully internationalized product supporting Arabic, English, French, German, and Spanish — with automatic RTL/LTR direction switching, locale-prefixed routing, translated emails, localized error messages, and per-locale SEO. managed infrastructure, zero browser extensions, and full type-safety preserved across all 5 locales.</p>
       <div class="stack">
         <span>next-intl v4</span><span>App Router [locale]</span>
         <span>ICU Messages</span><span>RTL/LTR</span>
@@ -236,7 +236,7 @@ li { margin-bottom: 0.4rem; }
       <div class="layers">
         <div class="layer client"><strong>CLIENT</strong> · <code>NextIntlClientProvider</code> wraps the app — exposes messages to the few Client Components that need them</div>
         <div class="layer edge"><strong>EDGE</strong> · <code>next-intl/middleware</code> detects locale from URL prefix and sets cookies before any request reaches the app</div>
-        <div class="layer node"><strong>NODE</strong> · <code>getTranslations()</code> in Server Components / Server Actions — no serialization, no client bundle cost</div>
+        <div class="layer node"><strong>NODE</strong> · <code>getTranslations()</code> in Server Components / Server Actions — no serialization</div>
       </div>
     </section>
 
@@ -421,7 +421,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
         <li><strong><code>getRequestConfig</code></strong> — called once per request by next-intl. Returns the locale and messages for that request.</li>
         <li><strong><code>hasLocale</code></strong> — type-safe runtime check. If the URL contains <code>/xx/</code>, we fall back to Arabic rather than crashing.</li>
         <li><strong>Dynamic import</strong> — only the current locale's JSON is loaded. The other 4 stay out of the bundle.</li>
-        <li><strong>Zero client cost</strong> — this runs on the server. Messages are streamed as props to <code>NextIntlClientProvider</code>, then reused by Client Components.</li>
+        <li><strong>Serverless</strong> — this runs on the server. Messages are streamed as props to <code>NextIntlClientProvider</code>, then reused by Client Components.</li>
       </ul>
     </section>
 
@@ -1210,12 +1210,12 @@ disallow.push("/api/");</code></pre>
         <li><strong>Edge-safe + Node-safe separation</strong> — Prisma kept out of the Edge bundle</li>
         <li><strong>Full SEO for 5 languages</strong> — sitemap + hreflang + robots per locale</li>
         <li><strong>Idempotent DB migration</strong> — <code>update-categories.ts</code> safe to run any number of times</li>
-        <li><strong>Zero cost</strong> — next-intl is open-source, flagcdn is free, no translation service needed</li>
+        <li><strong>Serverless</strong> — next-intl is open-source, flagcdn is free, no translation service needed</li>
       </ul>
 
       <div class="callout success">
         <strong>Phase 11 ships a genuinely multilingual product</strong>
-        Lumière now serves a first-class experience to Arabic, English, French, German, and Spanish guests — matching the quality bar of commercial restaurant chains at zero additional infrastructure cost.
+        Lumière now serves a first-class experience to Arabic, English, French, German, and Spanish guests — matching the quality bar of commercial restaurant chains.
       </div>
     </section>
 

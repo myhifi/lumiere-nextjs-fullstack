@@ -1,6 +1,6 @@
 # 🍽️ Lumière Restaurant — Full-Stack Next.js Application
 
-> A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, email notifications, and About page. Deployed on Vercel with Neon PostgreSQL. Full RTL/LTR support, zero paid services, zero credit card.
+> A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, email notifications, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
 [![Portfolio Phases](https://img.shields.io/badge/Portfolio-12%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html)
@@ -41,12 +41,11 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - The user types a question in any language (`what time do you open?`, `إيه مواعيد العمل؟`, `营业时间是什么？`)
 - A pure TypeScript **intent matcher** scores the query against 10 keyword lists (one per intent)
 - The winning intent's response is pulled from the current locale's translation file
-- The whole thing runs server-side as a Next.js **Server Action** — no LLM, no third-party service, no runtime cost
+- The whole thing runs server-side as a Next.js **Server Action** — no LLM, no third-party service
 
 **Coverage:** `hours` · `location` · `parking` · `reservation` · `cancel` · `menu` · `allergies` · `vegetarian` · `halal` · `events`
 
-**Why not an LLM:** LLM providers require either API keys with usage limits, paid tiers, or credit cards — all forbidden by the project's free-only constraint. A keyword matcher delivers 90% of the value at 0% of the cost, and ships in ~200 lines of code.
-
+**Why not an LLM:** The Assistant is self-contained and deterministic — no API keys, no rate limits, no third-party dependency. A keyword matcher delivers fast, predictable answers in ~200 lines of code, and stays under 50 ms.
 ---
 
 ## 📸 Screenshots
@@ -159,7 +158,7 @@ Git push → GitHub → Vercel Build → Production URL
 - **Locale-prefixed routing** — every URL carries its language (`/en/menu`, `/ar/menu`)
 - **Bilingual content strategy** — Arabic + English in the DB, with graceful fallback for FR/DE/ES
 - **Schema factories** — Zod schemas receive a translator and return localized errors
-- **Zero-API assistant** — Smart FAQ uses a pure TypeScript intent matcher, not an LLM. Zero downloads, zero cost, sub-50ms responses, works in all 7 locales.
+- **Zero-API assistant** — Smart FAQ uses a pure TypeScript intent matcher, not an LLM. Zero downloads, sub-50ms responses, works in all 7 locales.
 
 ---
 ## 📚 Project Documentation
@@ -192,7 +191,7 @@ This project was built in **13 documented phases**, each with a self-contained H
 
 - Node.js 18.17+ (recommended: 20+)
 - npm 9+
-- A PostgreSQL database (Neon free tier recommended)
+- A PostgreSQL database (Neon recommended)
 
 ### Installation
 
@@ -343,9 +342,8 @@ This project is licensed under the MIT License.
 ## 🙏 Acknowledgments
 
 - Built as a portfolio project to demonstrate full-stack Next.js proficiency
-- Deployed entirely on free tiers: **Vercel**, **Neon**, **GitHub**
-- Zero external paid services, zero credit card requirements
-- Zero external AI APIs — the Smart FAQ Assistant runs on a pure TypeScript intent matcher
+- Deployed on **Vercel** with **Neon PostgreSQL** and **GitHub**
+- Smart FAQ Assistant runs on a self-contained TypeScript intent matcher — no external AI APIs
 - Food photography from **Unsplash**
 - Language flags from **flagcdn.com**
 
