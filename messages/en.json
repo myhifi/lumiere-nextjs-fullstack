@@ -150,6 +150,10 @@
       "description": "Discover the story of Lumière — a restaurant in the heart of Cairo blending tradition and modernity, led by Chef Mohamed Yehia."
     }
   },
+  "Metadata": {
+    "siteTitle": "Lumière | Fine Dining Restaurant",
+    "siteDescription": "Lumière Restaurant — an exceptional dining experience with a modern touch. Browse our menu, reserve your table, and enjoy the finest Levantine dishes in an elegant atmosphere."
+  },
   "Login": {
     "title": "Sign In",
     "metaDescription": "Sign in to the Lumière admin panel — for staff only.",

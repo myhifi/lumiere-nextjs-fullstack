@@ -150,6 +150,10 @@
       "description": "Entdecken Sie die Geschichte von Lumière — einem Restaurant im Herzen von Kairo, das Tradition und Moderne verbindet, geführt von Chef Mohamed Yehia."
     }
   },
+  "Metadata": {
+    "siteTitle": "Lumière | Fine-Dining-Restaurant",
+    "siteDescription": "Restaurant Lumière — ein außergewöhnliches kulinarisches Erlebnis mit modernem Touch. Stöbern Sie in unserer Speisekarte, reservieren Sie Ihren Tisch und genießen Sie die feinsten levantinischen Gerichte in elegantem Ambiente."
+  },  
   "Login": {
     "title": "Anmelden",
     "metaDescription": "Melden Sie sich beim Lumière-Verwaltungsbereich an — nur für Personal.",

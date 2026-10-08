@@ -150,6 +150,10 @@
       "description": "Scopri la storia di Lumière — un ristorante nel cuore del Cairo che unisce tradizione e modernità, guidato dallo Chef Mohamed Yehia."
     }
   },
+  "Metadata": {
+    "siteTitle": "Lumière | Ristorante di Alta Cucina",
+    "siteDescription": "Ristorante Lumière — un'esperienza gastronomica eccezionale con un tocco di modernità. Sfoglia il nostro menu, prenota il tuo tavolo e gusta i migliori piatti levantini in un'atmosfera elegante."
+  },  
     "Login": {
     "title": "Accedi",
     "metaDescription": "Accedi al pannello di amministrazione Lumière — solo per il personale.",
