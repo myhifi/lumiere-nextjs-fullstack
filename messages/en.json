@@ -242,6 +242,7 @@
       "reviews": "Reviews",
       "auditLog": "Audit Log",
       "users": "Staff",
+      "settings": "Settings",
       "viewSite": "View Site",
       "logout": "Sign Out",
       "loggingOut": "Signing out...",
@@ -529,7 +530,20 @@
       "entityUser": "Staff",
       "entityReservation": "Reservation",
       "entityReview": "Review",
-      "noChanges": "No changes detected"
+      "noChanges": "No changes detected",
+      "entitySetting": "Setting"
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage restaurant contact information",
+      "whatsappLabel": "WhatsApp Number",
+      "whatsappPlaceholder": "+20 100 123 4567",
+      "whatsappHint": "International format with country code. Spaces, dashes, and + are accepted and stripped automatically.",
+      "previewLabel": "Link Preview",
+      "previewMessage": "Hello Lumière! I'd like to inquire about reserving a table.",
+      "save": "Save Changes",
+      "saving": "Saving...",
+      "saved": "✓ Saved successfully"
     },
     "analytics": {
       "title": "📊 Analytics",
@@ -591,7 +605,7 @@
       "reviewerEmailInvalid": "Invalid email address",
       "commentTooShort": "Comment is too short (minimum 10 characters)",
       "commentTooLong": "Comment is too long (maximum 500 characters)",
-            "itemNameTooShort": "Dish name is too short",
+      "itemNameTooShort": "Dish name is too short",
       "itemNameTooLong": "Dish name is too long (maximum 80 characters)",
       "slugTooShort": "Slug is too short",
       "slugTooLong": "Slug is too long",
@@ -619,7 +633,10 @@
       "passwordTooLong": "Password is too long (maximum 100 characters)",
       "userNameTooShort": "Name is too short",
       "userNameTooLong": "Name is too long (maximum 80 characters)",
-      "roleInvalid": "Role is invalid"
+      "roleInvalid": "Role is invalid",
+      "whatsappNumberRequired": "WhatsApp number is required",
+      "whatsappNumberInvalid": "Invalid WhatsApp number (must contain 10-15 digits)",
+      "whatsappNumberInvalidChars": "WhatsApp number contains invalid characters"
     }
   }
 }

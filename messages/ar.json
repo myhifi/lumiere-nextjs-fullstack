@@ -25,7 +25,7 @@
       "subtitle": "احجز طاولتك الآن واستمتع بتجربة طعام لا تُنسى",
       "button": "احجز طاولتك"
     },
-        "Location": {
+    "Location": {
       "kicker": "زورونا",
       "title": "موقعنا",
       "subtitle": "نتشرف بزيارتك في قلب القاهرة",
@@ -187,7 +187,7 @@
     "events": "للمناسبات الخاصة أو المجموعات أكثر من ١٠ أشخاص، تواصل معنا عبر واتساب لترتيب مخصص."
   }
 },
-    "ItemDetail": {
+  "ItemDetail": {
     "backToMenu": "العودة إلى القائمة",
     "currency": "ج.م",
     "reserveTable": "احجز طاولة",
@@ -242,6 +242,7 @@
       "reviews": "التقييمات",
       "auditLog": "سجل الإجراءات",
       "users": "الموظفون",
+      "settings": "الإعدادات",
       "viewSite": "عرض الموقع",
       "logout": "تسجيل الخروج",
       "loggingOut": "جاري الخروج...",
@@ -354,7 +355,7 @@
       "create": "إضافة الطبق",
       "saving": "جاري الحفظ..."
     },
-        "categories": {
+    "categories": {
       "title": "📂 إدارة التصنيفات",
       "count": "{count} تصنيف",
       "newItem": "+ تصنيف جديد",
@@ -390,7 +391,7 @@
       "create": "إضافة التصنيف",
       "saving": "جاري الحفظ..."
     },
-        "tables": {
+    "tables": {
       "title": "🪑 إدارة الطاولات",
       "summary": "{active} من {total} نشطة · سعة إجمالية {capacity} كرسي",
       "newItem": "+ طاولة جديدة",
@@ -433,7 +434,7 @@
       "create": "إضافة الطاولة",
       "saving": "جاري الحفظ..."
     },
-        "users": {
+    "users": {
       "title": "👥 إدارة الموظفين",
       "summary": "{users} مستخدم · {admins} مدير نشط",
       "newItem": "+ موظف جديد",
@@ -476,7 +477,7 @@
       "create": "إضافة الموظف",
       "saving": "جاري الحفظ..."
     },
-        "reviews": {
+    "reviews": {
       "title": "⭐ إدارة التقييمات",
       "count": "{count} تقييم",
       "countFiltered": " بهذه الحالة",
@@ -496,7 +497,7 @@
       "delete": "🗑 حذف",
       "deleteConfirm": "حذف تقييم \"{name}\" نهائياً؟"
     },
-        "auditLog": {
+    "auditLog": {
       "title": "📋 سجل الإجراءات",
       "count": "{count} إجراء",
       "countFiltered": " (بعد التصفية)",
@@ -529,8 +530,21 @@
       "entityUser": "موظف",
       "entityReservation": "حجز",
       "entityReview": "تقييم",
-      "noChanges": "لا تغييرات مُلاحَظة"
+      "noChanges": "لا تغييرات مُلاحَظة",
+      "entitySetting": "إعداد"
     },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إدارة معلومات التواصل مع المطعم",
+    "whatsappLabel": "رقم واتساب",
+    "whatsappPlaceholder": "+20 100 123 4567",
+    "whatsappHint": "بصيغة دولية مع رمز الدولة. المسافات والشرطات و + مقبولة وستُحذف تلقائياً.",
+    "previewLabel": "معاينة الرابط",
+    "previewMessage": "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة.",
+    "save": "حفظ التعديلات",
+    "saving": "جاري الحفظ...",
+    "saved": "✓ تم الحفظ بنجاح"
+  },    
     "analytics": {
       "title": "📊 التحليلات",
       "subtitle": "نظرة بصرية على توزيع القائمة والأسعار",
@@ -591,7 +605,7 @@
       "reviewerEmailInvalid": "البريد الإلكتروني غير صحيح",
       "commentTooShort": "التعليق قصير جداً (10 أحرف على الأقل)",
       "commentTooLong": "التعليق طويل جداً (500 حرف كحد أقصى)",
-            "itemNameTooShort": "اسم الطبق قصير جداً",
+      "itemNameTooShort": "اسم الطبق قصير جداً",
       "itemNameTooLong": "اسم الطبق طويل جداً (80 حرفاً كحد أقصى)",
       "slugTooShort": "المعرّف قصير جداً",
       "slugTooLong": "المعرّف طويل جداً",
@@ -619,7 +633,10 @@
       "passwordTooLong": "كلمة السر طويلة جداً (100 حرف كحد أقصى)",
       "userNameTooShort": "الاسم قصير جداً",
       "userNameTooLong": "الاسم طويل جداً (80 حرفاً كحد أقصى)",
-      "roleInvalid": "الدور غير صحيح"
+      "roleInvalid": "الدور غير صحيح",
+      "whatsappNumberRequired": "رقم واتساب مطلوب",
+      "whatsappNumberInvalid": "رقم واتساب غير صحيح (يجب أن يحتوي على 10-15 رقماً)",
+      "whatsappNumberInvalidChars": "رقم واتساب يحتوي على رموز غير مسموحة"      
     }
   }
 }

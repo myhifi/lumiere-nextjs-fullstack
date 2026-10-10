@@ -157,6 +157,7 @@ export function AuditLogCard({ log }: AuditLogCardProps) {
     User: "entityUser",
     Reservation: "entityReservation",
     Review: "entityReview",
+    Setting: "entitySetting",
   };
 
   const actionMeta = ACTION_ICON[log.action] ?? {

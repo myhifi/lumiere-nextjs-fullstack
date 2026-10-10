@@ -18,7 +18,8 @@ export type AuditEntity =
   | "Table"
   | "User"
   | "Reservation"
-  | "Review";
+  | "Review"
+  | "Setting";
 export type AuditSeverity = "info" | "warning" | "critical";
 
 export type LogActionParams = {

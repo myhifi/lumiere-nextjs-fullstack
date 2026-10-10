@@ -187,3 +187,15 @@ model Review {
   @@index([createdAt])
   @@map("reviews")
 }
+
+// ═══════════════════════════════════════════════════
+// ⚙️ Setting — site-wide key/value settings
+// ═══════════════════════════════════════════════════
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}

@@ -1,14 +1,15 @@
 // ═══════════════════════════════════════════════════
-// 📞 معلومات التواصل مع المطعم
+// 📞 Restaurant contact constants (fallback defaults)
 // ═══════════════════════════════════════════════════
+// These values are FALLBACKS. The live WhatsApp number
+// is read from the database (see lib/services/settings.ts).
+// The other fields (email/phone/address) remain hardcoded
+// for now — promote them to `Setting` rows when needed.
 
-// ⚠️ عدّل هذه القيم بمعلوماتك الحقيقية
 export const CONTACT = {
-  // رقم واتساب بصيغة دولية بدون + أو مسافات
-  // مثال: 201001234567 (مصر)
+  // Fallback used until an admin saves a value in /admin/settings
   whatsappNumber: "201001234567",
 
-  // نص الرسالة الافتراضية عند فتح الواتساب
   whatsappDefaultMessage:
     "مرحباً Lumière! أرغب في الاستفسار عن حجز طاولة.",
 
@@ -17,8 +18,9 @@ export const CONTACT = {
   address: "القاهرة، مصر",
 } as const;
 
-// ─── مولّد رابط واتساب ───
-export function getWhatsAppLink(message?: string): string {
-  const text = encodeURIComponent(message ?? CONTACT.whatsappDefaultMessage);
-  return `https://wa.me/${CONTACT.whatsappNumber}?text=${text}`;
+// ─── Pure link builder (sync, DB-free) ───
+// Accepts a pre-normalized number (digits only) and a message.
+export function buildWhatsAppLink(number: string, message: string): string {
+  const text = encodeURIComponent(message);
+  return `https://wa.me/${number}?text=${text}`;
 }

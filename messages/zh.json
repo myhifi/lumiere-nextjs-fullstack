@@ -242,6 +242,7 @@
 "reviews": "评价管理",
 "auditLog": "审计日志",
 "users": "员工管理",
+"settings": "系统设置",
 "viewSite": "查看网站",
 "logout": "退出登录",
 "loggingOut": "正在退出...",
@@ -344,7 +345,7 @@
 "pricePlaceholder": "55",
 "categoryLabel": "所属分类",
 "imageUrlLabel": "图片 URL（选填）",
-"imageUrlPlaceholder": "[https://example.com/image.jpg](https://example.com/image.jpg)",
+"imageUrlPlaceholder": "https://example.com/image.jpg",
 "descriptionLabel": "描述（选填）",
 "descriptionPlaceholder": "菜品的简要描述...",
 "isAvailableLabel": "在菜单中显示供点选",
@@ -529,7 +530,20 @@
 "entityUser": "员工",
 "entityReservation": "预订",
 "entityReview": "评价",
-"noChanges": "未检测到变更"
+"noChanges": "未检测到变更",
+"entitySetting": "系统设置"
+},
+"settings": {
+"title": "系统设置",
+"subtitle": "管理餐厅联系方式与配置",
+"whatsappLabel": "WhatsApp 号码",
+"whatsappPlaceholder": "+20 100 123 4567",
+"whatsappHint": "带国家代码的国际格式。自动接受并去除空格、连字符和加号 (+)。",
+"previewLabel": "链接预览",
+"previewMessage": "您好 Lumière！我想咨询预订桌位事宜。",
+"save": "保存更改",
+"saving": "保存中...",
+"saved": "✓ 保存成功"
 },
 "analytics": {
 "title": "📊 统计与分析",
@@ -619,7 +633,10 @@
 "passwordTooLong": "密码过长（最多 100 个字符）",
 "userNameTooShort": "姓名过短",
 "userNameTooLong": "姓名过长（最多 80 个字符）",
-"roleInvalid": "角色无效"
+"roleInvalid": "角色无效",
+"whatsappNumberRequired": "WhatsApp 号码为必填项",
+"whatsappNumberInvalid": "无效的 WhatsApp 号码（必须包含 10-15 位数字）",
+"whatsappNumberInvalidChars": "WhatsApp 号码包含无效字符"
 }
 }
 }

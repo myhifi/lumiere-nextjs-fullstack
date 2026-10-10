@@ -242,6 +242,7 @@
       "reviews": "Opiniones",
       "auditLog": "Registro de auditoría",
       "users": "Personal",
+      "settings": "Configuración",
       "viewSite": "Ver sitio",
       "logout": "Cerrar sesión",
       "loggingOut": "Cerrando sesión...",
@@ -529,7 +530,20 @@
       "entityUser": "Personal",
       "entityReservation": "Reserva",
       "entityReview": "Opinión",
-      "noChanges": "No se detectaron cambios"
+      "noChanges": "No se detectaron cambios",
+      "entitySetting": "Configuración"
+    },
+    "settings": {
+      "title": "Configuración",
+      "subtitle": "Gestionar la información de contacto del restaurante",
+      "whatsappLabel": "Número de WhatsApp",
+      "whatsappPlaceholder": "+20 100 123 4567",
+      "whatsappHint": "Formato internacional con código de país. Los espacios, guiones y el signo + se aceptan y se eliminan automáticamente.",
+      "previewLabel": "Vista previa del enlace",
+      "previewMessage": "¡Hola Lumière! Me gustaría consultar sobre la reserva de una mesa.",
+      "save": "Guardar cambios",
+      "saving": "Guardando...",
+      "saved": "✓ Guardado con éxito"
     },
     "analytics": {
       "title": "📊 Análisis",
@@ -591,7 +605,7 @@
       "reviewerEmailInvalid": "Dirección de correo no válida",
       "commentTooShort": "El comentario es demasiado corto (mínimo 10 caracteres)",
       "commentTooLong": "El comentario es demasiado largo (máximo 500 caracteres)",
-            "itemNameTooShort": "El nombre del plato es demasiado corto",
+      "itemNameTooShort": "El nombre del plato es demasiado corto",
       "itemNameTooLong": "El nombre del plato es demasiado largo (máximo 80 caracteres)",
       "slugTooShort": "El identificador es demasiado corto",
       "slugTooLong": "El identificador es demasiado largo",
@@ -619,7 +633,10 @@
       "passwordTooLong": "La contraseña es demasiado larga (máximo 100 caracteres)",
       "userNameTooShort": "El nombre es demasiado corto",
       "userNameTooLong": "El nombre es demasiado largo (máximo 80 caracteres)",
-      "roleInvalid": "El rol no es válido"
+      "roleInvalid": "El rol no es válido",
+      "whatsappNumberRequired": "El número de WhatsApp es obligatorio",
+      "whatsappNumberInvalid": "Número de WhatsApp no válido (debe contener entre 10 y 15 dígitos)",
+      "whatsappNumberInvalidChars": "El número de WhatsApp contiene caracteres no válidos"
     }
   }
 }

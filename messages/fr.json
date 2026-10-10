@@ -242,6 +242,7 @@
       "reviews": "Avis",
       "auditLog": "Journal d'audit",
       "users": "Personnel",
+      "settings": "Paramètres",
       "viewSite": "Voir le site",
       "logout": "Se déconnecter",
       "loggingOut": "Déconnexion...",
@@ -529,7 +530,20 @@
       "entityUser": "Personnel",
       "entityReservation": "Réservation",
       "entityReview": "Avis",
-      "noChanges": "Aucun changement détecté"
+      "noChanges": "Aucun changement détecté",
+      "entitySetting": "Paramètre"
+    },
+    "settings": {
+      "title": "Paramètres",
+      "subtitle": "Gérer les informations de contact du restaurant",
+      "whatsappLabel": "Numéro WhatsApp",
+      "whatsappPlaceholder": "+20 100 123 4567",
+      "whatsappHint": "Format international avec indicatif pays. Les espaces, tirets et + sont acceptés et supprimés automatiquement.",
+      "previewLabel": "Aperçu du lien",
+      "previewMessage": "Bonjour Lumière ! Je souhaite me renseigner sur la réservation d'une table.",
+      "save": "Enregistrer les modifications",
+      "saving": "Enregistrement...",
+      "saved": "✓ Enregistré avec succès"
     },
     "analytics": {
       "title": "📊 Analyses",
@@ -619,7 +633,10 @@
       "passwordTooLong": "Le mot de passe est trop long (maximum 100 caractères)",
       "userNameTooShort": "Le nom est trop court",
       "userNameTooLong": "Le nom est trop long (maximum 80 caractères)",
-      "roleInvalid": "Le rôle est invalide"
+      "roleInvalid": "Le rôle est invalide",
+      "whatsappNumberRequired": "Le numéro WhatsApp est requis",
+      "whatsappNumberInvalid": "Numéro WhatsApp invalide (doit contenir de 10 à 15 chiffres)",
+      "whatsappNumberInvalidChars": "Le numéro WhatsApp contient des caractères invalides"
     }
   }
 }

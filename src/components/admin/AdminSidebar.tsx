@@ -23,7 +23,8 @@ const commonLinks = [
 ] as const;
 
 const adminOnlyLinks = [
-  { href: "/admin/users", labelKey: "users", icon: "👥" },
+  { href: "/admin/users",    labelKey: "users",    icon: "👥" },
+  { href: "/admin/settings", labelKey: "settings", icon: "⚙️" },
 ] as const;
 
 type Props = {

@@ -127,7 +127,7 @@
       "title": "Die Hände hinter den Tellern",
       "chefName": "Mohamed Yehia",
       "chefRole": "Gründer & Executive Chef",
-      "bio1": "Chef Mohamed Yehia hat Jahre damit verbracht, die Balance zwischen Tradition und Innovation zu perfektionieren. Klassisch ausgebildet und von der Küche seiner Großmutter inspiriert, glaubt er, dass großartiges Kochen zu 10 % Technik und zu 90 % Aufmerksamkeit ist.",
+      "bio1": "Chef Mohamed Yehia has spent years perfecting the balance between tradition and innovation. Trained in classical technique, inspired by his grandmother's kitchen, he believes great cooking is 10% technique and 90% attention.",
       "bio2": "Seine Signatur-Philosophie: das Beste beziehen, die Zutat respektieren und ein gutes Gericht niemals überstürzen."
     },
     "Values": {
@@ -242,6 +242,7 @@
       "reviews": "Bewertungen",
       "auditLog": "Audit-Protokoll",
       "users": "Personal",
+      "settings": "Einstellungen",
       "viewSite": "Website ansehen",
       "logout": "Abmelden",
       "loggingOut": "Abmeldung läuft...",
@@ -529,7 +530,20 @@
       "entityUser": "Personal",
       "entityReservation": "Reservierung",
       "entityReview": "Bewertung",
-      "noChanges": "Keine Änderungen erkannt"
+      "noChanges": "Keine Änderungen erkannt",
+      "entitySetting": "Einstellung"
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "subtitle": "Restaurant-Kontaktinformationen verwalten",
+      "whatsappLabel": "WhatsApp-Nummer",
+      "whatsappPlaceholder": "+20 100 123 4567",
+      "whatsappHint": "Internationales Format mit Landesvorwahl. Leerzeichen, Bindestriche und + werden akzeptiert und automatisch entfernt.",
+      "previewLabel": "Link-Vorschau",
+      "previewMessage": "Hallo Lumière! Ich möchte mich über eine Tischreservierung informieren.",
+      "save": "Änderungen speichern",
+      "saving": "Speichern...",
+      "saved": "✓ Erfolgreich gespeichert"
     },
     "analytics": {
       "title": "📊 Analysen",
@@ -591,7 +605,7 @@
       "reviewerEmailInvalid": "Ungültige E-Mail-Adresse",
       "commentTooShort": "Kommentar ist zu kurz (mindestens 10 Zeichen)",
       "commentTooLong": "Kommentar ist zu lang (maximal 500 Zeichen)",
-            "itemNameTooShort": "Gerichtname ist zu kurz",
+      "itemNameTooShort": "Gerichtname ist zu kurz",
       "itemNameTooLong": "Gerichtname ist zu lang (maximal 80 Zeichen)",
       "slugTooShort": "Slug ist zu kurz",
       "slugTooLong": "Slug ist zu lang",
@@ -619,7 +633,10 @@
       "passwordTooLong": "Passwort ist zu lang (maximal 100 Zeichen)",
       "userNameTooShort": "Name ist zu kurz",
       "userNameTooLong": "Name ist zu lang (maximal 80 Zeichen)",
-      "roleInvalid": "Rolle ist ungültig"
+      "roleInvalid": "Rolle ist ungültig",
+      "whatsappNumberRequired": "WhatsApp-Nummer ist erforderlich",
+      "whatsappNumberInvalid": "Ungültige WhatsApp-Nummer (muss 10-15 Ziffern enthalten)",
+      "whatsappNumberInvalidChars": "WhatsApp-Nummer enthält ungültige Zeichen"
     }
   }
 }
