@@ -158,7 +158,7 @@ Git push → GitHub → Vercel Build → Production URL
 - **Locale-prefixed routing** — every URL carries its language (`/en/menu`, `/ar/menu`)
 - **Bilingual content strategy** — Arabic + English in the DB, with graceful fallback for FR/DE/ES
 - **Schema factories** — Zod schemas receive a translator and return localized errors
-- **Zero-API assistant** — Smart FAQ uses a pure TypeScript intent matcher, not an LLM. Zero downloads, sub-50ms responses, works in all 7 locales.
+- **Self-contained assistant** — Smart FAQ uses a pure TypeScript intent matcher. Deterministic, sub-50ms responses, works in all 7 locales.
 
 ---
 ## 📚 Project Documentation
@@ -322,6 +322,8 @@ All scripts print pass/fail for each scenario and exit with a non-zero code on f
 | `npm run db:seed` | Wipe + re-seed the database |
 | `npm run db:admin` | Create/update admin + demo accounts |
 
+---
+- Deployed on **Vercel** with **Neon PostgreSQL** and **GitHub**
 ---
 
 ## 📄 License

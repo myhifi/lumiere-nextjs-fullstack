@@ -1,0 +1,459 @@
+═══════════════════════════════════════════════════════════════
+📋 LUMIÈRE RESTAURANT — PROJECT PROGRESS LOG
+Full-Stack Next.js Application · Portfolio Project
+═══════════════════════════════════════════════════════════════
+
+Author:  Mohamed Yehia (myhifi)
+Started: September 2026
+Status:  ✅ ALL PHASES COMPLETE — Ready for video recording
+
+═══════════════════════════════════════════════════════════════
+📌 PROJECT LINKS
+═══════════════════════════════════════════════════════════════
+
+Live URL:   https://lumiere-nextjs-fullstack.vercel.app
+GitHub:     https://github.com/myhifi/lumiere-nextjs-fullstack
+Portfolio:  https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-13-locales-assistant.html
+
+Demo Login: demo@lumiere.com / Demo2026!
+Production: admin@lumiere.com (private, not published)
+
+═══════════════════════════════════════════════════════════════
+📌 TECH STACK
+═══════════════════════════════════════════════════════════════
+
+Framework:       Next.js 16.3.5 (App Router)
+Language:        TypeScript 5
+Database:        Neon PostgreSQL 17
+ORM:             Prisma 6.19.3
+Validation:      Zod 4
+Styling:         Tailwind CSS 4
+Auth:            Auth.js v5 (NextAuth) + bcryptjs
+i18n:            next-intl v4 (7 locales)
+Email:           React Email + Console Provider
+Hosting:         Vercel
+Source Control:  GitHub
+CI/CD:           GitHub Actions
+
+═══════════════════════════════════════════════════════════════
+📅 CHRONOLOGICAL LOG
+═══════════════════════════════════════════════════════════════
+
+───────────────────────────────────────────────────────────────
+2026-09-15 — PHASE 1: FOUNDATION
+───────────────────────────────────────────────────────────────
+✅ Node.js v24.12.0 + npm 11.15.0 verified
+✅ Next.js 16.3.5 scaffolded (TypeScript + Tailwind + App Router + src/)
+✅ Prisma pinned to stable v6.19.3 (downgraded from RC 8)
+✅ prisma/schema.prisma + .env + prisma.config.ts created
+✅ npx prisma validate → valid
+✅ Dev server verified on localhost:3000
+
+LESSONS:
+- Prisma RC 8 creates unwanted AI-agent folders (.claude, .cursor, etc.)
+- Pin major versions on live projects — never jump majors silently
+- `.env` secrets must be in .gitignore from day one
+
+───────────────────────────────────────────────────────────────
+2026-09-15 — PHASE 2: DATA MODELING
+───────────────────────────────────────────────────────────────
+✅ 4 Prisma models: Category, MenuItem, Table, Reservation
+✅ 2 migrations applied: init_menu_models + add_table_and_reservation
+✅ Modular seed system: prisma/data/ + prisma/seed.ts
+✅ Seeded: 4 categories, 12 menu items, 10 tables
+✅ tsx installed for running TypeScript seed scripts
+
+LESSONS:
+- tsx does NOT auto-load .env → add `import 'dotenv/config'` at top
+- Cascade delete: Category → MenuItem (yes), Table → Reservation (NO, financial records)
+- src/generated/prisma must be in .gitignore (21 MB Windows binary)
+
+───────────────────────────────────────────────────────────────
+2026-09-16 — PHASE 3: API LAYER
+───────────────────────────────────────────────────────────────
+✅ src/lib/prisma.ts — Prisma singleton (hot-reload safe)
+✅ 3 Route Handlers:
+   - GET /api/menu/categories
+   - GET /api/menu/items (?category=, ?featured=, ?limit=)
+   - GET /api/menu/items/[slug]
+✅ Consistent response envelope: { success, data } or { success, error }
+
+LESSONS:
+- SQLite path resolution bug: `.env` is relative to prisma/, but Next.js runs from project root → use path.join(process.cwd(), ...)
+- Route Handlers are for external consumers; Server Components query Prisma directly
+
+───────────────────────────────────────────────────────────────
+2026-09-17 — PHASE 4: FRONTEND (PUBLIC UI)
+───────────────────────────────────────────────────────────────
+✅ RTL Arabic layout with lang="ar" + dir="rtl" on <html>
+✅ Sticky Navbar with backdrop blur
+✅ /menu page (Server Component + Prisma query)
+✅ MenuItemCard reusable component
+✅ CategoryFilter (Client Component, URL-driven state)
+✅ /menu/[slug] detail page with dynamic routing
+✅ Custom not-found.tsx for elegant 404s
+
+LESSONS:
+- components/ MUST be outside app/ (App Router treats every folder as a URL segment)
+- Tailwind logical utilities (ms-*, me-*) auto-mirror; physical (ml-*, mr-*) do not
+- Ratio achieved: 5 Server Components : 1 Client Component
+
+───────────────────────────────────────────────────────────────
+2026-09-18 — PHASE 5: RESERVATION ENGINE
+───────────────────────────────────────────────────────────────
+✅ src/lib/services/table-assignment.ts — pure findBestTable() function
+✅ 4 business rules: capacity fit, no time overlap, ranking, active-only
+✅ Interval-overlap logic with strict < / > comparisons
+✅ Zod schema with cross-field refinements (future date, business hours)
+✅ createReservation Server Action (validate → query → assign → persist)
+✅ 5-scenario test harness passes
+✅ 7-scenario validation test passes
+
+LESSONS:
+- Pure business logic must live OUTSIDE HTTP and DB layers
+- Default duration: 90 min; capacity buffer: 3 seats
+- `input: unknown` in Server Actions forces explicit runtime validation
+
+───────────────────────────────────────────────────────────────
+2026-09-19 — PHASE 6: EMAIL + WHATSAPP
+───────────────────────────────────────────────────────────────
+✅ Email subsystem with Strategy Pattern (console ↔ resend)
+✅ RTL Arabic email template (React Email)
+✅ send.ts facade selecting provider from EMAIL_PROVIDER env var
+✅ Nested try/catch — reservation saves even if email fails
+✅ Floating WhatsApp button (Server Component, zero JS)
+
+LESSONS:
+- Email clients strip <style> and external CSS → only inline styles work
+- Fail-safe design: email failure must NOT break the reservation
+- WhatsApp wa.me URL requires no +, no spaces, just digits
+
+───────────────────────────────────────────────────────────────
+2026-09-20 — PHASE 7: AUTHENTICATION
+───────────────────────────────────────────────────────────────
+✅ User model + migration
+✅ Bcrypt utilities (hashPassword, verifyPassword, BCRYPT_ROUNDS=10)
+✅ Auth.js v5 with Credentials provider
+✅ JWT sessions (no Session table)
+✅ Split config: auth.config.ts (Edge) + auth.ts (Node)
+✅ /login page (RTL Arabic) + /api/auth/[...nextauth] handler
+✅ middleware.ts protects /admin/*
+✅ Idempotent create-admin.ts (upsert)
+
+LESSONS:
+- Edge Runtime can't load Node built-ins → split auth config into 2 files
+- User Enumeration defense: same generic error for wrong email or password
+- Fire-and-forget lastLoginAt update (must not block login)
+
+───────────────────────────────────────────────────────────────
+2026-09-21 — PHASE 8: ADMIN DASHBOARD
+───────────────────────────────────────────────────────────────
+✅ Route Groups: (public), (auth), admin
+✅ Dashboard with 4 stat cards (Promise.all for parallel queries)
+✅ Reservations CRUD with status lifecycle
+✅ Menu CRUD + auto-slugify + dual filtering
+✅ Categories CRUD with cascade protection
+✅ Tables CRUD with reservation-history protection
+✅ Users CRUD with 3 safety rules (self-role, self-disable, last-admin)
+✅ AdminSidebar with active link highlighting + logout
+✅ Reusable UI: EmptyState, LoadingSpinner, ErrorFallback
+✅ Loading + Error boundaries per route group
+
+LESSONS:
+- Defense-in-depth: 5 layers (client, edge, layout, action, business rule)
+- Every action follows: authorize → validate → mutate → revalidatePath
+- Last-admin rule makes it impossible to lock the system out
+
+───────────────────────────────────────────────────────────────
+2026-09-24 — PHASE 9: DEPLOYMENT
+───────────────────────────────────────────────────────────────
+✅ Git repo + GitHub push (104 files, 261 KB)
+✅ Neon PostgreSQL database (lumiere_db) provisioned
+✅ SQLite → PostgreSQL migration
+✅ Vercel connected with auto-deploy from GitHub
+✅ 4 environment variables configured
+✅ Live at https://lumiere-nextjs-fullstack.vercel.app
+
+5 PRODUCTION ERRORS DIAGNOSED & FIXED:
+1. Missing force-dynamic → added to DB-driven pages
+2. TypeScript declaration missing → created prisma-plugin.d.ts
+3. Turbopack vs Webpack conflict → added --webpack flag
+4. Query Engine missing → switched prisma-client → prisma-client-js
+5. Pooler failure → replaced -pooler hostname with direct endpoint
+
+LESSONS:
+- Vercel Serverless requires direct DB endpoint (not PgBouncer pooler)
+- `prisma-client-js` outputs to node_modules (auto-bundled); `prisma-client` does not
+- Always verify .env is gitignored before first commit
+
+───────────────────────────────────────────────────────────────
+2026-09-25 — PHASE 10: POLISHING (PART 1: INFRASTRUCTURE)
+───────────────────────────────────────────────────────────────
+✅ Global SEO metadata + viewport configuration
+✅ Dynamic OG image (ImageResponse from next/og)
+✅ Auto-generated sitemap.xml + robots.txt
+✅ Per-page metadata (title, description, OG)
+✅ Professional README with badges + screenshots
+✅ Dedicated demo@lumiere.com account + warning banner
+✅ middleware.ts → proxy.ts migration
+✅ GitHub Actions CI (5 iterations to green)
+✅ CI passing badge in README
+
+LESSONS (CI):
+- `npm ci --ignore-scripts` to defer prisma generate
+- Pass DATABASE_URL to prisma generate step
+- Replace LayoutProps<"/"> with React.ReactNode (CI has no generated types)
+- Upgrade actions/checkout@v4 → @v5, actions/setup-node@v4 → @v5
+
+───────────────────────────────────────────────────────────────
+2026-09-26 — PHASE 10: POLISHING (PART 2: VISUALS)
+───────────────────────────────────────────────────────────────
+✅ 12 real food images from Unsplash CDN
+✅ Shimmer skeleton + fade-in animation
+✅ 11 curated screenshots (public, admin, docs)
+✅ Google Maps embedded location section
+✅ Add-to-Google-Calendar button in confirmation email
+✅ Interactive analytics dashboard with Recharts
+✅ Custom legend for Arabic donut charts
+
+LESSONS:
+- Shimmer must be on isolated z-0 layer BEHIND the image
+- Recharts default labels overlap in Arabic → use custom legend
+- Add src/.../screenshots/ to README for visual trust signals
+
+───────────────────────────────────────────────────────────────
+2026-09-26 — FEATURE: AUDIT LOG
+───────────────────────────────────────────────────────────────
+✅ AuditLog model + migration
+✅ logAction() service (fail-safe, never throws)
+✅ Wired into every Server Action
+✅ /admin/audit-log page with severity + entity filters
+✅ Pagination + before/after diffs
+
+LESSONS:
+- Audit log must NOT have FK to User (survives user deletion)
+- Store userName as snapshot at action time
+- Severity levels: info, warning, critical
+
+───────────────────────────────────────────────────────────────
+2026-09-27 — FEATURE: CUSTOMER REVIEWS
+───────────────────────────────────────────────────────────────
+✅ Review model + migration
+✅ createReview (client, no auth) + updateReviewStatus + deleteReview (admin)
+✅ /review page with StarRatingInput
+✅ ReviewsSection on homepage
+✅ /admin/reviews moderation
+✅ 24-hour duplicate prevention per email
+
+LESSONS:
+- Server Action can be public (no auth) for customer submissions
+- Add 24-hour rate limit to prevent review spam
+- Star rating errors use result.message (not fieldErrors)
+
+───────────────────────────────────────────────────────────────
+2026-09-29 — PHASE 11: i18n (5 LOCALES)
+───────────────────────────────────────────────────────────────
+✅ next-intl v4 installed
+✅ 5 translation files: ar, en, fr, de, es
+✅ [locale] segment added to app/ (20+ routes moved)
+✅ Split auth config for Edge + Node (again, preserved)
+✅ LanguageSwitcher with real flags (flagcdn.com)
+✅ Category nameEn migration + getLocalizedName() helper
+✅ 6 Zod schemas converted to factories: createXxxSchema(t)
+✅ 6 Server Actions updated with tError() helper
+✅ Translated email templates (5 locales)
+✅ Sitemap rebuilt → 75 URLs (15 × 5 locales)
+✅ Robots rebuilt → 10 admin rules × 5 locales
+✅ Fixed 11 real i18n bugs
+
+NOTABLE BUGS FIXED:
+- not-found async → 200 instead of 404 → client-child pattern
+- getTranslations in tsx script → use createTranslator
+- Edge runtime can't load Prisma → kept auth.config split
+- Featured cards showed Arabic on /en → mapped with getLocalizedName
+
+LESSONS:
+- Always import Link from @/i18n/navigation (not next/link)
+- not-found.tsx must be sync + client child for translations
+- createTranslator for emails (works in any Node context)
+
+───────────────────────────────────────────────────────────────
+2026-10-02 — PHASE 12: MENU EN + ABOUT PAGE + UX
+───────────────────────────────────────────────────────────────
+✅ MenuItem nameEn + descriptionEn columns + migration
+✅ Idempotent backfill script (update-menu-items-en.ts)
+✅ Public pages updated (menu, item detail, homepage)
+✅ Admin form: 2 new optional English fields
+✅ Category dropdown localized in admin
+✅ useScrollToFirstError hook applied to all 6 forms
+✅ About page (5 sections: Hero, Story, Chef, Values, CTA)
+✅ Navbar 5th link: About
+✅ Scroll-to-top button (fade-in after 400px)
+✅ Bilingual 404 pages (Next.js + Vercel static)
+
+LESSONS:
+- Auto-scroll needs 50ms paint delay + 400ms scroll delay before focus
+- focus({ preventScroll: true }) prevents fighting the smooth scroll
+- Root 404 must include own <html>/<body> (layout is passthrough)
+
+───────────────────────────────────────────────────────────────
+2026-10-06 — PHASE 13: ITALIAN + CHINESE + SMART ASSISTANT
+───────────────────────────────────────────────────────────────
+✅ Italian locale (it.json, ~400 keys)
+✅ Chinese locale (zh.json, single plural form)
+✅ Routing updated: 5 → 7 locales
+✅ Email date locale updated (it-IT, zh-CN)
+✅ Smart FAQ Assistant:
+   - knowledge-base.ts (10 intents × 7 languages)
+   - matcher.ts (pure detectIntent function)
+   - Priority tie-break array (specific beats general)
+   - Duplicate keyword dedupe (Set<string>)
+   - actions/assistant.ts (Server Action)
+   - AssistantButton.tsx (floating chat UI)
+✅ Mounted in (public)/layout.tsx (not in admin)
+
+5 BUGS FIXED:
+1. Cannot find module './it.json' → clear .next
+2. IntentKey not exported → import from source
+3. French cancel lost to reservation → priority tie-break
+4. Spanish plural not matched → explicit plural list
+5. Duplicate keyword inflated score → Set dedupe
+
+LESSONS:
+- Adding new locale file requires .next cache clear (Webpack caches dynamic imports)
+- Priority tie-break must be explicit array, not object-key order
+- Dedupe keywords in matcher (forward-proof against future languages)
+
+───────────────────────────────────────────────────────────────
+2026-10-08 — POST-PHASE-13 FIXES & ENHANCEMENTS
+───────────────────────────────────────────────────────────────
+✅ Login page i18n (was always Arabic) → 7 locales now
+✅ Browser tab title i18n (Metadata namespace + generateMetadata)
+✅ Image Picker for menu items:
+   - scripts/generate-local-images.ts (auto-generates list)
+   - Reads public/images/ at build time
+   - Toggle between Local (dropdown) and Custom URL
+   - predev + prebuild hooks in package.json
+
+LESSONS:
+- `export const metadata` is static → use `generateMetadata()` for translations
+- Vercel Serverless can't read public/ at request time → must generate at build
+
+═══════════════════════════════════════════════════════════════
+📌 CURRENT STATE (as of 2026-10-10)
+═══════════════════════════════════════════════════════════════
+
+PROJECT STATUS:  ✅ 100% COMPLETE — Production-ready
+BUGS:            None known
+FEATURES:        All implemented
+TESTS:           All passing (tsc + build + CI)
+LOCALES:         7 (ar, en, fr, de, es, it, zh)
+DATABASE:        7 tables (categories, menu_items, tables,
+                 reservations, users, audit_logs, reviews)
+
+SEEDED DATA:
+- 4 categories
+- 12 menu items (all have nameEn + descriptionEn)
+- 10 tables
+- 1 admin + 1 demo user
+
+LIVE FEATURES WORKING:
+✅ 7-locale routing with RTL/LTR auto-switching
+✅ Smart reservation engine (interval-overlap algorithm)
+✅ Smart FAQ Assistant (10 intents × 7 languages, sub-50ms)
+✅ Complete admin dashboard (5 CRUD sections + Audit Log + Analytics)
+✅ Auth.js v5 with RBAC (ADMIN / STAFF)
+✅ Email confirmation with Add-to-Google-Calendar
+✅ WhatsApp floating button
+✅ Customer reviews with moderation
+✅ Image picker (local + external URL)
+✅ Auto-scroll to first error in all 6 forms
+✅ Scroll-to-top button
+✅ Bilingual 404 pages
+✅ 13-phase portfolio HTML documentation
+
+═══════════════════════════════════════════════════════════════
+📌 NEXT STEP
+═══════════════════════════════════════════════════════════════
+
+🎬 RECORD 80-SECOND VIDEO WALKTHROUGH
+
+Deliverable:  Showcase video for portfolio, LinkedIn, HR
+Tool:         OBS Studio on Windows 10
+Style:        English-first, then flash all 7 languages
+Duration:     ~80 seconds
+
+Plan:
+1. Pre-Recording Checklist (screen + OBS setup)
+2. OBS Studio Settings (1920×1080, 30 FPS, x264)
+3. 80-second Shot-by-Shot Script
+4. Recording Session Workflow
+5. Post-Recording Trimming
+6. Upload to YouTube (Unlisted)
+7. Add Video to README
+8. Post on LinkedIn
+
+═══════════════════════════════════════════════════════════════
+📌 SAVED TECHNICAL LESSONS (DO NOT REPEAT)
+═══════════════════════════════════════════════════════════════
+
+1. After adding new locale file:
+   Ctrl+C → Remove-Item -Recurse -Force .next → npm run dev
+
+2. npx tsc --noEmit = FINAL verdict
+   VS Code Problems = fast helper (may be wrong)
+
+3. Restart TS Server after any prisma migrate:
+   Ctrl+Shift+P → TypeScript: Restart TS Server
+
+4. MISSING_MESSAGE from next-intl:
+   Add key in all 5 files → clear .next → restart
+
+5. HTML5 native validation is English-only:
+   Add noValidate on <form> to show Zod messages
+
+6. Prisma + Vercel:
+   - prisma-client-js (not prisma-client)
+   - binaryTargets: ["native", "rhel-openssl-3.0.x"]
+   - --webpack in dev + build
+   - DATABASE_URL without -pooler
+
+7. Server Actions + i18n:
+   - getTranslations("Errors") inside action
+   - Schema Factory pattern: createXxxSchema(t)
+
+8. set-state-in-effect ESLint Rule:
+   - No useEffect with sync setState
+   - Use useState(() => initialValue) for init-only
+
+9. Metadata in layout:
+   - Use generateMetadata() for translations
+   - export const metadata = static, cannot be translated
+
+10. Image Picker Auto-Generated Pattern:
+    - scripts/generate-local-images.ts reads public/images/
+    - Runs via predev + prebuild hooks
+    - Reason: Vercel can't read public/ at request time
+
+═══════════════════════════════════════════════════════════════
+📌 POLISH BACKLOG (Future enhancements, not blocking)
+═══════════════════════════════════════════════════════════════
+
+- Real email provider (Resend) — replace console provider
+- UptimeRobot ping every 5 min (prevent Neon cold starts)
+- Custom domain (lumiere-restaurant.com)
+- Migration to EU region (Frankfurt) for Middle East latency
+- Payment gateway (Paymob / Stripe)
+- QR menu per table
+- PDF invoice generation
+- WhatsApp Business API
+- Two-Factor Authentication
+- Multi-branch support
+- Remove unused packages: @prisma/adapter-neon, @neondatabase/serverless
+- Add eslint to CI pipeline
+- Upgrade setRequestLocale → next/root-params
+- Replace `any` casts in session() callback (when Auth.js v5 stabilizes)
+
+═══════════════════════════════════════════════════════════════
+END OF PROGRESS LOG
+═══════════════════════════════════════════════════════════════
