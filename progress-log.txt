@@ -290,6 +290,8 @@ LESSONS:
 ✅ Navbar 5th link: About
 ✅ Scroll-to-top button (fade-in after 400px)
 ✅ Bilingual 404 pages (Next.js + Vercel static)
+✅ 13-phase portfolio HTML documentation
+✅ Admin-editable WhatsApp number (DB-backed Setting model)
 
 LESSONS:
 - Auto-scroll needs 50ms paint delay + 400ms scroll delay before focus
@@ -339,6 +341,22 @@ LESSONS:
 - `export const metadata` is static → use `generateMetadata()` for translations
 - Vercel Serverless can't read public/ at request time → must generate at build
 
+───────────────────────────────────────────────────────────────
+2026-10-10 — FEATURE: ADMIN-EDITABLE WHATSAPP NUMBER
+───────────────────────────────────────────────────────────────
+✅ Setting model (key/value) + migration
+✅ getWhatsAppNumber / setWhatsAppNumber services (fail-safe)
+✅ updateWhatsAppNumber Server Action (ADMIN-only + audit log)
+✅ /admin/settings page + SettingsForm with live preview
+✅ WhatsAppButton reads from DB (fallback to hardcoded default)
+✅ Translations across all 7 locales
+✅ "Setting" added to AuditEntity union + AuditLogCard mapping
+✅ key={whatsappNumber} on SettingsForm resets input post-save
+
+LESSONS:
+- Key/value Setting table is the right shape for admin-editable config
+- React's `key` prop is the cleanest fix for post-save form reset
+- Fail-safe fallback keeps the public site working if DB row is missing
 ═══════════════════════════════════════════════════════════════
 📌 CURRENT STATE (as of 2026-10-10)
 ═══════════════════════════════════════════════════════════════
@@ -348,8 +366,7 @@ BUGS:            None known
 FEATURES:        All implemented
 TESTS:           All passing (tsc + build + CI)
 LOCALES:         7 (ar, en, fr, de, es, it, zh)
-DATABASE:        7 tables (categories, menu_items, tables,
-                 reservations, users, audit_logs, reviews)
+DATABASE:        8 tables (categories, menu_items, tables, reservations, users, audit_logs, reviews, settings)
 
 SEEDED DATA:
 - 4 categories
