@@ -25,7 +25,7 @@ export default async function AdminSettingsPage({ params }: PageProps) {
         <p className="text-muted text-sm lg:text-base">{t("subtitle")}</p>
       </div>
 
-      <SettingsForm initialWhatsAppNumber={whatsappNumber} />
+      <SettingsForm key={whatsappNumber} initialWhatsAppNumber={whatsappNumber} />
     </div>
   );
 }
