@@ -42,18 +42,22 @@ export default async function AdminMenuPage({ params, searchParams }: PageProps)
     include: { category: { select: { name: true, nameEn: true } } },
   });
 
-    // Translate category names for each item
-  const itemsWithTranslatedCategory = items.map((item) => ({
-    ...item,
-    category: {
-      ...item.category,
-      name: getLocalizedName(
-        item.category.name,
-        item.category.nameEn,
-        locale
-      ),
-    },
-  }));
+// Translate item + category names for each item
+const itemsLocalized = items.map((item) => ({
+  ...item,
+  name: getLocalizedName(item.name, item.nameEn, locale),
+  description: item.description
+    ? getLocalizedName(item.description, item.descriptionEn, locale)
+    : null,
+  category: {
+    ...item.category,
+    name: getLocalizedName(
+      item.category.name,
+      item.category.nameEn,
+      locale
+    ),
+  },
+}));
   function buildURL(params: { category?: string; availability?: string }) {
     const qs = new URLSearchParams();
     if (params.category) qs.set("category", params.category);
@@ -170,7 +174,7 @@ export default async function AdminMenuPage({ params, searchParams }: PageProps)
           />
         ) : (
           <div className="divide-y divide-border">
-            {itemsWithTranslatedCategory.map((item) => (
+            {itemsLocalized.map((item) => (
               <MenuItemRow key={item.id} item={item} isAdmin={isAdmin} />
             ))}
           </div>
