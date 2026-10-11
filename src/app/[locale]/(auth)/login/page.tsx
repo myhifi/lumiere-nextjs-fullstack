@@ -1,3 +1,4 @@
+// src/app/[locale]/(auth)/login/page.tsx
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";

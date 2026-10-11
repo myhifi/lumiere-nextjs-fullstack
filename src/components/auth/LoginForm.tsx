@@ -1,3 +1,4 @@
+// src/components/auth/LoginForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -55,6 +56,7 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoFocus
             required
             autoComplete="email"
             placeholder="admin@lumiere.com"
