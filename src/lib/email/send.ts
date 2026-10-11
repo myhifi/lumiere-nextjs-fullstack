@@ -6,6 +6,8 @@ import {
   type EmailTranslator,
 } from "./templates/ReservationConfirmation";
 import { sendViaConsole } from "./providers/console";
+import { sendViaResend } from "./providers/resend";
+import { getWhatsAppNumber } from "@/lib/services/settings";
 import type {
   EmailProviderName,
   ReservationEmailData,
@@ -37,7 +39,7 @@ async function loadMessages(locale: string): Promise<AbstractIntlMessages> {
 
 export async function sendReservationConfirmation(
   data: ReservationEmailData,
-  locale: string = "ar"
+  locale: string = "en"
 ): Promise<SendEmailResult> {
   try {
     // ─── 1. Load messages for the given locale ───
@@ -51,6 +53,8 @@ export async function sendReservationConfirmation(
     }) as unknown as EmailTranslator;
 
     // ─── 3. Render HTML from the React Email template ───
+    const whatsappNumber = await getWhatsAppNumber();
+
     const html = await render(
       ReservationConfirmation({
         guestName: data.guestName,
@@ -60,6 +64,7 @@ export async function sendReservationConfirmation(
         guestsCount: data.guestsCount,
         locale,
         t,
+        whatsappNumber,
       })
     );
 
@@ -73,10 +78,7 @@ export async function sendReservationConfirmation(
         return await sendViaConsole(data, html, subject);
 
       case "resend":
-        console.warn(
-          "[email] Resend provider not implemented yet, falling back to console"
-        );
-        return await sendViaConsole(data, html, subject);
+        return await sendViaResend(data, html, subject);
 
       default:
         return {

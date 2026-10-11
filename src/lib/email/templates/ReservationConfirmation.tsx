@@ -63,6 +63,7 @@ function formatLocalizedDate(date: Date, locale: string): string {
 type Props = Omit<ReservationEmailData, "to"> & {
   locale: string;
   t: EmailTranslator;
+  whatsappNumber: string;
 };
 
 export function ReservationConfirmation({
@@ -73,6 +74,7 @@ export function ReservationConfirmation({
   guestsCount,
   locale,
   t,
+  whatsappNumber,
 }: Props) {
   const shortId = reservationId.slice(0, 8).toUpperCase();
   const dir = locale === "ar" ? "rtl" : "ltr";
@@ -165,7 +167,7 @@ export function ReservationConfirmation({
               {t("footerAutoMessage")}
               <br />
               {t("footerContact")}{" "}
-              <span dir="ltr">+20 100 000 0000</span>
+              <span dir="ltr">+{whatsappNumber}</span>
             </Text>
           </Section>
         </Container>
