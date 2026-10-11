@@ -226,7 +226,7 @@
       "calendarTitle": "Réservation au Lumière — Table n° {tableNumber}",
       "calendarDescriptionGuests": "Personnes : {count}",
       "calendarDescriptionReservationId": "N° de réservation : #{id}",
-      "calendarLocation": "123 rue Tahrir, Centre-ville, Le Caire",
+      "calendarLocation": "Qaryat El Asad - Route du désert Caire-Alexandrie",
       "footerAutoMessage": "Cet e-mail a été envoyé automatiquement par le système de réservation Lumière.",
       "footerContact": "Pour toute question, contactez-nous via WhatsApp :"
     }

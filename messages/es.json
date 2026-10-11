@@ -226,7 +226,7 @@
       "calendarTitle": "Reserva en Lumière — Mesa n.º {tableNumber}",
       "calendarDescriptionGuests": "Comensales: {count}",
       "calendarDescriptionReservationId": "N.º de reserva: #{id}",
-      "calendarLocation": "Calle Tahrir 123, Centro, El Cairo",
+      "calendarLocation": "Qaryat El Asad - Carretera del desierto Cairo-Alejandría",
       "footerAutoMessage": "Este correo fue enviado automáticamente por el sistema de reservas de Lumière.",
       "footerContact": "Para cualquier consulta, contáctanos por WhatsApp:"
     }

@@ -226,7 +226,7 @@
       "calendarTitle": "Reservierung im Lumière — Tisch Nr. {tableNumber}",
       "calendarDescriptionGuests": "Gäste: {count}",
       "calendarDescriptionReservationId": "Reservierungsnummer: #{id}",
-      "calendarLocation": "Tahrir-Straße 123, Innenstadt, Kairo",
+      "calendarLocation": "Qaryat El Asad - Wüstenstraße Kairo-Alexandria",
       "footerAutoMessage": "Diese E-Mail wurde automatisch vom Lumière-Reservierungssystem gesendet.",
       "footerContact": "Bei Fragen kontaktieren Sie uns über WhatsApp:"
     }

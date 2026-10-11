@@ -226,7 +226,7 @@
       "calendarTitle": "Prenotazione da Lumière — Tavolo #{tableNumber}",
       "calendarDescriptionGuests": "Ospiti: {count}",
       "calendarDescriptionReservationId": "ID Prenotazione: #{id}",
-      "calendarLocation": "123 Tahrir Street, Downtown, Cairo",
+      "calendarLocation": "Qaryat El Asad - Strada Deserto Cairo-Alessandria",
       "footerAutoMessage": "Questa Email è stata inviata automaticamente dal sistema di prenotazione Lumière.",
       "footerContact": "Per qualsiasi informazione, contattaci su WhatsApp:"
     }

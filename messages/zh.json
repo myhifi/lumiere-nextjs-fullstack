@@ -226,7 +226,7 @@
 "calendarTitle": "Lumière 餐厅预订 — #{tableNumber} 号桌",
 "calendarDescriptionGuests": "用餐人数：{count}",
 "calendarDescriptionReservationId": "预订编号：#{id}",
-"calendarLocation": "123 Tahrir Street, Downtown, Cairo",
+"calendarLocation": "Qaryat El Asad - Cairo-Alexandria Desert Road",
 "footerAutoMessage": "此邮件由 Lumière 预订系统自动发送。",
 "footerContact": "如有任何疑问，请通过 WhatsApp 联系我们："
 }
