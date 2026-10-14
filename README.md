@@ -27,7 +27,7 @@
 | **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/en/reserve |
 | **About** | https://lumiere-nextjs-fullstack.vercel.app/en/about |
 | **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/en/admin |
-| **Full Project Walkthrough** | [Phase 1 → Phase 12](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) |
+| **Full Project Walkthrough** | [Phase 1 → Phase 13](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) |
 
 > **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es`, `/it`, `/zh` prefixes. Arabic is RTL; the rest are LTR.
 

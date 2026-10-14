@@ -12,6 +12,13 @@ export default function PublicLayout({
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">{children}</main>
+      {/* ═══ FOOTER ═══ */}
+      <footer className="py-6 text-center text-sm text-muted border-t border-border mt-12">
+        <p>
+          Designed & Developed by{" "}
+          <span className="font-semibold text-accent">Mohamed Yahia</span>
+        </p>
+      </footer>
       <WhatsAppButton />
       <ScrollToTopButton />
       <AssistantButton />
