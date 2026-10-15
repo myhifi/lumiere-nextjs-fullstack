@@ -18,6 +18,16 @@
 
 ---
 
+## 🎬 Demo Video
+
+[![Lumière — Full-Stack Restaurant Platform](https://img.youtube.com/vi/9meiFDONOwY/maxresdefault.jpg)](https://youtu.be/9meiFDONOwY)
+
+**▶️ [Watch the 90-second walkthrough](https://youtu.be/9meiFDONOwY)**
+
+*7 languages · smart reservations · real email delivery · admin dashboard · audit trail*
+
+---
+
 ## 🌐 Live Demo
 
 | Page | URL |
