@@ -38,6 +38,12 @@
 "mapTitle": "Lumière 餐厅位置"
 }
 },
+  "Cart": {
+    "title": "您的购物车",
+    "empty": "您的购物车是空的。",
+    "subtotal": "小计",
+    "checkout": "去结账"
+  },
 "Menu": {
 "kicker": "我们的菜单",
 "title": "Lumière 菜单",

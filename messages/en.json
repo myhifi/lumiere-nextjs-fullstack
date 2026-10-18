@@ -25,7 +25,7 @@
       "subtitle": "Reserve your table now and enjoy an unforgettable dining experience",
       "button": "Reserve Your Table"
     },
-        "Location": {
+      "Location": {
       "kicker": "VISIT US",
       "title": "Our Location",
       "subtitle": "We are honored to welcome you in the heart of Cairo",
@@ -37,6 +37,12 @@
       "phoneValue": "+20 100 123 4567",
       "mapTitle": "Lumière Restaurant Location"
     }
+  },
+    "Cart": {
+    "title": "Your Cart",
+    "empty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "checkout": "Proceed to Checkout"
   },
     "Menu": {
     "kicker": "OUR MENU",
@@ -292,7 +298,7 @@
       "delete": "🗑 Delete",
       "deleteConfirm": "Delete reservation for \"{name}\" permanently?"
     },
-        "menu": {
+    "menu": {
       "title": "🍽️ Menu Management",
       "count": "{count} dishes",
       "countFiltered": " (filtered)",

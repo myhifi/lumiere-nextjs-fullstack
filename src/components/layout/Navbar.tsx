@@ -5,11 +5,15 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useCartStore } from "@/store/useCartStore";
+import { ShoppingBag } from "lucide-react";
 
 export function Navbar() {
   const t = useTranslations("Navbar");
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const { toggleCart, getItemCount } = useCartStore();
+  const itemCount = getItemCount();
 
   const navLinks = [
     { href: "/", label: t("home") },
@@ -63,9 +67,22 @@ export function Navbar() {
               ))}
             </ul>
 
-            {/* Language switcher */}
+          {/* Language switcher */}
             <LanguageSwitcher />
-
+            
+          {/* Cart Icon */}
+          <button
+            onClick={() => toggleCart(true)}
+            className="relative p-2 text-foreground hover:text-accent transition-colors"
+            aria-label="Open Cart"
+          >
+            <ShoppingBag className="w-6 h-6" />
+            {itemCount > 0 && (
+              <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                {itemCount}
+              </span>
+            )}
+          </button>
             {/* Mobile hamburger (<lg) */}
             <button
               type="button"

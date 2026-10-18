@@ -38,6 +38,12 @@
       "mapTitle": "Posizione del Ristorante Lumière"
     }
   },
+    "Cart": {
+    "title": "Il Tuo Carrello",
+    "empty": "Il tuo carrello è vuoto.",
+    "subtotal": "Totale parziale",
+    "checkout": "Procedi al pagamento"
+  },
   "Menu": {
     "kicker": "IL NOSTRO MENU",
     "title": "Menu Lumière",

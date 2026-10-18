@@ -38,6 +38,12 @@
       "mapTitle": "Ubicación del restaurante Lumière"
     }
   },
+    "Cart": {
+    "title": "Tu Carrito",
+    "empty": "Tu carrito está vacío.",
+    "subtotal": "Subtotal",
+    "checkout": "Proceder al pago"
+  },
     "Menu": {
     "kicker": "NUESTRO MENÚ",
     "title": "Menú de Lumière",
@@ -292,7 +298,7 @@
       "delete": "🗑 Eliminar",
       "deleteConfirm": "¿Eliminar permanentemente la reserva de \"{name}\"?"
     },
-        "menu": {
+    "menu": {
       "title": "🍽️ Gestión del menú",
       "count": "{count} platos",
       "countFiltered": " (filtrados)",

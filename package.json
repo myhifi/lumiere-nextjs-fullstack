@@ -29,7 +29,8 @@
     "recharts": "^3.10.1",
     "resend": "^6.28.1",
     "sonner": "^2.0.8",
-    "zod": "^4.6.5"
+    "zod": "^4.6.5",
+    "zustand": "^5.0.15"
   },
   "devDependencies": {
     "@prisma/nextjs-monorepo-workaround-plugin": "^7.10.0",

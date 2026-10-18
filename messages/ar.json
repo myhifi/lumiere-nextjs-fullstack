@@ -38,6 +38,12 @@
       "mapTitle": "موقع مطعم Lumière"
     }
   },
+    "Cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة التسوق فارغة.",
+    "subtotal": "المجموع الفرعي",
+    "checkout": "إتمام الطلب"
+  },
     "Menu": {
     "kicker": "قائمتنا",
     "title": "قائمة Lumière",

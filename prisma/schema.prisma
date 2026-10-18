@@ -48,6 +48,11 @@ model MenuItem {
   isFeatured  Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  // NEW: Track available stock for delivery
+  stock       Int         @default(100) 
+  
+  // NEW: Relation to order items
+  orderItems  OrderItem[]
 
   // 🔗 العلاقة: كل طبق ينتمي لتصنيف واحد
   categoryId  String
@@ -110,6 +115,7 @@ model User {
   lastLoginAt  DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  orders       Order[] 
 
   @@map("users")
 }
@@ -198,4 +204,54 @@ model Setting {
   updatedAt DateTime @updatedAt
 
   @@map("settings")
+}
+
+// ═══════════════════════════════════════════════════
+// 🛒 Order — Food Delivery / Takeaway
+// ═══════════════════════════════════════════════════
+model Order {
+  id                    String      @id @default(cuid())
+  
+  // Guest details (Checkout doesn't require login)
+  guestName             String
+  guestEmail            String
+  guestPhone            String
+  deliveryAddress       String
+  
+  // Payment & Status
+  status                String      @default("PENDING") // PENDING, PAID, PREPARING, DELIVERED, CANCELLED
+  totalAmount           Float
+  stripeSessionId       String?     @unique
+  stripePaymentIntentId String?     @unique
+  
+  // Relations
+  userId                String?     // Optional: link to a user account if logged in
+  user                  User?       @relation(fields: [userId], references: [id])
+  items                 OrderItem[]
+
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+
+  // Indexes for admin dashboard performance
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ═══════════════════════════════════════════════════
+// 📦 OrderItem — Snapshots of purchased items
+// ═══════════════════════════════════════════════════
+model OrderItem {
+  id           String   @id @default(cuid())
+  
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  menuItemId   String
+  menuItem     MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  
+  quantity     Int
+  priceAtOrder Float    // CRITICAL: Snapshot the price at the time of purchase
+
+  @@map("order_items")
 }
