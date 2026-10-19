@@ -158,6 +158,7 @@ export function AuditLogCard({ log }: AuditLogCardProps) {
     Reservation: "entityReservation",
     Review: "entityReview",
     Setting: "entitySetting",
+    Order: "entityOrder",
   };
 
   const actionMeta = ACTION_ICON[log.action] ?? {

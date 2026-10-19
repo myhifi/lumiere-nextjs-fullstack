@@ -237,10 +237,27 @@
       "footerContact": "Bei Fragen kontaktieren Sie uns über WhatsApp:"
     }
   },
+  "Checkout": {
+    "title": "Kasse",
+    "subtitle": "Geben Sie Ihre Lieferdetails ein, um die Bestellung abzuschließen.",
+    "nameLabel": "Vollständiger Name",
+    "emailLabel": "E-Mail-Adresse",
+    "phoneLabel": "Telefonnummer",
+    "addressLabel": "Lieferadresse",
+    "payNow": "Jetzt bezahlen",
+    "processing": "Wird bearbeitet..."
+  },
+  "CheckoutSuccess": {
+    "title": "Zahlung Erfolgreich!",
+    "message": "Vielen Dank für Ihre Bestellung. Wir haben Ihre Zahlung erhalten und bereiten Ihr Essen vor.",
+    "backToMenu": "Zurück zum Menü",
+    "noSession": "Keine Sitzung gefunden"
+  },
     "Admin": {
     "sidebar": {
       "brand": "Verwaltungsbereich",
       "overview": "Übersicht",
+      "orders": "Bestellungen",
       "reservations": "Reservierungen",
       "menu": "Speisekarte",
       "categories": "Kategorien",
@@ -297,6 +314,24 @@
       "complete": "✓ Abschließen",
       "delete": "🗑 Löschen",
       "deleteConfirm": "Reservierung von \"{name}\" endgültig löschen?"
+    },
+    "orders": {
+      "title": "📦 Bestellverwaltung",
+      "count": "{count} Bestellungen",
+      "emptyAll": "Noch keine Bestellungen",
+      "emptyDescription": "Neue Lieferbestellungen werden hier sofort angezeigt.",
+      "orderId": "Bestell-ID",
+      "date": "Datum",
+      "customer": "Kunde",
+      "total": "Gesamt",
+      "status": "Status",
+      "statusPending": "Ausstehend",
+      "statusPaid": "Bezahlt",
+      "statusPreparing": "In Zubereitung",
+      "statusDelivered": "Geliefert",
+      "statusCancelled": "Storniert",
+      "updateStatus": "Status aktualisieren",
+      "details": "Bestelldetails"
     },
     "menu": {
       "title": "🍽️ Speisekartenverwaltung",
@@ -537,7 +572,8 @@
       "entityReservation": "Reservierung",
       "entityReview": "Bewertung",
       "noChanges": "Keine Änderungen erkannt",
-      "entitySetting": "Einstellung"
+      "entitySetting": "Einstellung",
+      "entityOrder": "Bestellung"
     },
     "settings": {
       "title": "Einstellungen",
@@ -595,6 +631,8 @@
       "guestPhoneTooShort": "Telefonnummer ist zu kurz",
       "guestPhoneTooLong": "Telefonnummer ist zu lang",
       "guestPhoneInvalidChars": "Telefonnummer enthält ungültige Zeichen",
+      "addressTooShort": "Adresse ist zu kurz",
+      "addressTooLong": "Adresse ist zu lang",
       "guestsCountNotInt": "Anzahl der Gäste muss eine ganze Zahl sein",
       "guestsCountMin": "Mindestens 1 Gast",
       "guestsCountMax": "Buchung für mehr als 10 Gäste nicht möglich",

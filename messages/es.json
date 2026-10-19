@@ -237,10 +237,27 @@
       "footerContact": "Para cualquier consulta, contáctanos por WhatsApp:"
     }
   },
+  "Checkout": {
+    "title": "Finalizar compra",
+    "subtitle": "Introduce tus datos de entrega para completar el pedido.",
+    "nameLabel": "Nombre completo",
+    "emailLabel": "Correo electrónico",
+    "phoneLabel": "Número de teléfono",
+    "addressLabel": "Dirección de entrega",
+    "payNow": "Pagar ahora",
+    "processing": "Procesando..."
+  },
+  "CheckoutSuccess": {
+    "title": "¡Pago Exitoso!",
+    "message": "Gracias por tu pedido. Hemos recibido tu pago y estamos preparando tu comida.",
+    "backToMenu": "Volver al Menú",
+    "noSession": "No se encontró ninguna sesión"
+  },
     "Admin": {
     "sidebar": {
       "brand": "Panel de administración",
       "overview": "Resumen",
+      "orders": "Pedidos",
       "reservations": "Reservas",
       "menu": "Menú",
       "categories": "Categorías",
@@ -297,6 +314,24 @@
       "complete": "✓ Completar",
       "delete": "🗑 Eliminar",
       "deleteConfirm": "¿Eliminar permanentemente la reserva de \"{name}\"?"
+    },
+    "orders": {
+      "title": "📦 Gestión de Pedidos",
+      "count": "{count} pedidos",
+      "emptyAll": "No hay pedidos aún",
+      "emptyDescription": "Los nuevos pedidos de entrega aparecerán aquí inmediatamente.",
+      "orderId": "ID de pedido",
+      "date": "Fecha",
+      "customer": "Cliente",
+      "total": "Total",
+      "status": "Estado",
+      "statusPending": "Pendiente",
+      "statusPaid": "Pagado",
+      "statusPreparing": "En preparación",
+      "statusDelivered": "Entregado",
+      "statusCancelled": "Cancelado",
+      "updateStatus": "Actualizar estado",
+      "details": "Detalles del pedido"
     },
     "menu": {
       "title": "🍽️ Gestión del menú",
@@ -537,7 +572,8 @@
       "entityReservation": "Reserva",
       "entityReview": "Opinión",
       "noChanges": "No se detectaron cambios",
-      "entitySetting": "Configuración"
+      "entitySetting": "Configuración",
+      "entityOrder": "Pedido"
     },
     "settings": {
       "title": "Configuración",
@@ -595,6 +631,8 @@
       "guestPhoneTooShort": "Número de teléfono demasiado corto",
       "guestPhoneTooLong": "Número de teléfono demasiado largo",
       "guestPhoneInvalidChars": "El número de teléfono contiene caracteres no válidos",
+      "addressTooShort": "La dirección es demasiado corta",
+      "addressTooLong": "La dirección es demasiado larga",
       "guestsCountNotInt": "El número de comensales debe ser un número entero",
       "guestsCountMin": "Al menos 1 comensal",
       "guestsCountMax": "No se puede reservar para más de 10 comensales",

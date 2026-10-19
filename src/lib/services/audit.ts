@@ -19,6 +19,7 @@ export type AuditEntity =
   | "User"
   | "Reservation"
   | "Review"
+  | "Order"
   | "Setting";
 export type AuditSeverity = "info" | "warning" | "critical";
 

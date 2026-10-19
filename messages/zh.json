@@ -237,10 +237,27 @@
 "footerContact": "如有任何疑问，请通过 WhatsApp 联系我们："
 }
 },
+"Checkout": {
+  "title": "结账",
+  "subtitle": "输入您的配送信息以完成订单。",
+  "nameLabel": "姓名",
+  "emailLabel": "电子邮箱",
+  "phoneLabel": "电话号码",
+  "addressLabel": "配送地址",
+  "payNow": "立即支付",
+  "processing": "处理中..."
+},
+"CheckoutSuccess": {
+    "title": "支付成功！",
+    "message": "感谢您的订单。我们已收到您的付款，正在为您准备美食。",
+    "backToMenu": "返回菜单",
+    "noSession": "未找到会话"
+  },
 "Admin": {
 "sidebar": {
 "brand": "管理后台",
 "overview": "概览",
+"orders": "订单",
 "reservations": "预订管理",
 "menu": "菜单管理",
 "categories": "分类管理",
@@ -298,6 +315,24 @@
 "delete": "🗑 删除",
 "deleteConfirm": "确定要永久删除“{name}”的预订吗？"
 },
+"orders": {
+      "title": "📦 订单管理",
+      "count": "{count} 个订单",
+      "emptyAll": "暂无订单",
+      "emptyDescription": "新的外卖订单将立即显示在这里。",
+      "orderId": "订单编号",
+      "date": "日期",
+      "customer": "客户",
+      "total": "总计",
+      "status": "状态",
+      "statusPending": "待处理",
+      "statusPaid": "已支付",
+      "statusPreparing": "准备中",
+      "statusDelivered": "已送达",
+      "statusCancelled": "已取消",
+      "updateStatus": "更新状态",
+      "details": "订单详情"
+    },
 "menu": {
 "title": "🍽️ 菜单管理",
 "count": "{count} 道菜品",
@@ -537,7 +572,8 @@
 "entityReservation": "预订",
 "entityReview": "评价",
 "noChanges": "未检测到变更",
-"entitySetting": "系统设置"
+"entitySetting": "系统设置",
+"entityOrder": "订单"
 },
 "settings": {
 "title": "系统设置",
@@ -595,6 +631,8 @@
 "guestPhoneTooShort": "电话号码过短",
 "guestPhoneTooLong": "电话号码过长",
 "guestPhoneInvalidChars": "电话号码包含无效字符",
+"addressTooShort": "地址太短",
+"addressTooLong": "地址太长",
 "guestsCountNotInt": "用餐人数必须为整数",
 "guestsCountMin": "至少 1 位客人",
 "guestsCountMax": "预订人数不能超过 10 位",

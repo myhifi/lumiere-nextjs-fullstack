@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { getLocalizedName } from "@/lib/utils/locale";
+import {ProductDetailsActions} from "@/components/menu/ProductDetailsActions";
 
 export const dynamic = "force-dynamic";
 
@@ -145,14 +146,18 @@ export default async function MenuItemPage({ params }: MenuItemPageProps) {
             </span>
           </div>
 
-          {/* Reserve button */}
-          <Link
-            href="/reserve"
-            className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors self-start"
-          >
-            {t("reserveTable")}
-            <span>←</span>
-          </Link>
+          {/* Add to Cart Actions */}
+          <ProductDetailsActions item={item} />
+
+          {/* Reserve button (optional, keep it for dine-in users) */}
+          <div className="mt-8 pt-6 border-t border-border">
+            <Link
+              href="/reserve"
+              className="inline-flex items-center justify-center gap-2 text-muted hover:text-accent font-medium transition-colors"
+            >
+              {t("reserveTable")} →
+            </Link>
+          </div>
 
           {/* Availability */}
           <p className="text-xs text-muted mt-4">

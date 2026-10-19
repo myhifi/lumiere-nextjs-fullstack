@@ -237,10 +237,27 @@
       "footerContact": "لأي استفسار، تواصل معنا عبر واتساب:"
     }
   },
+  "Checkout": {
+    "title": "إتمام الطلب",
+    "subtitle": "أدخل تفاصيل التوصيل لإكمال الطلب.",
+    "nameLabel": "الاسم الكامل",
+    "emailLabel": "البريد الإلكتروني",
+    "phoneLabel": "رقم الهاتف",
+    "addressLabel": "عنوان التوصيل",
+    "payNow": "ادفع الآن",
+    "processing": "جاري المعالجة..."
+  },
+  "CheckoutSuccess": {
+    "title": "تم الدفع بنجاح!",
+    "message": "شكراً لطلبك. لقد استلمنا دفعتك وجاري تجهيز طعامك.",
+    "backToMenu": "العودة للقائمة",
+    "noSession": "لم يتم العثور على الجلسة"
+  },
 "Admin": {
     "sidebar": {
       "brand": "لوحة التحكم",
       "overview": "نظرة عامة",
+      "orders": "الطلبات",
       "reservations": "الحجوزات",
       "menu": "الأطباق",
       "categories": "التصنيفات",
@@ -297,6 +314,24 @@
       "complete": "✓ إكمال",
       "delete": "🗑 حذف",
       "deleteConfirm": "حذف حجز \"{name}\" نهائياً؟"
+    },
+    "orders": {
+      "title": "📦 إدارة الطلبات",
+      "count": "{count} طلب",
+      "emptyAll": "لا توجد طلبات بعد",
+      "emptyDescription": "ستظهر طلبات التوصيل الجديدة هنا فوراً.",
+      "orderId": "رقم الطلب",
+      "date": "التاريخ",
+      "customer": "العميل",
+      "total": "الإجمالي",
+      "status": "الحالة",
+      "statusPending": "قيد الانتظار",
+      "statusPaid": "مدفوع",
+      "statusPreparing": "قيد التجهيز",
+      "statusDelivered": "تم التوصيل",
+      "statusCancelled": "ملغى",
+      "updateStatus": "تحديث الحالة",
+      "details": "تفاصيل الطلب"
     },
     "menu": {
       "title": "🍽️ إدارة الأطباق",
@@ -537,7 +572,8 @@
       "entityReservation": "حجز",
       "entityReview": "تقييم",
       "noChanges": "لا تغييرات مُلاحَظة",
-      "entitySetting": "إعداد"
+      "entitySetting": "إعداد",
+      "entityOrder": "طلب"
     },
   "settings": {
     "title": "الإعدادات",
@@ -595,6 +631,8 @@
       "guestPhoneTooShort": "رقم الهاتف قصير جداً",
       "guestPhoneTooLong": "رقم الهاتف طويل جداً",
       "guestPhoneInvalidChars": "رقم الهاتف يحتوي على رموز غير مسموحة",
+      "addressTooShort": "العنوان قصير جداً",
+      "addressTooLong": "العنوان طويل جداً",
       "guestsCountNotInt": "عدد الأشخاص يجب أن يكون رقماً صحيحاً",
       "guestsCountMin": "على الأقل شخص واحد",
       "guestsCountMax": "لا يمكن الحجز لأكثر من 10 أشخاص",

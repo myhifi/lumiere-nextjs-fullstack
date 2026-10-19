@@ -237,10 +237,27 @@
       "footerContact": "Pour toute question, contactez-nous via WhatsApp :"
     }
   },
+  "Checkout": {
+    "title": "Paiement",
+    "subtitle": "Entrez vos coordonnées de livraison pour finaliser la commande.",
+    "nameLabel": "Nom complet",
+    "emailLabel": "Adresse e-mail",
+    "phoneLabel": "Numéro de téléphone",
+    "addressLabel": "Adresse de livraison",
+    "payNow": "Payer maintenant",
+    "processing": "Traitement en cours..."
+  },
+  "CheckoutSuccess": {
+    "title": "Paiement Réussi !",
+    "message": "Merci pour votre commande. Nous avons bien reçu votre paiement et préparons votre repas.",
+    "backToMenu": "Retour au Menu",
+    "noSession": "Aucune session trouvée"
+  },
     "Admin": {
     "sidebar": {
       "brand": "Panneau d'administration",
       "overview": "Aperçu",
+      "orders": "Commandes",
       "reservations": "Réservations",
       "menu": "Menu",
       "categories": "Catégories",
@@ -297,6 +314,24 @@
       "complete": "✓ Terminer",
       "delete": "🗑 Supprimer",
       "deleteConfirm": "Supprimer définitivement la réservation de \"{name}\" ?"
+    },
+    "orders": {
+      "title": "📦 Gestion des commandes",
+      "count": "{count} commandes",
+      "emptyAll": "Aucune commande pour le moment",
+      "emptyDescription": "Les nouvelles commandes de livraison apparaîtront ici immédiatement.",
+      "orderId": "ID de commande",
+      "date": "Date",
+      "customer": "Client",
+      "total": "Total",
+      "status": "Statut",
+      "statusPending": "En attente",
+      "statusPaid": "Payé",
+      "statusPreparing": "En préparation",
+      "statusDelivered": "Livré",
+      "statusCancelled": "Annulé",
+      "updateStatus": "Mettre à jour le statut",
+      "details": "Détails de la commande"
     },
     "menu": {
       "title": "🍽️ Gestion du menu",
@@ -537,7 +572,8 @@
       "entityReservation": "Réservation",
       "entityReview": "Avis",
       "noChanges": "Aucun changement détecté",
-      "entitySetting": "Paramètre"
+      "entitySetting": "Paramètre",
+      "entityOrder": "Commande"
     },
     "settings": {
       "title": "Paramètres",
@@ -595,6 +631,8 @@
       "guestPhoneTooShort": "Numéro de téléphone trop court",
       "guestPhoneTooLong": "Numéro de téléphone trop long",
       "guestPhoneInvalidChars": "Le numéro de téléphone contient des caractères invalides",
+      "addressTooShort": "L'adresse est trop courte",
+      "addressTooLong": "L'adresse est trop longue",
       "guestsCountNotInt": "Le nombre de personnes doit être un entier",
       "guestsCountMin": "Au moins 1 personne",
       "guestsCountMax": "Réservation impossible pour plus de 10 personnes",
@@ -611,7 +649,7 @@
       "reviewerEmailInvalid": "Adresse e-mail invalide",
       "commentTooShort": "Le commentaire est trop court (minimum 10 caractères)",
       "commentTooLong": "Le commentaire est trop long (maximum 500 caractères)",
-            "itemNameTooShort": "Le nom du plat est trop court",
+      "itemNameTooShort": "Le nom du plat est trop court",
       "itemNameTooLong": "Le nom du plat est trop long (maximum 80 caractères)",
       "slugTooShort": "L'identifiant est trop court",
       "slugTooLong": "L'identifiant est trop long",

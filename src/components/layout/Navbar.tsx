@@ -38,6 +38,11 @@ export function Navbar() {
     };
   }, [isOpen]);
 
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true);
+  }, []);
   return (
     <>
       {/* ═══ Top bar ═══ */}
@@ -77,7 +82,7 @@ export function Navbar() {
             aria-label="Open Cart"
           >
             <ShoppingBag className="w-6 h-6" />
-            {itemCount > 0 && (
+            {isMounted && itemCount > 0 && (
               <span className="absolute top-0 right-0 bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
                 {itemCount}
               </span>

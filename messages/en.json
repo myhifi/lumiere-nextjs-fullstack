@@ -237,10 +237,27 @@
       "footerContact": "For any inquiries, contact us via WhatsApp:"
     }
   },
+  "Checkout": {
+    "title": "Checkout",
+    "subtitle": "Enter your delivery details to complete the order.",
+    "nameLabel": "Full Name",
+    "emailLabel": "Email Address",
+    "phoneLabel": "Phone Number",
+    "addressLabel": "Delivery Address",
+    "payNow": "Pay Now",
+    "processing": "Processing..."
+  },
+  "CheckoutSuccess": {
+    "title": "Payment Successful!",
+    "message": "Thank you for your order. We have received your payment and are preparing your food.",
+    "backToMenu": "Back to Menu",
+    "noSession": "No session found"
+  },
     "Admin": {
     "sidebar": {
       "brand": "Admin Panel",
       "overview": "Overview",
+      "orders": "Orders",
       "reservations": "Reservations",
       "menu": "Menu",
       "categories": "Categories",
@@ -297,6 +314,24 @@
       "complete": "✓ Complete",
       "delete": "🗑 Delete",
       "deleteConfirm": "Delete reservation for \"{name}\" permanently?"
+    },
+    "orders": {
+      "title": "📦 Orders Management",
+      "count": "{count} orders",
+      "emptyAll": "No orders yet",
+      "emptyDescription": "New delivery orders will appear here immediately.",
+      "orderId": "Order ID",
+      "date": "Date",
+      "customer": "Customer",
+      "total": "Total",
+      "status": "Status",
+      "statusPending": "Pending",
+      "statusPaid": "Paid",
+      "statusPreparing": "Preparing",
+      "statusDelivered": "Delivered",
+      "statusCancelled": "Cancelled",
+      "updateStatus": "Update Status",
+      "details": "Order Details"
     },
     "menu": {
       "title": "🍽️ Menu Management",
@@ -503,7 +538,7 @@
       "delete": "🗑 Delete",
       "deleteConfirm": "Delete review from \"{name}\" permanently?"
     },
-        "auditLog": {
+    "auditLog": {
       "title": "📋 Audit Log",
       "count": "{count} actions",
       "countFiltered": " (filtered)",
@@ -537,7 +572,8 @@
       "entityReservation": "Reservation",
       "entityReview": "Review",
       "noChanges": "No changes detected",
-      "entitySetting": "Setting"
+      "entitySetting": "Setting",
+      "entityOrder": "Order"
     },
     "settings": {
       "title": "Settings",
@@ -595,6 +631,8 @@
       "guestPhoneTooShort": "Phone number is too short",
       "guestPhoneTooLong": "Phone number is too long",
       "guestPhoneInvalidChars": "Phone number contains invalid characters",
+      "addressTooShort": "Address is too short",
+      "addressTooLong": "Address is too long",
       "guestsCountNotInt": "Number of guests must be a whole number",
       "guestsCountMin": "At least 1 guest",
       "guestsCountMax": "Cannot book for more than 10 guests",

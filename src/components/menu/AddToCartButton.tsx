@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { ShoppingBag, Check } from "lucide-react";
+import { ShoppingBag, Check, Plus } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 import type { MenuItem } from "@prisma/client";
 
-// We use Pick<> to only require the fields the button actually needs.
 type Props = {
   item: Pick<MenuItem, "id" | "name" | "price" | "imageUrl" | "isAvailable" | "stock">;
   className?: string;
@@ -28,7 +27,7 @@ export function AddToCartButton({ item, className = "", showText = true }: Props
     setIsAdded(true);
     setTimeout(() => setIsAdded(false), 2000);
     
-    // Auto-open the cart drawer when an item is added (Great UX!)
+    // Auto-open the cart drawer when an item is added
     toggleCart(true); 
   }
 
@@ -49,7 +48,8 @@ export function AddToCartButton({ item, className = "", showText = true }: Props
         </>
       ) : (
         <>
-          <ShoppingBag className="w-5 h-5" />
+          {/* 👇 UX FIX: Use Plus if it's an icon-only button, otherwise use Bag */}
+          {showText ? <ShoppingBag className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
           {showText && <span>Add to Cart</span>}
         </>
       )}
