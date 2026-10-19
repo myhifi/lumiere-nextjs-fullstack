@@ -86,6 +86,7 @@ function DonutChart({
               border: "none",
               borderRadius: "8px",
               fontSize: "12px",
+              direction: "ltr", // Forces LTR rendering even on Arabic pages
             }}
             itemStyle={{ color: "#ffffff" }}
             labelStyle={{ color: "#ffffff" }}

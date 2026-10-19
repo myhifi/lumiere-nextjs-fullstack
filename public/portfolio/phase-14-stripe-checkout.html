@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 14 — Stripe Checkout & Ordering · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+
+.filetree { background: var(--bg-code); color: #e8e8e8; padding: 1.25rem 1.5rem; border-radius: 8px; font-family: 'Consolas', monospace; font-size: 0.82rem; line-height: 1.7; border-left: 3px solid var(--accent); margin: 1rem 0; }
+.filetree .dir { color: #7cb4e8; font-weight: 600; }
+.filetree .file { color: #e8e8e8; }
+.filetree .new { color: #7ee787; font-weight: 600; }
+.filetree .note { color: #f0883e; font-style: italic; }
+.filetree .indent-1 { padding-left: 1.25rem; }
+.filetree .indent-2 { padding-left: 2.5rem; }
+.filetree .indent-3 { padding-left: 3.75rem; }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 14</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#db">Database Updates</a>
+      <a href="#cart">Zustand Shopping Cart</a>
+      <a href="#stripe-session">Stripe Session</a>
+      <a href="#webhook">Secure Webhooks</a>
+      <a href="#admin">Admin Orders</a>
+      <a href="#errors">The Errors Journey</a>
+      <a href="#verify">Verification</a>
+      <a href="#lessons">Engineering Lessons</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 14 · Stripe Checkout & Ordering</div>
+      <h1>Food Delivery & Event-Driven Payments</h1>
+      <p class="lede">Transform Lumière from a reservation-only platform into a fully functional delivery service. Implement a client-side shopping cart using Zustand, integrate Stripe Checkout Sessions, and process payments securely via Event-Driven Webhooks to update inventory and order statuses.</p>
+      <div class="stack">
+        <span>Stripe API</span><span>Zustand Store</span>
+        <span>Webhooks</span><span>Prisma Transactions</span>
+        <span>React Server Actions</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Add a shopping cart and a secure, production-ready checkout pipeline that handles dynamic line items, calculates totals, and reacts to successful payments.</p>
+      
+      <h3>Deliverables</h3>
+      <ol>
+        <li><strong>Database:</strong> Add <code>Order</code> and <code>OrderItem</code> models to track purchases and snapshot prices.</li>
+        <li><strong>Cart State:</strong> Persistent client-side cart using Zustand + <code>localStorage</code>.</li>
+        <li><strong>Checkout UI:</strong> A seamless drawer, delivery details form, and quantity selectors.</li>
+        <li><strong>Stripe Session:</strong> Server Action to map DB items to Stripe <code>line_items</code> and redirect to payment.</li>
+        <li><strong>Webhook Handler:</strong> Route Handler that verifies Stripe signatures, updates orders to <code>PAID</code>, and decrements stock atomically.</li>
+        <li><strong>Admin Dashboard:</strong> A new page to view delivery orders and update their fulfillment status.</li>
+      </ol>
+    </section>
+
+    <section id="db">
+      <h2><span class="num">2</span> Database Updates</h2>
+      <p>We added an <code>Order</code> and <code>OrderItem</code> model. The most critical architectural decision here is <strong>snapshotting the price</strong> (<code>priceAtOrder</code>). If the restaurant changes the price of a dish tomorrow, yesterday's orders must retain the original price they paid.</p>
+
+      <pre><code>model Order {
+  id                    String      @id @default(cuid())
+  guestName             String
+  guestEmail            String
+  guestPhone            String
+  deliveryAddress       String
+  status                String      @default("PENDING")
+  totalAmount           Float
+  stripeSessionId       String?     @unique
+  stripePaymentIntentId String?     @unique
+  items                 OrderItem[]
+  // ...
+}
+
+model OrderItem {
+  id           String   @id @default(cuid())
+  orderId      String
+  order        Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menuItemId   String
+  menuItem     MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Restrict)
+  quantity     Int
+  priceAtOrder Float    // CRITICAL: Snapshot the price
+}</code></pre>
+
+      <div class="callout info">
+        <strong>Stock Management</strong>
+        We added a <code>stock Int @default(100)</code> column to <code>MenuItem</code>. This allows the webhook to decrement available inventory the moment payment succeeds.
+      </div>
+    </section>
+
+    <section id="cart">
+      <h2><span class="num">3</span> Zustand Shopping Cart</h2>
+      <p>For the cart, we avoided using the database for every quantity change (which would cause massive DB load). We used <strong>Zustand</strong> with the <code>persist</code> middleware to store the cart in <code>localStorage</code>.</p>
+
+      <pre><code>export const useCartStore = create&lt;CartState&gt;()(
+  persist(
+    (set, get) =&gt; ({
+      items: [],
+      addItem: (item) =&gt; set((state) =&gt; { /* ... logic */ }),
+      getTotal: () =&gt; get().items.reduce((total, item) =&gt; total + item.price * item.quantity, 0),
+    }),
+    { name: "lumiere-cart-storage" }
+  )
+);</code></pre>
+
+      <p><strong>Why this is production-ready:</strong> It allows guests to fill their cart without needing an account, survives page refreshes, and uses zero database connections until they click "Checkout".</p>
+    </section>
+
+    <section id="stripe-session">
+      <h2><span class="num">4</span> Stripe Checkout Session</h2>
+      <p>When the user submits the checkout form, a Server Action fetches the <em>real prices</em> from the database (never trusting the client) and creates a Stripe Session.</p>
+
+      <pre><code>const lineItems = order.items.map((item) =&gt; ({
+  price_data: {
+    currency: "egp",
+    product_data: { name: item.menuItem.name },
+    unit_amount: Math.round(item.priceAtOrder * 100), // EGP uses 2 decimals
+  },
+  quantity: item.quantity,
+}));
+
+const session = await stripe.checkout.sessions.create({
+  mode: "payment",
+  line_items: lineItems,
+  client_reference_id: order.id,
+  success_url: `${siteUrl}/${locale}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+  cancel_url: `${siteUrl}/${locale}/cart`,
+});</code></pre>
+    </section>
+
+    <section id="webhook">
+      <h2><span class="num">5</span> Secure Event-Driven Webhooks</h2>
+      <p>The biggest flaw in the legacy MERN app was relying on the browser to confirm payment. We built a Route Handler at <code>/api/webhooks/stripe</code> to handle this securely.</p>
+
+      <h3>Idempotency & Atomic Updates</h3>
+      <p>Stripe can send the same webhook multiple times. To prevent double-stock deduction, we check the order status first. Then, we use a Prisma Transaction to update the order and deduct inventory simultaneously.</p>
+
+      <pre><code>if (existingOrder.status === "PAID") {
+  return NextResponse.json({ received: true }); // Idempotency check
+}
+
+await prisma.$transaction(async (tx) =&gt; {
+  await tx.order.update({
+    where: { id: orderId },
+    data: { status: "PAID", stripePaymentIntentId: session.payment_intent },
+  });
+
+  for (const item of existingOrder.items) {
+    await tx.menuItem.update({
+      where: { id: item.menuItemId },
+      data: { stock: { decrement: item.quantity } },
+    });
+  }
+});</code></pre>
+
+      <div class="callout success">
+        <strong>Testing with Stripe CLI</strong>
+        We used <code>stripe listen --forward-to localhost:3000/api/webhooks/stripe --events checkout.session.completed</code> to test the payment flow locally without exposing the dev server to the internet.
+      </div>
+    </section>
+
+    <section id="admin">
+      <h2><span class="num">6</span> Admin Orders Dashboard</h2>
+      <p>To manage the incoming food orders, we built an admin dashboard that respects the existing RBAC (Role-Based Access Control).</p>
+      <ul>
+        <li><strong>Server Component:</strong> Fetches all orders joined with their items.</li>
+        <li><strong>Client Component (<code>OrderRow</code>):</strong> Displays customer details, delivery address, and totals.</li>
+        <li><strong>Status Updates:</strong> A dropdown allows Staff to transition the order from <code>PAID</code> → <code>PREPARING</code> → <code>DELIVERED</code>.</li>
+        <li><strong>Audit Log:</strong> Every status change is logged with the user's name and the <code>before/after</code> state.</li>
+      </ul>
+    </section>
+
+    <section id="errors">
+      <h2><span class="num">7</span> The Errors Journey</h2>
+      <div class="callout danger">
+        <strong>1. Prisma P2024: Connection Pool Timeout</strong>
+        <p><strong>Cause:</strong> Neon Serverless DB going to sleep + 9 parallel queries on the Admin Dashboard.</p>
+        <p><strong>Fix:</strong> Appended <code>&pgbouncer=true&connection_limit=5</code> to the <code>DATABASE_URL</code>.</p>
+      </div>
+      
+      <div class="callout danger">
+        <strong>2. React Hydration Mismatch on Cart Badge</strong>
+        <p><strong>Cause:</strong> Zustand instantly read <code>localStorage</code> on the client, but the server rendered <code>0</code> items.</p>
+        <p><strong>Fix:</strong> Wrapped the badge in an <code>isMounted</code> check (using <code>useEffect</code> with an ESLint disable comment).</p>
+      </div>
+
+      <div class="callout danger">
+        <strong>3. Recharts Reversed Text (`150 - 101`)</strong>
+        <p><strong>Cause:</strong> The SVG tooltip inherited RTL text-direction from the document (or parsed the hyphen as a minus sign).</p>
+        <p><strong>Fix:</strong> Forced <code>direction: "ltr"</code> in the Recharts <code>contentStyle</code> and used En-dashes (<code>–</code>) for the label ranges.</p>
+      </div>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">8</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>Never trust the client.</strong> When creating Stripe sessions, always fetch the item prices from the database to prevent users from manipulating the price in the DOM.</li>
+        <li><strong>Snapshots are mandatory.</strong> <code>priceAtOrder</code> ensures that historical financial records are never affected by future menu price updates.</li>
+        <li><strong>Idempotency is critical.</strong> Webhooks can retry. Always check if a record has already been updated before executing a transaction.</li>
+        <li><strong>Zustand + persist</strong> is the sweet spot for e-commerce carts, avoiding unnecessary DB load while surviving page refreshes.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-13-locales-assistant.html">← Phase 13 (Locales & Assistant)</a>
+      <span class="center">Phase 14 of 14</span>
+      <span class="disabled">End of Project</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
