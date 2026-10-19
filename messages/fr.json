@@ -52,7 +52,7 @@
     "all": "Tout",
     "metaDescription": "Parcourez le menu complet du restaurant Lumière — entrées, plats principaux, desserts et boissons. Utilisez les filtres pour trouver ce que vous aimez.",
     "featuredBadge": "⭐ En vedette",
-    "currency": "EGP",
+    "currency": "AED",
     "details": "Détails →"
   },
     "Reserve": {
@@ -195,7 +195,7 @@
 },
     "ItemDetail": {
     "backToMenu": "Retour au menu",
-    "currency": "EGP",
+    "currency": "AED",
     "reserveTable": "Réserver une table",
     "available": "✓ Disponible maintenant",
     "unavailable": "Non disponible actuellement",
@@ -357,7 +357,7 @@
       "edit": "✎ Modifier",
       "delete": "🗑 Supprimer",
       "deleteConfirm": "Supprimer « {name} » définitivement ? Action irréversible.",
-      "currency": "EGP"
+      "currency": "AED"
     },
     "menuForm": {
       "imageLabel": "Image (facultatif)",
@@ -382,7 +382,7 @@
       "slugLabel": "Identifiant (Slug)",
       "slugPlaceholder": "hummus",
       "slugHint": "Lettres minuscules anglaises, chiffres et tirets uniquement",
-      "priceLabel": "Prix (EGP)",
+      "priceLabel": "Prix (AED)",
       "pricePlaceholder": "55",
       "categoryLabel": "Catégorie",
       "imageUrlLabel": "URL de l'image (facultatif)",
@@ -592,7 +592,7 @@
       "subtitle": "Un aperçu visuel de la répartition du menu et des prix",
       "categoryTitle": "Plats par catégorie",
       "featuredTitle": "En vedette vs Réguliers",
-      "priceTitle": "Répartition des prix (EGP)",
+      "priceTitle": "Répartition des prix (AED)",
       "priceAxisHint": "Axe X : tranche de prix · Axe Y : nombre de plats",
       "featuredLabel": "En vedette ⭐",
       "regularLabel": "Réguliers"

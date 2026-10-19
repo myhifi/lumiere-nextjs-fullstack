@@ -53,7 +53,7 @@ export function CartDrawer() {
                 </div>
                 <div className="flex-1 flex flex-col">
                   <span className="font-bold text-sm line-clamp-1">{item.name}</span>
-                  <span className="text-accent-dark font-medium text-sm mt-1">{item.price} EGP</span>
+                  <span className="text-accent-dark font-medium text-sm mt-1">{item.price} AED</span>
                   
                   <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-3 bg-card border border-border rounded-lg px-2 py-1">
@@ -80,7 +80,7 @@ export function CartDrawer() {
           <div className="p-4 border-t border-border bg-card">
             <div className="flex justify-between items-center mb-4">
               <span className="font-medium">{t("subtotal")}</span>
-              <span className="text-xl font-bold text-accent-dark">{getTotal()} EGP</span>
+              <span className="text-xl font-bold text-accent-dark">{getTotal()} AED</span>
             </div>
             <Link
               href="/checkout"

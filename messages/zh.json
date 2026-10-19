@@ -52,7 +52,7 @@
 "all": "全部",
 "metaDescription": "浏览 Lumière 餐厅完整菜单——开胃菜、主菜、甜点和饮料。使用筛选功能快速找到您的心水之选。",
 "featuredBadge": "⭐ 招牌推荐",
-"currency": "EGP",
+"currency": "AED",
 "details": "详情 →"
 },
 "Reserve": {
@@ -195,7 +195,7 @@
 },
 "ItemDetail": {
 "backToMenu": "返回菜单",
-"currency": "EGP",
+"currency": "AED",
 "reserveTable": "预订桌位",
 "available": "✓ 现可供应",
 "unavailable": "暂不供应",
@@ -357,7 +357,7 @@
 "edit": "✎ 编辑",
 "delete": "🗑 删除",
 "deleteConfirm": "确定要永久删除“{name}”吗？此操作无法撤销。",
-"currency": "EGP"
+"currency": "AED"
 },
 "menuForm": {
 "imageLabel": "图片（选填）",
@@ -382,7 +382,7 @@
 "slugLabel": "别名 (Slug)",
 "slugPlaceholder": "hummus",
 "slugHint": "仅限小写英文字母、数字和连字符",
-"priceLabel": "价格 (EGP)",
+"priceLabel": "价格 (AED)",
 "pricePlaceholder": "55",
 "categoryLabel": "所属分类",
 "imageUrlLabel": "图片 URL（选填）",
@@ -592,7 +592,7 @@
 "subtitle": "菜单与价格分布图表概览",
 "categoryTitle": "各分类菜品数量",
 "featuredTitle": "招牌菜 vs 常规菜",
-"priceTitle": "价格分布 (EGP)",
+"priceTitle": "价格分布 (AED)",
 "priceAxisHint": "X轴：价格区间 · Y轴：菜品数量",
 "featuredLabel": "招牌菜 ⭐",
 "regularLabel": "常规菜"

@@ -52,7 +52,7 @@
     "all": "Tutti",
     "metaDescription": "Esplora il menu completo del ristorante Lumière — antipasti, primi e secondi piatti, dessert e bevande. Utilizza i filtri per trovare le tue preferenze.",
     "featuredBadge": "⭐ In evidenza",
-    "currency": "EGP",
+    "currency": "AED",
     "details": "Dettagli →"
   },
   "Reserve": {
@@ -195,7 +195,7 @@
 },
   "ItemDetail": {
     "backToMenu": "Torna al Menu",
-    "currency": "EGP",
+    "currency": "AED",
     "reserveTable": "Prenota un Tavolo",
     "available": "✓ Disponibile Ora",
     "unavailable": "Al momento non disponibile",
@@ -357,7 +357,7 @@
       "edit": "✎ Modifica",
       "delete": "🗑 Elimina",
       "deleteConfirm": "Eliminare definitivamente \"{name}\"? L'azione non può essere annullata.",
-      "currency": "EGP"
+      "currency": "AED"
     },
     "menuForm": {
       "imageLabel": "Immagine (opzionale)",
@@ -382,7 +382,7 @@
       "slugLabel": "Slug",
       "slugPlaceholder": "hummus",
       "slugHint": "Solo lettere inglesi minuscole, numeri e trattini",
-      "priceLabel": "Prezzo (EGP)",
+      "priceLabel": "Prezzo (AED)",
       "pricePlaceholder": "55",
       "categoryLabel": "Categoria",
       "imageUrlLabel": "URL Immagine (opzionale)",
@@ -592,7 +592,7 @@
       "subtitle": "Una panoramica visiva del menu e della distribuzione dei prezzi",
       "categoryTitle": "Piatti per Categoria",
       "featuredTitle": "In Evidenza vs Standard",
-      "priceTitle": "Distribuzione dei Prezzi (EGP)",
+      "priceTitle": "Distribuzione dei Prezzi (AED)",
       "priceAxisHint": "Asse X: fascia di prezzo · Asse Y: numero di piatti",
       "featuredLabel": "In evidenza ⭐",
       "regularLabel": "Standard"

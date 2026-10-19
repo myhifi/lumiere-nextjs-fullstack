@@ -173,9 +173,9 @@ model OrderItem {
 
       <pre><code>const lineItems = order.items.map((item) =&gt; ({
   price_data: {
-    currency: "egp",
+    currency: "AED",
     product_data: { name: item.menuItem.name },
-    unit_amount: Math.round(item.priceAtOrder * 100), // EGP uses 2 decimals
+    unit_amount: Math.round(item.priceAtOrder * 100), // AED uses 2 decimals
   },
   quantity: item.quantity,
 }));

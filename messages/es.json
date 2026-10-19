@@ -52,7 +52,7 @@
     "all": "Todos",
     "metaDescription": "Explora el menú completo del restaurante Lumière — entrantes, platos principales, postres y bebidas. Usa los filtros para encontrar lo que te gusta.",
     "featuredBadge": "⭐ Destacado",
-    "currency": "EGP",
+    "currency": "AED",
     "details": "Detalles →"
   },
     "Reserve": {
@@ -195,7 +195,7 @@
 },
   "ItemDetail": {
     "backToMenu": "Volver al menú",
-    "currency": "EGP",
+    "currency": "AED",
     "reserveTable": "Reservar una mesa",
     "available": "✓ Disponible ahora",
     "unavailable": "No disponible actualmente",
@@ -357,7 +357,7 @@
       "edit": "✎ Editar",
       "delete": "🗑 Eliminar",
       "deleteConfirm": "¿Eliminar \"{name}\" permanentemente? No se puede deshacer.",
-      "currency": "EGP"
+      "currency": "AED"
     },
     "menuForm": {
       "imageLabel": "Imagen (opcional)",
@@ -382,7 +382,7 @@
       "slugLabel": "Identificador (Slug)",
       "slugPlaceholder": "hummus",
       "slugHint": "Solo letras minúsculas inglesas, números y guiones",
-      "priceLabel": "Precio (EGP)",
+      "priceLabel": "Precio (AED)",
       "pricePlaceholder": "55",
       "categoryLabel": "Categoría",
       "imageUrlLabel": "URL de la imagen (opcional)",
@@ -592,7 +592,7 @@
       "subtitle": "Una vista visual de la distribución del menú y los precios",
       "categoryTitle": "Platos por categoría",
       "featuredTitle": "Destacados vs Regulares",
-      "priceTitle": "Distribución de precios (EGP)",
+      "priceTitle": "Distribución de precios (AED)",
       "priceAxisHint": "Eje X: rango de precios · Eje Y: número de platos",
       "featuredLabel": "Destacados ⭐",
       "regularLabel": "Regulares"

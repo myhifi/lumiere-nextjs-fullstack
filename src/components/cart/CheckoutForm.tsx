@@ -91,7 +91,7 @@ export function CheckoutForm() {
       )}
 
       <button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-accent-dark text-white font-medium py-4 rounded-full transition-colors disabled:opacity-50">
-        {isSubmitting ? t("processing") : `${t("payNow")} - ${getTotal()} EGP`}
+        {isSubmitting ? t("processing") : `${t("payNow")} - ${getTotal()} AED`}
       </button>
     </Form>
   );

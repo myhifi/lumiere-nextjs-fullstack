@@ -83,7 +83,7 @@ export function OrderRow({ order, locale }: Props) {
 
         {/* Total */}
         <div className="text-lg font-bold text-accent-dark min-w-25">
-          {order.totalAmount} <span className="text-xs font-normal">EGP</span>
+          {order.totalAmount} <span className="text-xs font-normal">AED</span>
         </div>
 
         {/* Status Badge & Action */}

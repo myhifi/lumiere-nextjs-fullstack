@@ -52,7 +52,7 @@
     "all": "الكل",
     "metaDescription": "تصفح قائمة مطعم Lumière الكاملة — مقبلات، أطباق رئيسية، حلويات، ومشروبات. استخدم الفلاتر لتصفح ما يناسبك.",
     "featuredBadge": "⭐ مميز",
-    "currency": "ج.م",
+    "currency": "د.إ",
     "details": "التفاصيل ←"
   },
     "Reserve": {
@@ -195,7 +195,7 @@
 },
   "ItemDetail": {
     "backToMenu": "العودة إلى القائمة",
-    "currency": "ج.م",
+    "currency": "د.إ",
     "reserveTable": "احجز طاولة",
     "available": "✓ متوفر الآن",
     "unavailable": "غير متوفر حالياً",
@@ -357,7 +357,7 @@
       "edit": "✎ تعديل",
       "delete": "🗑 حذف",
       "deleteConfirm": "حذف \"{name}\" نهائياً؟ لا يمكن التراجع.",
-      "currency": "ج.م"
+      "currency": "د.إ"
     },
     "menuForm": {
       "imageLabel": "الصورة (اختياري)",
@@ -382,7 +382,7 @@
       "namePlaceholder": "مثال: حمص بالطحينة",
       "slugPlaceholder": "hummus",
       "slugHint": "حروف إنجليزية صغيرة وأرقام وشرطات فقط",
-      "priceLabel": "السعر (ج.م)",
+      "priceLabel": "السعر (د.إ)",
       "pricePlaceholder": "55",
       "categoryLabel": "التصنيف",
       "imageUrlLabel": "رابط الصورة (اختياري)",
@@ -592,7 +592,7 @@
       "subtitle": "نظرة بصرية على توزيع القائمة والأسعار",
       "categoryTitle": "الأطباق حسب التصنيف",
       "featuredTitle": "المميزة مقابل العادية",
-      "priceTitle": "توزيع الأسعار (ج.م)",
+      "priceTitle": "توزيع الأسعار (د.إ)",
       "priceAxisHint": "المحور الأفقي: نطاق السعر · المحور العمودي: عدد الأطباق",
       "featuredLabel": "مميزة ⭐",
       "regularLabel": "عادية"

@@ -27,12 +27,12 @@ export async function createStripeSession(orderId: string, locale: string) {
     // 2. Map the DB items to Stripe line_items
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = order.items.map((item) => ({
       price_data: {
-        currency: "egp",
+        currency: "aed",
         product_data: {
           name: item.menuItem.name,
           // images: item.menuItem.imageUrl ? [item.menuItem.imageUrl] : [], // Optional
         },
-        // EGP is a 2-decimal currency, so we must multiply by 100
+        // AED is a 2-decimal currency, so we must multiply by 100
         unit_amount: Math.round(item.priceAtOrder * 100), 
       },
       quantity: item.quantity,

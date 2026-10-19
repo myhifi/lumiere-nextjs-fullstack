@@ -44,7 +44,7 @@ export function ProductDetailsActions({ item }: { item: MenuItem }) {
         disabled={!item.isAvailable || item.stock <= 0}
         className="flex-1 bg-accent hover:bg-accent-dark text-white font-medium py-3 px-8 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        Add to Cart - {(item.price * quantity).toFixed(2)} EGP
+        Add to Cart - {(item.price * quantity).toFixed(2)} AED
       </button>
     </div>
   );
