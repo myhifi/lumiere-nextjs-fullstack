@@ -2,6 +2,7 @@
 
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { getLocalizedName } from "@/lib/utils/locale";
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
@@ -29,10 +30,8 @@ export async function createStripeSession(orderId: string, locale: string) {
       price_data: {
         currency: "aed",
         product_data: {
-          name: item.menuItem.name,
-          // images: item.menuItem.imageUrl ? [item.menuItem.imageUrl] : [], // Optional
+          name: getLocalizedName(item.menuItem.name, item.menuItem.nameEn, locale),
         },
-        // AED is a 2-decimal currency, so we must multiply by 100
         unit_amount: Math.round(item.priceAtOrder * 100), 
       },
       quantity: item.quantity,
