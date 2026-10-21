@@ -5,7 +5,7 @@ Full-Stack Next.js Application · Portfolio Project
 
 Author:  Mohamed Yehia (myhifi)
 Started: September 2026
-Status:  🚀 Active Development — Phase 14 Complete, Phase 15 in Progress
+Status:  🚀 Active Development — Phase 15 Complete (All 15 Phases Done!)
 
 ═══════════════════════════════════════════════════════════════
 📌 PROJECT LINKS
@@ -422,31 +422,35 @@ LESSONS:
 - Next.js redirects for Stripe must use window.location.href (external URL).
 
 ───────────────────────────────────────────────────────────────
-2026-10-20 — PHASE 15: ORDER TRACKING & EMAIL AUTOMATION (IN PROGRESS)
+2026-10-21 — PHASE 15: ORDER TRACKING & EMAIL AUTOMATION
 ───────────────────────────────────────────────────────────────
-[ ] Create public /track-order page (Search by Order ID or Email)
-[ ] Build visual timeline component (Paid → Preparing → Delivered)
-[ ] Integrate Resend email automation on `checkout.session.completed`
-[ ] Create OrderConfirmation React Email template
+✅ Secure /track-order page (URL-driven state: ?id=... or ?email=...)
+✅ Smart Search: Classifies input as Order ID (CUID) or Email via Zod
+✅ Privacy-First Architecture: 
+   - ID search returns full details + timeline
+   - Email search returns only a summary list (No PII)
+✅ Responsive OrderTimeline component (Desktop horizontal, Mobile vertical)
+✅ Admin Orders Dashboard updated to display guestEmail
+✅ OrderConfirmation React Email template (Branded, RTL/LTR support)
+✅ Resend email integration triggered via Stripe Webhook
+✅ Webhook refactored: Email sent *after* DB transaction succeeds (fail-safe)
+✅ Added NEXT_PUBLIC_APP_URL for dynamic tracking links in emails
+✅ Translated new tracking & email keys across all 7 locales
+✅ Phase 15 HTML Documentation page created
+✅ Updated README.md with Phase 15 features and badges
+
+LESSONS:
+- URL State (?id=) is superior for search pages: allows bookmarking, refreshing, and sharing links directly from the email.
+- NEVER send emails inside a Prisma transaction. If the email API times out, the DB rolls back, leaving a "paid" customer with a "pending" order.
+- Resend Free Tier limits: You can only send to the registered email address. Production requires verifying a custom domain.
+- Component purity: Dumb components (receiving translated strings as props) can be safely used in both Server and Client Components.
 
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════
 
-1. Complete Phase 15 (Order Tracking + Email Automation)
-2. Record 80-second video walkthrough (Updated for E-Commerce)
-3. Update README.md with Phase 14 & 15 features
+1. Enjoy the completed portfolio!
 ═══════════════════════════════════════════════════════════════
-
-🎬 RECORD 80-SECOND VIDEO WALKTHROUGH
-
-Deliverable:  Showcase video for portfolio, LinkedIn, HR
-Tool:         Online ClipChamp
-Style:        English-first, then flash all 7 languages
-Duration:     ~80 seconds
-
-7. Add Video to README
-8. Post on LinkedIn
 
 ═══════════════════════════════════════════════════════════════
 📌 SAVED TECHNICAL LESSONS (DO NOT REPEAT)

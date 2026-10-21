@@ -1,37 +1,21 @@
-import type {
-  ReservationEmailData,
-  SendEmailResult,
-} from "../types";
+import type { SendEmailResult, ReservationEmailData, OrderEmailData } from "../types";
 
-// ═══════════════════════════════════════════════════
-// 🖥️ Console Provider — للتحقق أثناء التطوير
-// ═══════════════════════════════════════════════════
-// يطبع الإيميل في الطرفية بدل إرساله فعلياً
-// (يعادل EMAIL_BACKEND = console في Django)
+type EmailData = ReservationEmailData | OrderEmailData;
 
 export async function sendViaConsole(
-  data: ReservationEmailData,
+  data: EmailData,
   html: string,
   subject: string
 ): Promise<SendEmailResult> {
-  const line = "═".repeat(60);
-
-  console.log("\n" + line);
-  console.log("📧 [DEV] إيميل جاهز للإرسال (لم يُرسل فعلياً)");
-  console.log(line);
-  console.log(`   إلى:      ${data.to}`);
-  console.log(`   Subject:  ${subject}`);
-  console.log(`   المعرّف:  ${data.reservationId}`);
-  console.log(line);
-  console.log("📄 محتوى HTML (مقتطف):");
-  // نطبع أول 400 حرف فقط، لتجنب إغراق الطرفية
-  console.log(html.slice(0, 400) + "...");
-  console.log(line);
-  console.log("💡 لرؤية الإيميل كاملاً: افتح Terminal → وسّع النافذة");
-  console.log("💡 للتبديل إلى Resend: أضف EMAIL_PROVIDER=resend في .env\n");
-
-  return {
-    success: true,
-    messageId: `console-${Date.now()}`,
-  };
+  // Safely check which type of email we are logging
+  const identifier = "reservationId" in data ? data.reservationId : data.orderId;
+  
+  console.log(`\n========================================`);
+  console.log(`📧 [Console Provider] Email Sent`);
+  console.log(`To: ${data.to}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Reference ID: ${identifier}`);
+  console.log(`========================================\n`);
+  
+  return { success: true, messageId: "console-" + Date.now() };
 }

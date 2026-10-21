@@ -1,3 +1,4 @@
+// src/app/[locale]/(public)/checkout/success/page.tsx
 import { getTranslations } from "next-intl/server";
 import { CheckCircle2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -9,7 +10,7 @@ type PageProps = {
 };
 
 export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
-  const { locale } = await params;
+  await params;
   const { session_id } = await searchParams;
   const t = await getTranslations("CheckoutSuccess");
 

@@ -1,3 +1,4 @@
+// src/components/admin/OrderRow.tsx
 "use client";
 
 import { useState, useTransition } from "react";
@@ -65,6 +66,7 @@ export function OrderRow({ order, locale }: Props) {
         <div className="flex-1 min-w-50">
           <div className="font-medium">{order.guestName}</div>
           <div className="text-xs text-muted mt-1">{formattedDate}</div>
+          <p className="text-sm text-gray-500">{order.guestEmail}</p>
           <div className="text-xs text-muted mt-1" dir="ltr">{order.guestPhone}</div>
           <div className="text-xs text-muted mt-1 line-clamp-1">{order.deliveryAddress}</div>
         </div>

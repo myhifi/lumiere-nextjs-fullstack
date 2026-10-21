@@ -236,6 +236,7 @@ model Order {
   @@index([status])
   @@index([createdAt])
   @@map("orders")
+  @@index([guestEmail])
 }
 
 // ═══════════════════════════════════════════════════

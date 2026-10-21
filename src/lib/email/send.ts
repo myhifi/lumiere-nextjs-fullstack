@@ -13,6 +13,8 @@ import type {
   ReservationEmailData,
   SendEmailResult,
 } from "./types";
+import { OrderConfirmation } from "./templates/OrderConfirmation";
+import type { OrderEmailData } from "./types";
 
 // ═══════════════════════════════════════════════════
 // 📧 Unified email sender
@@ -92,5 +94,50 @@ export async function sendReservationConfirmation(
       success: false,
       error: "Failed to prepare email",
     };
+  }
+}
+
+export async function sendOrderConfirmation(
+  data: OrderEmailData
+): Promise<SendEmailResult> {
+  try {
+    const locale = data.locale || "en";
+    const messages = await loadMessages(locale);
+    const t = createTranslator({
+      locale,
+      messages,
+      namespace: "Email.OrderConfirmation",
+    }) as unknown as EmailTranslator;
+
+    const whatsappNumber = await getWhatsAppNumber();
+    
+    // Use NEXT_PUBLIC_APP_URL or fallback to production URL
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://lumiere-nextjs-fullstack.vercel.app";
+
+    const html = await render(
+      OrderConfirmation({
+        ...data,
+        t,
+        whatsappNumber,
+        appUrl,
+      })
+    );
+
+    const provider = getProvider();
+    const subject = t("subject");
+
+    switch (provider) {
+      case "console":
+        return await sendViaConsole(data, html, subject);
+
+      case "resend":
+        return await sendViaResend(data, html, subject);
+
+      default:
+        return { success: false, error: `Unknown email provider: ${provider}` };
+    }
+  } catch (error) {
+    console.error("[sendOrderConfirmation] error:", error);
+    return { success: false, error: "Failed to prepare email" };
   }
 }

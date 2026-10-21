@@ -1,9 +1,9 @@
 # 🍽️ Lumière Restaurant — Full-Stack Next.js Application
 
-> A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, email notifications, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
+> A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, secure Stripe checkout, order tracking, automated email receipts notifications, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-14%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-14-stripe-checkout.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-15%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -37,7 +37,7 @@
 | **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/en/reserve |
 | **About** | https://lumiere-nextjs-fullstack.vercel.app/en/about |
 | **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/en/admin |
-| **Full Project Walkthrough** | [Phase 1 → Phase 14](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-14-stripe-checkout.html) |
+| **Full Project Walkthrough** | [Phase 1 → Phase 15](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) |
 
 > **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es`, `/it`, `/zh` prefixes. Arabic is RTL; the rest are LTR.
 
@@ -94,6 +94,8 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - 📖 **About page** — the story of Lumière, chef biography, values, and full-page storytelling in 7 locales
 - 🤖 **Smart FAQ Assistant** — floating chat panel that answers common questions in all 7 languages. Zero download, zero external API, sub-50ms responses
 - 🛒 **Shopping Cart & Delivery** — persistent Zustand cart, dynamic checkout, and order tracking (AED currency)
+- 🔍 **Order Tracking** — secure, URL-driven page to track delivery status by Order ID or Email
+- 📧 **Automated Emails** — beautifully branded React Email receipts sent automatically via Resend Webhooks
 - 💳 **Stripe Payments** — secure Stripe Checkout with event-driven webhooks and inventory deduction
 - ⭐ **Customer reviews** — star ratings with admin moderation
 - ⬆️ **Scroll-to-top button** — appears after 400px of scrolling, elegant fade-in
@@ -178,7 +180,7 @@ Git push → GitHub → Vercel Build → Production URL
 ---
 ## 📚 Project Documentation
 
-This project was built in **13 documented phases**, each with a self-contained HTML portfolio page:
+This project was built in **15 documented phases**, each with a self-contained HTML portfolio page:
 
 | Phase | Topic | Documentation |
 |---|---|---|
@@ -196,8 +198,9 @@ This project was built in **13 documented phases**, each with a self-contained H
 | 12 | Menu EN + About + UX Polish | [Open](./public/portfolio/phase-12-menu-about.html) |
 | 13 | Italian + Chinese + Smart Assistant | [Open](./public/portfolio/phase-13-locales-assistant.html) |
 | 14 | Stripe Checkout & Delivery | [Open](./public/portfolio/phase-14-stripe-checkout.html) |
+| 15 | Order Tracking & Email Automation | [Open](./public/portfolio/phase-15-order-tracking.html) |
 
-> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-13-locales-assistant.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
+> **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 
 ---
 
@@ -250,10 +253,12 @@ For portfolio review, use this account to explore the full admin dashboard:
 | `DATABASE_URL` | PostgreSQL connection string (direct endpoint) | ✅ |
 | `DIRECT_URL` | Direct connection for migrations | ✅ |
 | `AUTH_SECRET` | JWT signing secret (64+ chars) | ✅ |
-| `EMAIL_PROVIDER` | `console` (dev) or `resend` (production) | ✅ |
 | `STRIPE_SECRET_KEY` | Stripe Secret Key (`sk_test_...`) | ✅ |
 | `STRIPE_WEBHOOK_SECRET` | Stripe Webhook Signing Secret (`whsec_...`) | ✅ |
 | `NEXT_PUBLIC_SITE_URL` | Public URL for OG images and sitemap | Optional |
+| `EMAIL_PROVIDER` | `console` (dev) or `resend` (production) | ✅ |
+| `RESEND_API_KEY` | Your Resend API key (re_...) | ✅ |
+| `NEXT_PUBLIC_APP_URL` | Public URL for tracking links in emails | ✅ |
 
 Generate `AUTH_SECRET` with:
 
@@ -269,7 +274,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 lumiere-nextjs-fullstack/
 ├── messages/                     # 5 translation files (ar, en, fr, de, es)
 ├── public/
-│   ├── portfolio/                # 12 HTML portfolio pages
+│   ├── portfolio/                # 15 HTML portfolio pages
 │   └── screenshots/              # Curated screenshots (public, admin, docs)
 ├── prisma/
 │   ├── schema.prisma             # 8 models (incl. AuditLog, Review)
