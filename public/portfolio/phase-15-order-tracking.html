@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 15 — Order Tracking & Email Automation · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 15</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#tracking">Tracking UI</a>
+      <a href="#privacy">Privacy-First Architecture</a>
+      <a href="#email">Email Automation</a>
+      <a href="#validation">Validation & i18n</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 15 · Order Tracking & Email Automation</div>
+      <h1>Post-Purchase Experience</h1>
+      <p class="lede">Complete the customer lifecycle by adding a secure, URL-driven order tracking page and automated, beautifully branded email receipts triggered directly from the Stripe webhook.</p>
+      <div class="stack">
+        <span>Next.js Server Components</span><span>URL State</span>
+        <span>React Email</span><span>Resend</span><span>Zod</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Close the loop on the food delivery flow. After a customer pays, they need a way to track their delivery without creating an account. Furthermore, they need an immediate, professional receipt in their inbox.</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>Smart Tracking Page:</strong> A single search form (<code>/track-order</code>) that accepts either an Order ID or an Email.</li>
+        <li><strong>Visual Timeline:</strong> A responsive, step-by-step progress indicator for the order status.</li>
+        <li><strong>Privacy-First Design:</strong> Searching by email reveals only a summary list, never the full address or phone number.</li>
+        <li><strong>Automated Emails:</strong> Integration of React Email and Resend to send order confirmations directly from the Stripe Webhook.</li>
+        <li><strong>Robust Validation:</strong> Zod schemas to prevent invalid database queries.</li>
+      </ul>
+    </section>
+
+    <section id="tracking">
+      <h2><span class="num">2</span> Tracking UI & URL State</h2>
+      <p>To make the tracking page shareable and refresh-safe, we avoided client-side <code>useState</code> for search results. Instead, the page relies entirely on <strong>URL State</strong> (<code>?id=...</code> or <code>?email=...</code>).</p>
+      
+      <p>The page is a Server Component that reads the <code>searchParams</code>, classifies the input, and fetches the data server-side.</p>
+
+      <pre><code>// src/app/[locale]/(public)/track-order/page.tsx
+type PageProps = {
+  params: Promise&lt;{ locale: string }&gt;;
+  searchParams: Promise&lt;{ id?: string; email?: string }&gt;;
+};
+
+export default async function TrackOrderPage({ params, searchParams }: PageProps) {
+  const { locale } = await params;
+  const { id, email } = await searchParams;
+  const rawQuery = id || email || "";
+  // Classify and fetch securely...
+}</code></pre>
+
+      <p>The visual timeline (<code>OrderTimeline.tsx</code>) is a pure UI component that accepts translated labels as props, allowing it to be safely used in both Server and Client components without hydration errors.</p>
+    </section>
+
+    <section id="privacy">
+      <h2><span class="num">3</span> Privacy-First Architecture</h2>
+      <p>If a user searches by email, returning full order details is a severe security risk (anyone could type <code>admin@gmail.com</code> and see their home address).</p>
+      
+      <div class="callout warn">
+        <strong>The Privacy Rule</strong>
+        <ul>
+          <li><strong>Search by Order ID:</strong> Returns full details (Address, Phone, Items, Timeline).</li>
+          <li><strong>Search by Email:</strong> Returns a summary list (Date, Total, Status) without sensitive PII.</li>
+        </ul>
+      </div>
+
+      <p>We enforced this at the database query level using Prisma <code>select</code> to ensure sensitive fields are never even fetched from the DB during an email search.</p>
+
+      <pre><code>// src/lib/services/orderTracking.ts
+export async function getTrackedOrdersByEmail(email: string) {
+  return await prisma.order.findMany({
+    where: { guestEmail: { equals: email, mode: "insensitive" } },
+    select: {
+      id: true,
+      createdAt: true,
+      status: true,
+      totalAmount: true,
+      // Notice: NO deliveryAddress, NO guestPhone
+    },
+  });
+}</code></pre>
+    </section>
+
+    <section id="email">
+      <h2><span class="num">4</span> Email Automation</h2>
+      <p>We integrated <strong>Resend</strong> and <strong>React Email</strong> to dispatch a beautifully branded receipt the moment a payment succeeds.</p>
+
+      <h3>Webhook Integration</h3>
+      <p>The email is triggered inside the Stripe Webhook <em>after</em> the database transaction successfully updates the order status to <code>PAID</code>. We wrapped the email dispatch in a <code>try/catch</code> block so that if Resend's API goes down, it doesn't fail the Stripe webhook and cause Stripe to retry the payment.</p>
+
+      <pre><code>// src/app/api/webhooks/stripe/route.ts
+await prisma.$transaction(async (tx) =&gt; {
+  // 1. Update order to PAID
+  // 2. Deduct stock
+});
+
+// 3. Send email (Outside transaction)
+try {
+  await sendOrderConfirmation({
+    to: existingOrder.guestEmail,
+    guestName: existingOrder.guestName,
+    orderId: existingOrder.id,
+    items: existingOrder.items.map(i =&gt; ({
+      name: i.menuItem.name,
+      quantity: i.quantity,
+      priceAtOrder: i.priceAtOrder,
+    })),
+    // ...
+  });
+} catch (error) {
+  console.error("Email failed, but payment succeeded:", error);
+}</code></pre>
+
+      <h3>React Email Template</h3>
+      <p>The email uses the exact Lumière design system (gold accents, clean layout). It includes a prominent "Track Your Order" button that links directly back to the tracking page with the Order ID pre-filled.</p>
+
+      <pre><code>// src/lib/email/templates/OrderConfirmation.tsx
+const trackLink = `${appUrl}/${locale}/track-order?id=${orderId}`;
+
+&lt;Section style={{ textAlign: "center", marginTop: 24 }}&gt;
+  &lt;a href={trackLink} style={button}&gt;
+    {t("trackButton")}
+  &lt;/a&gt;
+&lt;/Section&gt;</code></pre>
+    </section>
+
+    <section id="validation">
+      <h2><span class="num">5</span> Robust Validation & i18n</h2>
+      <p>To prevent Prisma from crashing when a user types random text into the search bar, we intercept the input with a custom Zod validation schema.</p>
+
+      <pre><code>// src/lib/validations/orderTracking.ts
+const CUID_REGEX = /^c[a-z0-9]{24}$/i;
+
+export function classifyQuery(raw: string): ClassifiedQuery {
+  const value = raw.trim();
+  if (CUID_REGEX.test(value)) return { type: "id", value };
+  if (value.includes("@")) return { type: "email", value: value.toLowerCase() };
+  return { type: "invalid", value };
+}</code></pre>
+
+      <p><strong>Internationalization (i18n):</strong> The tracking page, the visual timeline, and the email receipts are fully translated across all 6 supported locales (<code>en</code>, <code>ar</code>, <code>fr</code>, <code>de</code>, <code>it</code>, <code>zh</code>), including RTL support for the Arabic email template.</p>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">6</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>URL State is superior for searches.</strong> Moving search parameters out of React state and into the URL (<code>?id=</code>) means users can refresh, bookmark, and share their tracking link directly from the email without losing the result.</li>
+        <li><strong>Side-Effects & Transactions.</strong> Never send emails <em>inside</em> a Prisma transaction. If the email API times out, the transaction rolls back, and you have a "paid" customer with a "pending" order in your database. Always dispatch emails after the transaction resolves.</li>
+        <li><strong>Resend Free Tier Limits.</strong> During testing, we learned that the free tier of Resend only allows sending emails to the specific email address you registered the account with, preventing spam. Production requires verifying a custom domain.</li>
+        <li><strong>Component purity.</strong> Extracting the <code>OrderTimeline</code> into a "dumb" component that receives translation strings as props makes it infinitely reusable in both Server Components and Client Components (like modals).</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-14-stripe-checkout.html">← Phase 14 (Stripe Checkout)</a>
+      <span class="center">Phase 15 of 15</span>
+      <span class="disabled">End of Project</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>
