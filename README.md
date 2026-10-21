@@ -3,7 +3,7 @@
 > A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, email notifications, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-12%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-14%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-14-stripe-checkout.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -20,11 +20,11 @@
 
 ## 🎬 Demo Video
 
-[![Lumière — Full-Stack Restaurant Platform](https://img.youtube.com/vi/9meiFDONOwY/maxresdefault.jpg)](https://youtu.be/9meiFDONOwY)
+[![Lumière — Full-Stack Restaurant Platform](https://img.youtube.com/vi/41rTBtHKGWE/maxresdefault.jpg)](https://youtu.be/41rTBtHKGWE)
 
-**▶️ [Watch the 90-second walkthrough](https://youtu.be/9meiFDONOwY)**
+**▶️ [Watch the 110-second walkthrough](https://youtu.be/41rTBtHKGWE)**
 
-*7 languages · smart reservations · real email delivery · admin dashboard · audit trail*
+*7 languages · smart reservations · Stripe checkout · admin dashboard · audit trail*
 
 ---
 
@@ -37,7 +37,7 @@
 | **Reservation** | https://lumiere-nextjs-fullstack.vercel.app/en/reserve |
 | **About** | https://lumiere-nextjs-fullstack.vercel.app/en/about |
 | **Admin Dashboard** | https://lumiere-nextjs-fullstack.vercel.app/en/admin |
-| **Full Project Walkthrough** | [Phase 1 → Phase 13](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-12-menu-about.html) |
+| **Full Project Walkthrough** | [Phase 1 → Phase 14](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-14-stripe-checkout.html) |
 
 > **Languages:** All pages work under `/ar`, `/en`, `/fr`, `/de`, `/es`, `/it`, `/zh` prefixes. Arabic is RTL; the rest are LTR.
 
@@ -93,6 +93,8 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - 🎨 **Bilingual content** — menu items and categories have Arabic + English names, with graceful fallback in the other 3 locales
 - 📖 **About page** — the story of Lumière, chef biography, values, and full-page storytelling in 7 locales
 - 🤖 **Smart FAQ Assistant** — floating chat panel that answers common questions in all 7 languages. Zero download, zero external API, sub-50ms responses
+- 🛒 **Shopping Cart & Delivery** — persistent Zustand cart, dynamic checkout, and order tracking (AED currency)
+- 💳 **Stripe Payments** — secure Stripe Checkout with event-driven webhooks and inventory deduction
 - ⭐ **Customer reviews** — star ratings with admin moderation
 - ⬆️ **Scroll-to-top button** — appears after 400px of scrolling, elegant fade-in
 - 📱 **Fully responsive** — mobile-first design with three breakpoints
@@ -100,6 +102,7 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 ### Admin Dashboard
 
 - 📊 **Dashboard overview** with real-time statistics
+- 📦 **Order Management** — track delivery orders, update statuses (Paid → Preparing → Delivered), and audit log every change
 - 📅 **Reservations management** — status lifecycle: pending → confirmed → completed (or cancelled)
 - 🍽️ **Menu management** — full CRUD with availability toggle, featured toggle, auto-slugs, and bilingual fields
 - 📂 **Categories management** — with cascade-delete protection
@@ -138,6 +141,8 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 | **Styling** | Tailwind CSS 4 | Utility-first CSS with RTL support |
 | **Auth** | Auth.js v5 (NextAuth) | Credential-based authentication |
 | **Charts** | Recharts | Interactive analytics dashboards |
+| **Payments** | Stripe | Checkout Sessions + Webhooks |
+| **State Mgmt**| Zustand | Persistent shopping cart |
 | **Email** | React Email | Transactional email templates |
 | **Hosting** | Vercel | Serverless deployment with CDN |
 | **Source Control** | GitHub | Version control and CI/CD |
@@ -190,6 +195,7 @@ This project was built in **13 documented phases**, each with a self-contained H
 | 11 | Internationalization (5 locales) | [Open](./public/portfolio/phase-11-i18n.html) |
 | 12 | Menu EN + About + UX Polish | [Open](./public/portfolio/phase-12-menu-about.html) |
 | 13 | Italian + Chinese + Smart Assistant | [Open](./public/portfolio/phase-13-locales-assistant.html) |
+| 14 | Stripe Checkout & Delivery | [Open](./public/portfolio/phase-14-stripe-checkout.html) |
 
 > **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-13-locales-assistant.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 
@@ -245,6 +251,8 @@ For portfolio review, use this account to explore the full admin dashboard:
 | `DIRECT_URL` | Direct connection for migrations | ✅ |
 | `AUTH_SECRET` | JWT signing secret (64+ chars) | ✅ |
 | `EMAIL_PROVIDER` | `console` (dev) or `resend` (production) | ✅ |
+| `STRIPE_SECRET_KEY` | Stripe Secret Key (`sk_test_...`) | ✅ |
+| `STRIPE_WEBHOOK_SECRET` | Stripe Webhook Signing Secret (`whsec_...`) | ✅ |
 | `NEXT_PUBLIC_SITE_URL` | Public URL for OG images and sitemap | Optional |
 
 Generate `AUTH_SECRET` with:

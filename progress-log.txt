@@ -5,7 +5,7 @@ Full-Stack Next.js Application · Portfolio Project
 
 Author:  Mohamed Yehia (myhifi)
 Started: September 2026
-Status:  ✅ ALL PHASES COMPLETE — Ready for video recording
+Status:  🚀 Active Development — Phase 14 Complete, Phase 15 in Progress
 
 ═══════════════════════════════════════════════════════════════
 📌 PROJECT LINKS
@@ -30,7 +30,9 @@ Validation:      Zod 4
 Styling:         Tailwind CSS 4
 Auth:            Auth.js v5 (NextAuth) + bcryptjs
 i18n:            next-intl v4 (7 locales)
-Email:           React Email + Console Provider
+Email:           React Email + Resend (Production)
+Payments:        Stripe Checkout + Webhooks
+State Mgmt:      Zustand (Persistent Cart)
 Hosting:         Vercel
 Source Control:  GitHub
 CI/CD:           GitHub Actions
@@ -290,7 +292,9 @@ LESSONS:
 ✅ Navbar 5th link: About
 ✅ Scroll-to-top button (fade-in after 400px)
 ✅ Bilingual 404 pages (Next.js + Vercel static)
-✅ 13-phase portfolio HTML documentation
+✅ 14-phase portfolio HTML documentation
+✅ Zustand Shopping Cart & Stripe Checkout (AED)
+✅ Admin Orders Dashboard with status lifecycles
 ✅ Admin-editable WhatsApp number (DB-backed Setting model)
 
 LESSONS:
@@ -366,7 +370,7 @@ BUGS:            None known
 FEATURES:        All implemented
 TESTS:           All passing (tsc + build + CI)
 LOCALES:         7 (ar, en, fr, de, es, it, zh)
-DATABASE:        8 tables (categories, menu_items, tables, reservations, users, audit_logs, reviews, settings)
+DATABASE:        10 tables (categories, menu_items, tables, reservations, users, audit_logs, reviews, settings, orders, order_items)
 
 SEEDED DATA:
 - 4 categories
@@ -389,24 +393,58 @@ LIVE FEATURES WORKING:
 ✅ Bilingual 404 pages
 ✅ 13-phase portfolio HTML documentation
 
+───────────────────────────────────────────────────────────────
+2026-10-18 — PHASE 14: STRIPE CHECKOUT & DELIVERY SYSTEM
+───────────────────────────────────────────────────────────────
+✅ Added Order & OrderItem models (Price snapshotting via priceAtOrder)
+✅ Added `stock` integer to MenuItem
+✅ Zustand `useCartStore` with localStorage persistence (Hydration safe)
+✅ Cart Drawer & Add-to-Cart UI (Quantity selectors on detail pages)
+✅ `createPendingOrder` Server Action (validates DB prices & stock)
+✅ Stripe Checkout Session integration (AED currency)
+✅ Event-Driven Webhook (/api/webhooks/stripe) 
+✅ Webhook updates order to PAID and deducts stock atomically
+✅ Admin Orders Dashboard (/admin/orders) with status updates (Audit Logged)
+✅ Phase 14 HTML Documentation page created
+
+5 BUGS FIXED:
+1. Cart badge caused hydration mismatch → fixed with isMounted flag
+2. Prisma P2024 connection timeout on Admin Dashboard → updated connection_limit in .env
+3. Stripe UI showed Arabic names in English checkout → used getLocalizedName
+4. Stripe UI showed EGP instead of AED → updated stripe.ts & all translations
+5. Recharts reversed price labels (150-101) → forced direction: "ltr" in tooltip
+
+LESSONS:
+- Never trust client prices. Always fetch DB prices before creating Stripe session.
+- Webhooks must be idempotent (check if already PAID).
+- Use Prisma $transaction to deduct stock and update order simultaneously.
+- Stripe requires the raw body for signature verification (req.text()).
+- Next.js redirects for Stripe must use window.location.href (external URL).
+
+───────────────────────────────────────────────────────────────
+2026-10-20 — PHASE 15: ORDER TRACKING & EMAIL AUTOMATION (IN PROGRESS)
+───────────────────────────────────────────────────────────────
+[ ] Create public /track-order page (Search by Order ID or Email)
+[ ] Build visual timeline component (Paid → Preparing → Delivered)
+[ ] Integrate Resend email automation on `checkout.session.completed`
+[ ] Create OrderConfirmation React Email template
+
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
+═══════════════════════════════════════════════════════════════
+
+1. Complete Phase 15 (Order Tracking + Email Automation)
+2. Record 80-second video walkthrough (Updated for E-Commerce)
+3. Update README.md with Phase 14 & 15 features
 ═══════════════════════════════════════════════════════════════
 
 🎬 RECORD 80-SECOND VIDEO WALKTHROUGH
 
 Deliverable:  Showcase video for portfolio, LinkedIn, HR
-Tool:         OBS Studio on Windows 10
+Tool:         Online ClipChamp
 Style:        English-first, then flash all 7 languages
 Duration:     ~80 seconds
 
-Plan:
-1. Pre-Recording Checklist (screen + OBS setup)
-2. OBS Studio Settings (1920×1080, 30 FPS, x264)
-3. 80-second Shot-by-Shot Script
-4. Recording Session Workflow
-5. Post-Recording Trimming
-6. Upload to YouTube (Unlisted)
 7. Add Video to README
 8. Post on LinkedIn
 
@@ -456,7 +494,7 @@ Plan:
 📌 POLISH BACKLOG (Future enhancements, not blocking)
 ═══════════════════════════════════════════════════════════════
 
-- Real email provider (Resend) — replace console provider
+- (Completed: Resend & Stripe)
 - UptimeRobot ping every 5 min (prevent Neon cold starts)
 - Custom domain (lumiere-restaurant.com)
 - Migration to EU region (Frankfurt) for Middle East latency
