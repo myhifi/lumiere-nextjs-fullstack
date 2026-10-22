@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 16 — Real-Time KDS & Live Alerts · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 16</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Real-Time Architecture</a>
+      <a href="#kds">Kitchen Display System</a>
+      <a href="#alerts">Audio Alerts</a>
+      <a href="#localization">Localization</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 16 · Real-Time KDS & Live Alerts</div>
+      <h1>Operational Excellence for the Kitchen</h1>
+      <p class="lede">Transform the admin dashboard into a real restaurant tool. Build a dedicated Kitchen Display System (KDS) that receives live order updates, plays audio alerts, and operates independently of the analytics dashboard.</p>
+      <div class="stack">
+        <span>Server-Sent Events (SSE)</span><span>DB Polling</span>
+        <span>Web Audio API</span><span>Optimistic UI</span>
+        <span>Next.js App Router</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> In a real restaurant, chefs do not want to look at revenue charts or user management tables. They need a high-contrast, zero-distraction screen that shows incoming orders and allows one-tap status updates.</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>New Status:</strong> Added <code>READY</code> to the order lifecycle (PENDING → PAID → PREPARING → READY → DELIVERED).</li>
+        <li><strong>Kitchen UI:</strong> A dark-mode page (<code>/admin/kitchen</code>) with large, touch-friendly cards.</li>
+        <li><strong>Real-Time Sync:</strong> The board updates automatically when a customer pays—no manual refresh required.</li>
+        <li><strong>Audio Alerts:</strong> A dynamic "ding" sound plays when a new order arrives.</li>
+        <li><strong>Smart Localization:</strong> The KDS displays dish names in English on non-Arabic pages, and Arabic on Arabic pages.</li>
+      </ul>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">2</span> Real-Time Architecture (The Serverless Trap)</h2>
+      <p>The original plan was to use a Node.js <code>EventEmitter</code>. When the Stripe webhook fired, it would emit an event, and the SSE stream would catch it.</p>
+      
+      <div class="callout danger">
+        <strong>Why EventEmitters fail in Next.js Serverless</strong>
+        <p>Next.js isolates API routes into separate execution contexts. The webhook and the SSE route are completely different instances and cannot share memory. On Vercel, they might even run on different servers.</p>
+      </div>
+
+      <h3>The Robust Solution: SSE + DB Polling</h3>
+      <p>We implemented a <strong>Server-Sent Event (SSE)</strong> stream that keeps the client connection open, but the server polls the database every 4 seconds for new orders.</p>
+
+      <pre><code>// src/app/api/admin/orders/stream/route.ts
+const pollInterval = setInterval(async () => {
+  const newOrders = await prisma.order.findMany({
+    where: {
+      status: "PAID",
+      updatedAt: { gt: lastCheck },
+    },
+    include: { items: true },
+  });
+
+  if (newOrders.length > 0) {
+    lastCheck = new Date();
+    newOrders.forEach((order) => {
+      sendEvent({ type: "new-order", order });
+    });
+  }
+}, 4000);</code></pre>
+
+      <div class="callout info">
+        <strong>Keep-Alive Ping</strong>
+        To prevent Vercel from closing the connection after 10 seconds, we send a <code>: keep-alive\n\n</code> comment every 10 seconds.
+      </div>
+    </section>
+
+    <section id="kds">
+      <h2><span class="num">3</span> The Kitchen Display System</h2>
+      <p>The KDS is completely separate from the main Admin Dashboard. It only fetches orders with a status of <code>PAID</code> or <code>PREPARING</code>.</p>
+
+      <h3>Optimistic UI</h3>
+      <p>When a chef clicks "Start Cooking", the UI updates instantly while the database query runs in the background. This makes the tablet feel native and responsive.</p>
+
+      <pre><code>const handleUpdate = async (id: string, newStatus: string) => {
+  // Optimistic update: change UI immediately
+  setOrders((prev) => 
+    newStatus === "READY" 
+      ? prev.filter((o) => o.id !== id) // Remove from board
+      : prev.map((o) => o.id === id ? { ...o, status: newStatus } : o)
+  );
+
+  // Send actual DB update
+  await updateOrderStatus(id, newStatus as "PREPARING" | "READY");
+};</code></pre>
+    </section>
+
+    <section id="alerts">
+      <h2><span class="num">4</span> Audio Alerts (Web Audio API)</h2>
+      <p>We didn't want to rely on external MP3 files (which require downloading and can be blocked by browsers). Instead, we generated a "ding" sound mathematically using the browser's native Web Audio API.</p>
+
+      <pre><code>const playDing = () => {
+  if (!soundEnabled) return;
+  const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+  const ctx = new AudioContextClass();
+  
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note
+  osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.5);
+  
+  gain.gain.setValueAtTime(0.5, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 1);
+  
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  
+  osc.start();
+  osc.stop(ctx.currentTime + 1);
+};</code></pre>
+
+      <div class="callout warn">
+        <strong>Browser Autoplay Policy</strong>
+        Browsers block audio until the user interacts with the page. We added a "Enable Sound" button that acts as the required user interaction to unlock the audio context.
+      </div>
+    </section>
+
+    <section id="localization">
+      <h2><span class="num">5</span> Admin Localization</h2>
+      <p>The KDS and the Admin Orders page must display dish names in English for English users, and Arabic for Arabic users.</p>
+      <p>We created a pure helper function <code>getLocalizedName</code> that checks the current locale and returns the correct column from the database.</p>
+
+      <pre><code>// src/lib/utils/locale.ts
+export function getLocalizedName(name: string, nameEn: string | null, locale: string) {
+  if (locale === "ar") return name;
+  return nameEn ?? name;
+}</code></pre>
+
+      <p>We then updated the Prisma queries to fetch <code>nameEn</code> alongside <code>name</code>, ensuring the client component has all the data it needs to render perfectly.</p>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">6</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>Serverless isolation is real.</strong> In-memory event emitters do not work across API routes in Next.js. DB polling + SSE is the most robust solution without paying for Pusher/Ably.</li>
+        <li><strong>Web Audio API is powerful.</strong> Generating sounds dynamically removes external asset dependencies and network requests, making the KDS faster and more reliable.</li>
+        <li><strong>Optimistic UI is essential for operations.</strong> In a busy kitchen, a 500ms delay between clicking "Start Cooking" and seeing the UI update feels broken. Always update the UI immediately, then sync with the server.</li>
+        <li><strong>Admin UX matters.</strong> Chefs and managers are users too. A dedicated, high-contrast KDS is infinitely better than a cramped table view.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-15-order-tracking.html">← Phase 15 (Order Tracking)</a>
+      <span class="center">Phase 16</span>
+      <a href="phase-17-analytics.html">Phase 17 (Analytics) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

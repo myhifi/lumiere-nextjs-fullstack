@@ -244,6 +244,7 @@
     "statusPending": "Pago pendiente",
     "statusPaid": "Pagado",
     "statusPreparing": "Preparando",
+    "statusReady": "Listo",
     "statusDelivered": "Entregado",
     "statusCancelled": "Cancelado",
     "timelinePaid": "Pagado",
@@ -311,10 +312,21 @@
     "noSession": "No se encontró ninguna sesión"
   },
     "Admin": {
+      "kitchen": {
+        "title": "Sistema de visualización de cocina",
+        "soundOn": "Sonido activado",
+        "soundOff": "Activar sonido",
+        "live": "En vivo",
+        "disconnected": "Desconectado",
+        "noOrders": "No hay pedidos activos en este momento.",
+        "startCooking": "Empezar a cocinar",
+        "markReady": "Marcar como listo"
+      },
     "sidebar": {
       "brand": "Panel de administración",
       "overview": "Resumen",
       "orders": "Pedidos",
+      "kitchen": "Tablero de cocina",
       "reservations": "Reservas",
       "menu": "Menú",
       "categories": "Categorías",
@@ -385,6 +397,7 @@
       "statusPending": "Pendiente",
       "statusPaid": "Pagado",
       "statusPreparing": "En preparación",
+      "statusReady": "Listo",
       "statusDelivered": "Entregado",
       "statusCancelled": "Cancelado",
       "updateStatus": "Actualizar estado",

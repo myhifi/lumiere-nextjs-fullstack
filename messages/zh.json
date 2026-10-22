@@ -244,6 +244,7 @@
   "statusPending": "待付款",
   "statusPaid": "已付款",
   "statusPreparing": "准备中",
+  "statusReady": "已就绪",
   "statusDelivered": "已送达",
   "statusCancelled": "已取消",
   "timelinePaid": "已付款",
@@ -311,10 +312,21 @@
     "noSession": "未找到会话"
   },
 "Admin": {
+  "kitchen": {
+    "title": "厨房显示系统",
+    "soundOn": "声音已开启",
+    "soundOff": "开启声音",
+    "live": "实时",
+    "disconnected": "已断开连接",
+    "noOrders": "当前没有活跃订单。",
+    "startCooking": "开始制作",
+    "markReady": "标记为就绪"
+  },
 "sidebar": {
 "brand": "管理后台",
 "overview": "概览",
 "orders": "订单",
+"kitchen": "厨房看板",
 "reservations": "预订管理",
 "menu": "菜单管理",
 "categories": "分类管理",
@@ -385,6 +397,7 @@
       "statusPending": "待处理",
       "statusPaid": "已支付",
       "statusPreparing": "准备中",
+      "statusReady": "已就绪",
       "statusDelivered": "已送达",
       "statusCancelled": "已取消",
       "updateStatus": "更新状态",

@@ -244,6 +244,7 @@
     "statusPending": "Pagamento in sospeso",
     "statusPaid": "Pagato",
     "statusPreparing": "In preparazione",
+    "statusReady": "Pronto",
     "statusDelivered": "Consegnato",
     "statusCancelled": "Annullato",
     "timelinePaid": "Pagato",
@@ -311,10 +312,21 @@
     "noSession": "Nessuna sessione trovata"
   },
   "Admin": {
+    "kitchen": {
+      "title": "Sistema di visualizzazione cucina",
+      "soundOn": "Audio attivo",
+      "soundOff": "Abilita audio",
+      "live": "Live",
+      "disconnected": "Disconnesso",
+      "noOrders": "Nessun ordine attivo al momento.",
+      "startCooking": "Inizia la preparazione",
+      "markReady": "Segna come pronto"
+    },
     "sidebar": {
       "brand": "Pannello Amministrazione",
       "overview": "Panoramica",
       "orders": "Ordini",
+      "kitchen": "Bacheca cucina",
       "reservations": "Prenotazioni",
       "menu": "Menu",
       "categories": "Categorie",
@@ -385,6 +397,7 @@
       "statusPending": "In attesa",
       "statusPaid": "Pagato",
       "statusPreparing": "In preparazione",
+      "statusReady": "Pronto",
       "statusDelivered": "Consegnato",
       "statusCancelled": "Annullato",
       "updateStatus": "Aggiorna stato",

@@ -43,6 +43,7 @@ export function OrderTimeline({ status, labels }: OrderTimelineProps) {
   let currentIndex = steps.findIndex((step) => step.key === status);
   if (status === "PAID") currentIndex = 0;
   else if (status === "PREPARING") currentIndex = 1;
+  else if (status === "READY") currentIndex = 2; // <--- Maps to OUT_FOR_DELIVERY visually
   else if (status === "DELIVERED") currentIndex = 3;
   else currentIndex = 0; 
 

@@ -445,6 +445,22 @@ LESSONS:
 - Resend Free Tier limits: You can only send to the registered email address. Production requires verifying a custom domain.
 - Component purity: Dumb components (receiving translated strings as props) can be safely used in both Server and Client Components.
 
+───────────────────────────────────────────────────────────────
+2026-10-22 — PHASE 16: REAL-TIME KDS & LIVE ALERTS
+───────────────────────────────────────────────────────────────
+✅ Added `READY` status to Prisma enums and Admin dropdowns
+✅ Built `/api/admin/orders/stream` (Server-Sent Events with 4s DB polling)
+✅ Built `/api/admin/orders/active` (KDS refresh endpoint)
+✅ Created the Kitchen Display System (KDS) UI (`/admin/kitchen`)
+✅ Implemented Web Audio API "Ding" alert (No MP3 files needed)
+✅ Added "Kitchen Board" (👨‍🍳) to the Admin Sidebar
+✅ Fixed localization to display English dish names on non-Arabic Admin pages
+✅ Phase 16 HTML Documentation page created (Coming next)
+
+LESSONS:
+- Next.js Serverless isolates API routes; in-memory EventEmitters fail across routes. DB polling + SSE is the most robust Serverless solution.
+- Web Audio API allows generating sounds dynamically without external asset dependencies.
+
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

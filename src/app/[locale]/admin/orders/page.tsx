@@ -1,3 +1,4 @@
+// src/app/[locale]/admin/orders/page.tsx
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { OrderRow } from "@/components/admin/OrderRow";
@@ -17,7 +18,7 @@ export default async function AdminOrdersPage({ params }: PageProps) {
     orderBy: { createdAt: "desc" },
     include: {
       items: {
-        include: { menuItem: { select: { name: true } } },
+        include: { menuItem: { select: { name: true, nameEn: true } } },
       },
     },
   });

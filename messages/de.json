@@ -244,6 +244,7 @@
     "statusPending": "Zahlung ausstehend",
     "statusPaid": "Bezahlt",
     "statusPreparing": "In Zubereitung",
+    "statusReady": "Bereit",
     "statusDelivered": "Geliefert",
     "statusCancelled": "Storniert",
     "timelinePaid": "Bezahlt",
@@ -311,10 +312,21 @@
     "noSession": "Keine Sitzung gefunden"
   },
     "Admin": {
+      "kitchen": {
+        "title": "Küchenanzeigesystem",
+        "soundOn": "Ton an",
+        "soundOff": "Ton einschalten",
+        "live": "Live",
+        "disconnected": "Getrennt",
+        "noOrders": "Im Moment keine aktiven Bestellungen.",
+        "startCooking": "Zubereitung starten",
+        "markReady": "Als bereit markieren"
+      },
     "sidebar": {
       "brand": "Verwaltungsbereich",
       "overview": "Übersicht",
       "orders": "Bestellungen",
+      "kitchen": "Küchen-Board",
       "reservations": "Reservierungen",
       "menu": "Speisekarte",
       "categories": "Kategorien",
@@ -385,6 +397,7 @@
       "statusPending": "Ausstehend",
       "statusPaid": "Bezahlt",
       "statusPreparing": "In Zubereitung",
+      "statusReady": "Bereit",
       "statusDelivered": "Geliefert",
       "statusCancelled": "Storniert",
       "updateStatus": "Status aktualisieren",

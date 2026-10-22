@@ -3,7 +3,7 @@
 > A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, secure Stripe checkout, order tracking, automated email receipts notifications, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-15%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-16%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-16-kds.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -105,6 +105,7 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 
 - 📊 **Dashboard overview** with real-time statistics
 - 📦 **Order Management** — track delivery orders, update statuses (Paid → Preparing → Delivered), and audit log every change
+- 👨‍🍳 Kitchen Display System (KDS) — Real-time order screen with audio alerts for chefs
 - 📅 **Reservations management** — status lifecycle: pending → confirmed → completed (or cancelled)
 - 🍽️ **Menu management** — full CRUD with availability toggle, featured toggle, auto-slugs, and bilingual fields
 - 📂 **Categories management** — with cascade-delete protection

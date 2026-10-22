@@ -4,6 +4,8 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { updateOrderStatus } from "@/actions/admin-orders";
+import Link from "next/link";
+import { getLocalizedName } from "@/lib/utils/locale"; // <-- Import helper
 
 type Order = {
   id: string;
@@ -16,7 +18,10 @@ type Order = {
   createdAt: Date;
   items: {
     quantity: number;
-    menuItem: { name: string };
+    menuItem: { 
+      name: string; 
+      nameEn: string | null; // <-- Added nameEn
+    };
   }[];
 };
 
@@ -35,7 +40,7 @@ export function OrderRow({ order, locale }: Props) {
     startTransition(async () => {
       const result = await updateOrderStatus(
         order.id,
-        newStatus as "PAID" | "PREPARING" | "DELIVERED" | "CANCELLED"
+        newStatus as "PAID" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED"
       );
       if (!result.success) setError(result.error);
     });
@@ -49,11 +54,11 @@ export function OrderRow({ order, locale }: Props) {
     minute: "2-digit",
   }).format(new Date(order.createdAt));
 
-  // Type-safe mapping for translations
   const statusLabels: Record<string, string> = {
     PENDING: t("statusPending"),
     PAID: t("statusPaid"),
     PREPARING: t("statusPreparing"),
+    READY: t("statusReady"),
     DELIVERED: t("statusDelivered"),
     CANCELLED: t("statusCancelled"),
   };
@@ -64,6 +69,15 @@ export function OrderRow({ order, locale }: Props) {
         
         {/* Customer & Date */}
         <div className="flex-1 min-w-50">
+          <Link 
+            href={`/en/track-order?id=${order.id}`} 
+            target="_blank"
+            className="font-mono text-xs text-accent-dark font-bold mb-1 hover:underline inline-block"
+            title="Track this order"
+          >
+            #{order.id.slice(0, 8).toUpperCase()}
+          </Link>
+          
           <div className="font-medium">{order.guestName}</div>
           <div className="text-xs text-muted mt-1">{formattedDate}</div>
           <p className="text-sm text-gray-500">{order.guestEmail}</p>
@@ -77,7 +91,8 @@ export function OrderRow({ order, locale }: Props) {
           <ul className="text-xs text-muted space-y-1">
             {order.items.map((item, idx) => (
               <li key={idx}>
-                {item.quantity} × {item.menuItem.name}
+                {/* USE HELPER HERE */}
+                {item.quantity} × {getLocalizedName(item.menuItem.name, item.menuItem.nameEn, locale)}
               </li>
             ))}
           </ul>
@@ -93,13 +108,13 @@ export function OrderRow({ order, locale }: Props) {
           <span className={`text-xs px-3 py-1 rounded-full border ${
             order.status === "PAID" ? "bg-blue-50 text-blue-800 border-blue-200" :
             order.status === "PREPARING" ? "bg-yellow-50 text-yellow-800 border-yellow-200" :
+            order.status === "READY" ? "bg-orange-50 text-orange-800 border-orange-200" :
             order.status === "DELIVERED" ? "bg-green-50 text-green-800 border-green-200" :
             "bg-red-50 text-red-800 border-red-200"
           }`}>
             {statusLabels[order.status] || order.status}
           </span>
 
-          {/* Status Selector */}
           <select
             value={order.status}
             onChange={(e) => handleStatusChange(e.target.value)}
@@ -109,6 +124,7 @@ export function OrderRow({ order, locale }: Props) {
             <option value="PENDING">{t("statusPending")}</option>
             <option value="PAID">{t("statusPaid")}</option>
             <option value="PREPARING">{t("statusPreparing")}</option>
+            <option value="READY">{t("statusReady")}</option>
             <option value="DELIVERED">{t("statusDelivered")}</option>
             <option value="CANCELLED">{t("statusCancelled")}</option>
           </select>

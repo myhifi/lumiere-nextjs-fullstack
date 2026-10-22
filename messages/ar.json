@@ -244,6 +244,7 @@
     "statusPending": "بانتظار الدفع",
     "statusPaid": "مدفوع",
     "statusPreparing": "قيد التحضير",
+    "statusReady": "جاهز",
     "statusDelivered": "تم التوصيل",
     "statusCancelled": "ملغى",
     "timelinePaid": "تم الدفع",
@@ -311,10 +312,21 @@
     "noSession": "لم يتم العثور على الجلسة"
   },
 "Admin": {
+  "kitchen": {
+    "title": "شاشة المطبخ",
+    "soundOn": "الصوت مفعل",
+    "soundOff": "تفعيل الصوت",
+    "live": "مباشر",
+    "disconnected": "غير متصل",
+    "noOrders": "لا توجد طلبات نشطة حالياً.",
+    "startCooking": "بدء التحضير",
+    "markReady": "جاهز للتسليم"
+  },
     "sidebar": {
       "brand": "لوحة التحكم",
       "overview": "نظرة عامة",
       "orders": "الطلبات",
+      "kitchen": "شاشة المطبخ",
       "reservations": "الحجوزات",
       "menu": "الأطباق",
       "categories": "التصنيفات",
@@ -384,7 +396,8 @@
       "status": "الحالة",
       "statusPending": "قيد الانتظار",
       "statusPaid": "مدفوع",
-      "statusPreparing": "قيد التجهيز",
+      "statusPreparing": "قيد التحضير",
+      "statusReady": "جاهز",
       "statusDelivered": "تم التوصيل",
       "statusCancelled": "ملغى",
       "updateStatus": "تحديث الحالة",

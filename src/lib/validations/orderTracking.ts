@@ -3,7 +3,7 @@ import { z } from "zod";
 
 // ─── Order ID (Prisma CUID v1) ───
 // Starts with 'c', followed by 24 base36 chars.
-const CUID_REGEX = /^c[a-z0-9]{24}$/i;
+const CUID_REGEX = /^c[a-z0-9]{7,24}$/i;
 
 // ─── Deliberately loose email regex ───
 // Zod's email() is stricter — this only gates "does it look like email?".

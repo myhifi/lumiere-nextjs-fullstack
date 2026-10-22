@@ -39,8 +39,13 @@ export type TrackedOrderSummary = {
 export async function getTrackedOrderById(
   id: string
 ): Promise<TrackedOrderDetail | null> {
-  const order = await prisma.order.findUnique({
-    where: { id },
+  const order = await prisma.order.findFirst({
+    where: {
+      id: {
+        startsWith: id,          // Allows searching by the 8-char prefix
+        mode: "insensitive",     // Handles uppercase or lowercase pasting
+      },
+    },
     include: {
       items: {
         include: {

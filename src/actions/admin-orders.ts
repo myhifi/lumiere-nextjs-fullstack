@@ -22,7 +22,7 @@ function getUserName(user: { name?: string | null }): string {
 
 export async function updateOrderStatus(
   orderId: string,
-  newStatus: "PAID" | "PREPARING" | "DELIVERED" | "CANCELLED"
+  newStatus: "PAID" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED"
 ): Promise<UpdateResult> {
   const user = await requireAdmin();
   if (!user) return { success: false, error: "غير مصرح" };

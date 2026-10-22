@@ -244,6 +244,7 @@
     "statusPending": "Pending Payment",
     "statusPaid": "Paid",
     "statusPreparing": "Preparing",
+    "statusReady": "Ready",
     "statusDelivered": "Delivered",
     "statusCancelled": "Cancelled",
     "timelinePaid": "Paid",
@@ -311,10 +312,21 @@
     "noSession": "No session found"
   },
     "Admin": {
+      "kitchen": {
+        "title": "Kitchen Display System",
+        "soundOn": "Sound On",
+        "soundOff": "Enable Sound",
+        "live": "Live",
+        "disconnected": "Disconnected",
+        "noOrders": "No active orders right now.",
+        "startCooking": "Start Cooking",
+        "markReady": "Mark as Ready"
+      },
     "sidebar": {
       "brand": "Admin Panel",
       "overview": "Overview",
       "orders": "Orders",
+      "kitchen": "Kitchen Board",
       "reservations": "Reservations",
       "menu": "Menu",
       "categories": "Categories",
@@ -385,6 +397,7 @@
       "statusPending": "Pending",
       "statusPaid": "Paid",
       "statusPreparing": "Preparing",
+      "statusReady": "Ready",
       "statusDelivered": "Delivered",
       "statusCancelled": "Cancelled",
       "updateStatus": "Update Status",
