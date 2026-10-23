@@ -28,7 +28,6 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ loca
         </div>
         
         {/* We use a standard <a> tag here for native file download */}
-        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
         <a
           href={`/api/admin/analytics/export?locale=${locale}`}
           className="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-5 py-2.5 rounded-full font-medium transition-colors"
