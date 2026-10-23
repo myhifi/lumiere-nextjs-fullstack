@@ -665,7 +665,16 @@
       "priceTitle": "Preisverteilung (AED)",
       "priceAxisHint": "X-Achse: Preisspanne · Y-Achse: Anzahl der Gerichte",
       "featuredLabel": "Empfohlen ⭐",
-      "regularLabel": "Regulär"
+      "regularLabel": "Regulär",
+      "pageTitle": "Geschäftsanalysen",
+      "pageSubtitle": "Verfolgen Sie die finanzielle Leistung Ihres Restaurants",
+      "exportCsv": "CSV exportieren",
+      "totalRevenue": "Gesamteinnahmen",
+      "totalOrders": "Bestellungen insgesamt",
+      "averageOrderValue": "Durchschnittlicher Bestellwert"      ,
+      "revenueTitle": "Einnahmen (Letzte 14 Tage)",
+      "topItemsTitle": "Top 5 der meistverkauften Artikel",
+      "noData": "Noch nicht genügend Daten vorhanden, um dieses Diagramm anzuzeigen."
     },
     "demoBanner": {
       "title": "Demo-Modus",

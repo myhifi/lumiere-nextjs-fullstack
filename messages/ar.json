@@ -327,6 +327,7 @@
       "overview": "نظرة عامة",
       "orders": "الطلبات",
       "kitchen": "شاشة المطبخ",
+      "analytics": "التحليلات",
       "reservations": "الحجوزات",
       "menu": "الأطباق",
       "categories": "التصنيفات",
@@ -665,7 +666,16 @@
       "priceTitle": "توزيع الأسعار (د.إ)",
       "priceAxisHint": "المحور الأفقي: نطاق السعر · المحور العمودي: عدد الأطباق",
       "featuredLabel": "مميزة ⭐",
-      "regularLabel": "عادية"
+      "regularLabel": "عادية",
+      "pageTitle": "تحليلات الأعمال",
+      "pageSubtitle": "تتبع الأداء المالي لمطعمك",
+      "exportCsv": "تصدير CSV",
+      "totalRevenue": "إجمالي الإيرادات",
+      "totalOrders": "إجمالي الطلبات",
+      "averageOrderValue": "متوسط قيمة الطلب",
+      "revenueTitle": "الإيرادات (آخر 14 يوم)",
+      "topItemsTitle": "أفضل 5 أطباق مبيعاً",
+      "noData": "لا توجد بيانات كافية لعرض هذا الرسم البياني بعد."
     },
     "demoBanner": {
       "title": "الوضع التجريبي",

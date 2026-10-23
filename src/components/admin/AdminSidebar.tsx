@@ -17,6 +17,7 @@ const commonLinks = [
   { href: "/admin", labelKey: "overview", icon: "📊", exact: true },
   { href: "/admin/orders", labelKey: "orders", icon: "📦" },
   { href: "/admin/kitchen", labelKey: "kitchen", icon: "👨‍🍳" },
+  { href: "/admin/analytics", labelKey: "analytics", icon: "📈" },
   { href: "/admin/reservations", labelKey: "reservations", icon: "📅" },
   { href: "/admin/menu", labelKey: "menu", icon: "🍽️" },
   { href: "/admin/categories", labelKey: "categories", icon: "📂" },

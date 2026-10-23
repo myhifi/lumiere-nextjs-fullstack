@@ -665,7 +665,16 @@
 "priceTitle": "价格分布 (AED)",
 "priceAxisHint": "X轴：价格区间 · Y轴：菜品数量",
 "featuredLabel": "招牌菜 ⭐",
-"regularLabel": "常规菜"
+"regularLabel": "常规菜",
+"pageTitle": "业务分析",
+"pageSubtitle": "跟踪您餐厅的财务状况",
+"exportCsv": "导出 CSV",
+"totalRevenue": "总收入",
+"totalOrders": "总订单量",
+"averageOrderValue": "平均订单金额",
+"revenueTitle": "收入趋势（过去 14 天）",
+"topItemsTitle": "热销商品 Top 5",
+"noData": "暂无足够的数据来显示此图表。"
 },
 "demoBanner": {
 "title": "演示模式",

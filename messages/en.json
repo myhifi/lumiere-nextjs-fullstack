@@ -327,6 +327,7 @@
       "overview": "Overview",
       "orders": "Orders",
       "kitchen": "Kitchen Board",
+      "analytics": "Analytics",
       "reservations": "Reservations",
       "menu": "Menu",
       "categories": "Categories",
@@ -466,7 +467,7 @@
       "create": "Add Dish",
       "saving": "Saving..."
     },
-        "categories": {
+    "categories": {
       "title": "📂 Categories Management",
       "count": "{count} categories",
       "newItem": "+ New Category",
@@ -502,7 +503,7 @@
       "create": "Add Category",
       "saving": "Saving..."
     },
-        "tables": {
+    "tables": {
       "title": "🪑 Tables Management",
       "summary": "{active} of {total} active · Total capacity {capacity} seats",
       "newItem": "+ New Table",
@@ -545,7 +546,7 @@
       "create": "Add Table",
       "saving": "Saving..."
     },
-        "users": {
+    "users": {
       "title": "👥 Staff Management",
       "summary": "{users} users · {admins} active admins",
       "newItem": "+ New Staff",
@@ -588,7 +589,7 @@
       "create": "Add Staff",
       "saving": "Saving..."
     },
-        "reviews": {
+    "reviews": {
       "title": "⭐ Reviews Management",
       "count": "{count} reviews",
       "countFiltered": " with this status",
@@ -665,7 +666,16 @@
       "priceTitle": "Price Distribution (AED)",
       "priceAxisHint": "X-axis: price range · Y-axis: number of dishes",
       "featuredLabel": "Featured ⭐",
-      "regularLabel": "Regular"
+      "regularLabel": "Regular",
+      "pageTitle": "Business Analytics",
+      "pageSubtitle": "Track your restaurant's financial performance",
+      "exportCsv": "Export CSV",
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "averageOrderValue": "Average Order Value",
+      "revenueTitle": "Revenue (Last 14 Days)",
+      "topItemsTitle": "Top 5 Selling Items",
+      "noData": "Not enough data to display this chart yet."
     },
     "demoBanner": {
       "title": "Demo Mode",

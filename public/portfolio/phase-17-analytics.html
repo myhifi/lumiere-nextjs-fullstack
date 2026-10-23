@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 17 — Advanced Analytics & CSV Export · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 17</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#db-aggregation">Database Aggregations</a>
+      <a href="#charts">Recharts Integration</a>
+      <a href="#csv">CSV Export (UTF-8)</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 17 · Advanced Analytics & CSV Export</div>
+      <h1>Data-Driven Business Intelligence</h1>
+      <p class="lede">Transform raw database records into actionable business insights. Build a financial dashboard with Revenue KPIs, Timeline charts, Top-Selling items, and a fully localized accounting export system.</p>
+      <div class="stack">
+        <span>Prisma Aggregations</span><span>Raw SQL</span>
+        <span>Recharts</span><span>CSV Generation</span>
+        <span>UTF-8 BOM</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Restaurant owners need to know how much money they are making, what items are most popular, and they need a way to export this data for their accountant.</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>Financial KPIs:</strong> Total Revenue, Total Orders, and Average Order Value (AOV).</li>
+        <li><strong>Visual Charts:</strong> A 14-day Revenue Timeline and a Top-5 Selling Items breakdown.</li>
+        <li><strong>CSV Export:</strong> A one-click export button that generates a localized, Excel-compatible CSV file.</li>
+        <li><strong>Server-Side Aggregation:</strong> Using Prisma's <code>aggregate</code>, <code>groupBy</code>, and raw SQL to do the heavy lifting in the database (not in JavaScript).</li>
+      </ul>
+    </section>
+
+    <section id="db-aggregation">
+      <h2><span class="num">2</span> Database Aggregations (The "Senior" Approach)</h2>
+      <p>Junior developers often fetch all orders into an array and use <code>.reduce()</code> to calculate revenue. This crashes at scale. We used PostgreSQL's native aggregation functions.</p>
+
+      <pre><code>// Financial KPIs (Revenue, Orders, AOV)
+const result = await prisma.order.aggregate({
+  where: { status: { in: ["PAID", "PREPARING", "READY", "DELIVERED"] } },
+  _sum: { totalAmount: true },
+  _count: { id: true },
+});</code></pre>
+
+      <h3>Raw SQL for Time-Series Data</h3>
+      <p>Prisma doesn't natively support grouping by Date. To build the Revenue Timeline, we used a raw SQL query with <code>DATE_TRUNC</code>.</p>
+
+      <pre><code>const result = await prisma.$queryRaw`
+  SELECT 
+    DATE_TRUNC('day', "createdAt") as date,
+    SUM("totalAmount") as revenue
+  FROM "orders"
+  WHERE "status" IN ('PAID', 'DELIVERED') 
+    AND "createdAt" >= NOW() - INTERVAL '14 days'
+  GROUP BY DATE_TRUNC('day', "createdAt")
+  ORDER BY date ASC;
+`;</code></pre>
+    </section>
+
+    <section id="charts">
+      <h2><span class="num">3</span> Recharts Integration</h2>
+      <p>We used <strong>Recharts</strong> to build a beautiful, responsive UI. The data is fetched in a Server Component and passed down to a Client Component (<code>FinancialCharts.tsx</code>).</p>
+
+      <pre><code>// A pure Client Component handling the chart rendering
+&lt;ResponsiveContainer width="100%" height="100%"&gt;
+  &lt;LineChart data={formattedTimeline}&gt;
+    &lt;CartesianGrid strokeDasharray="3 3" stroke="#e5ddd0" /&gt;
+    &lt;XAxis dataKey="displayDate" /&gt;
+    &lt;YAxis /&gt;
+    &lt;Tooltip formatter={(value) =&gt; [`${Number(value).toFixed(2)} AED`, "Revenue"]} /&gt;
+    &lt;Line 
+      type="monotone" 
+      dataKey="revenue" 
+      stroke="#c9a961" 
+      strokeWidth={3} 
+      dot={{ r: 4, fill: "#c9a961" }} 
+    /&gt;
+  &lt;/LineChart&gt;
+&lt;/ResponsiveContainer&gt;</code></pre>
+    </section>
+
+    <section id="csv">
+      <h2><span class="num">4</span> CSV Export & The UTF-8 BOM Trick</h2>
+      <p>We built a Route Handler that generates a CSV file on the fly. However, we ran into a classic problem: Excel completely mangled the Arabic text.</p>
+      
+      <div class="callout danger">
+        <strong>The Excel Encoding Bug</strong>
+        <p>Excel defaults to ANSI encoding when opening CSV files. Arabic text stored in UTF-8 turns into garbled characters (e.g., <code>Ù…Ø³Ù‚Ø¹Ø©</code>).</p>
+      </div>
+
+      <p><strong>The Fix:</strong> We prepend a hidden Byte Order Mark (BOM) to the start of the CSV string. This tells Excel: "This file is UTF-8, read the Arabic properly!"</p>
+
+      <pre><code>// Prepend the UTF-8 BOM (\uFEFF) to the CSV string
+const csvString = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+
+return new NextResponse(csvString, {
+  headers: {
+    "Content-Type": "text/csv; charset=utf-8",
+    "Content-Disposition": `attachment; filename="lumiere-orders.csv"`,
+  },
+});</code></pre>
+
+      <p>We also ensured that the CSV export respects the current locale. If the admin is browsing in Arabic, the items are exported in Arabic. If in English, they are exported in English.</p>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">5</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>Do the math in the database.</strong> Never load 10,000 records into memory just to calculate a sum. Use <code>prisma.aggregate</code> or raw SQL.</li>
+        <li><strong>Recharts needs <code>dir="ltr"</code>.</strong> Recharts gets very confused in RTL layouts. Forcing <code>dir="ltr"</code> on the chart container ensures the Y-axis stays on the left and the X-axis stays on the bottom, regardless of the page language.</li>
+        <li><strong>Excel needs the BOM.</strong> If you are exporting any non-ASCII characters (Arabic, Chinese, emojis) to CSV, you must prepend <code>\uFEFF</code> or Excel will mangle it.</li>
+        <li><strong>Route Handlers for downloads.</strong> For file downloads, always use a standard HTML <code>&lt;a&gt;</code> tag pointing to a Route Handler. Using Next.js <code>&lt;Link&gt;</code> will break the native download prompt.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-16-kds.html">← Phase 16 (Real-Time KDS)</a>
+      <span class="center">Phase 17</span>
+      <a href="phase-18-qr.html">Phase 18 (QR Ordering) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

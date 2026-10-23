@@ -665,7 +665,16 @@
       "priceTitle": "Répartition des prix (AED)",
       "priceAxisHint": "Axe X : tranche de prix · Axe Y : nombre de plats",
       "featuredLabel": "En vedette ⭐",
-      "regularLabel": "Réguliers"
+      "regularLabel": "Réguliers",
+      "pageTitle": "Analytique Commerciale",
+      "pageSubtitle": "Suivez les performances financières de votre restaurant",
+      "exportCsv": "Exporter en CSV",
+      "totalRevenue": "Chiffre d'affaires total",
+      "totalOrders": "Commandes totales",
+      "averageOrderValue": "Valeur moyenne des commandes",
+      "revenueTitle": "Chiffre d'affaires (14 derniers jours)",
+      "topItemsTitle": "Top 5 des articles les plus vendus",
+      "noData": "Pas encore assez de données pour afficher ce graphique."
     },
     "demoBanner": {
       "title": "Mode démo",

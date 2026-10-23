@@ -326,7 +326,7 @@
       "brand": "Pannello Amministrazione",
       "overview": "Panoramica",
       "orders": "Ordini",
-      "kitchen": "Bacheca cucina",
+      "kitchen": "Bacheca Cucina",
       "reservations": "Prenotazioni",
       "menu": "Menu",
       "categories": "Categorie",
@@ -665,7 +665,16 @@
       "priceTitle": "Distribuzione dei Prezzi (AED)",
       "priceAxisHint": "Asse X: fascia di prezzo · Asse Y: numero di piatti",
       "featuredLabel": "In evidenza ⭐",
-      "regularLabel": "Standard"
+      "regularLabel": "Standard",
+      "pageTitle": "Analisi Aziendale",
+      "pageSubtitle": "Monitora le prestazioni finanziarie del tuo ristorante",
+      "exportCsv": "Esporta CSV",
+      "totalRevenue": "Entrate totali",
+      "totalOrders": "Ordini totali",
+      "averageOrderValue": "Valore medio dell'ordine",
+      "revenueTitle": "Entrate (Ultimi 14 giorni)",
+      "topItemsTitle": "I 5 articoli più venduti",
+      "noData": "Non ci sono ancora dati sufficienti per visualizzare questo grafico."
     },
     "demoBanner": {
       "title": "Modalità Demo",

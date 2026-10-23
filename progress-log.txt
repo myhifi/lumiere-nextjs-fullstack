@@ -461,6 +461,23 @@ LESSONS:
 - Next.js Serverless isolates API routes; in-memory EventEmitters fail across routes. DB polling + SSE is the most robust Serverless solution.
 - Web Audio API allows generating sounds dynamically without external asset dependencies.
 
+───────────────────────────────────────────────────────────────
+2026-10-23 — PHASE 17: ADVANCED ANALYTICS & CSV EXPORT
+───────────────────────────────────────────────────────────────
+✅ Financial KPIs (Total Revenue, Orders, AOV) using Prisma `aggregate`
+✅ Revenue Timeline chart (Raw SQL `DATE_TRUNC` query)
+✅ Top 5 Selling Items chart (Prisma `groupBy`)
+✅ Recharts integration (Line chart & Horizontal Bar chart)
+✅ CSV Export Route Handler (`/api/admin/analytics/export`)
+✅ UTF-8 BOM (`\uFEFF`) added to CSV to fix Excel Arabic encoding
+✅ CSV items localized based on active locale
+
+LESSONS:
+- Use Prisma `aggregate` for financial metrics, not JS `.reduce()`.
+- Prisma lacks native time-series grouping; use `$queryRaw` with `DATE_TRUNC`.
+- Excel requires the UTF-8 BOM prefix to render Arabic characters correctly.
+- Use `<a>` tags (not `<Link>`) for API routes that trigger file downloads.
+
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

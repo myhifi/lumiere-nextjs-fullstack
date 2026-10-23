@@ -665,7 +665,16 @@
       "priceTitle": "Distribución de precios (AED)",
       "priceAxisHint": "Eje X: rango de precios · Eje Y: número de platos",
       "featuredLabel": "Destacados ⭐",
-      "regularLabel": "Regulares"
+      "regularLabel": "Regulares",
+      "pageTitle": "Análisis Comercial",
+      "pageSubtitle": "Siga el rendimiento financiero de su restaurante",
+      "exportCsv": "Exportar CSV",
+      "totalRevenue": "Ingresos totales",
+      "totalOrders": "Pedidos totales",
+      "averageOrderValue": "Valor promedio del pedido",
+      "revenueTitle": "Ingresos (Últimos 14 días)",
+      "topItemsTitle": "Los 5 artículos más vendidos",
+      "noData": "Aún no hay suficientes datos para mostrar este gráfico."
     },
     "demoBanner": {
       "title": "Modo demo",
