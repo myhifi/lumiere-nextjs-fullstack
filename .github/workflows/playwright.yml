@@ -10,12 +10,12 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-      # Pass secrets to the Next.js dev server so Prisma can connect
+      # Pass secrets to the Next.js server
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DIRECT_URL: ${{ secrets.DIRECT_URL }}
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
-      EMAIL_PROVIDER: "console" # Use console to avoid Resend errors in CI
+      EMAIL_PROVIDER: "console" # Use console to avoid Resend 403 errors in CI
 
     steps:
     - uses: actions/checkout@v4
@@ -29,6 +29,12 @@ jobs:
       
     - name: Generate Prisma Client
       run: npx prisma generate
+
+    - name: Push Database Schema
+      run: npx prisma db push
+
+    - name: Build Next.js app
+      run: npm run build
 
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
