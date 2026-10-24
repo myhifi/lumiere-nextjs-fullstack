@@ -48,7 +48,7 @@ export async function createStripeSession(orderId: string, locale: string) {
       metadata: {
         orderId: order.id,
       },
-      success_url: `${siteUrl}/${locale}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${siteUrl}/${locale}/checkout/success?session_id={CHECKOUT_SESSION_ID}&orderId=${orderId}`,
       cancel_url: `${siteUrl}/${locale}/cart`,
     });
 
