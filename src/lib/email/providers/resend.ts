@@ -1,8 +1,6 @@
 import { Resend } from "resend";
 import type { SendEmailResult, ReservationEmailData, OrderEmailData } from "../types";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 type EmailData = ReservationEmailData | OrderEmailData;
 
 export async function sendViaResend(
@@ -11,6 +9,9 @@ export async function sendViaResend(
   subject: string
 ): Promise<SendEmailResult> {
   try {
+    // Lazily initialize Resend to prevent build-time crashes if the API key is missing
+    const resend = new Resend(process.env.RESEND_API_KEY || "re_mock_key_for_build");
+    
     const { data: responseData, error } = await resend.emails.send({
       from: process.env.EMAIL_FROM || "Lumière <onboarding@resend.dev>",
       to: data.to,
