@@ -38,13 +38,15 @@
       "mapTitle": "Standort des Restaurants Lumière"
     }
   },
-    "Cart": {
+  "Cart": {
     "title": "Ihr Warenkorb",
     "empty": "Ihr Warenkorb ist leer.",
     "subtotal": "Zwischensumme",
     "checkout": "Zur Kasse"
   },
-    "Menu": {
+  "Menu": {
+    "dineInBanner": "Sie bestellen für Tisch {table}",
+    "clearTable": "Zu Lieferung wechseln",
     "kicker": "UNSERE SPEISEKARTE",
     "title": "Lumière Speisekarte",
     "subtitle": "Eine sorgfältig zusammengestellte Auswahl der besten Gerichte, zubereitet mit den besten Zutaten",
@@ -267,6 +269,7 @@
         "labelItems": "Artikel",
         "labelTotal": "Gesamt",
         "labelDeliveryAddress": "Lieferadresse",
+        "labelTableNumber": "Tischnummer",
         "trackButton": "Bestellung verfolgen",
         "trackHint": "Sie können den Status Ihrer Bestellung jederzeit über die Schaltfläche oben oder auf unserer Bestellverfolgungsseite einsehen.",
         "footerAutoMessage": "Diese E-Mail wurde automatisch vom Lumière-Bestellsystem gesendet.",
@@ -296,6 +299,8 @@
     }
   },
   "Checkout": {
+    "dineInOrder": "Im Restaurant bestellen",
+    "tableNumber": "Tisch {table}",
     "title": "Kasse",
     "subtitle": "Geben Sie Ihre Lieferdetails ein, um die Bestellung abzuschließen.",
     "nameLabel": "Vollständiger Name",
@@ -502,7 +507,14 @@
       "create": "Kategorie hinzufügen",
       "saving": "Speichern..."
     },
-        "tables": {
+    "tables": {
+      "qrCode": "QR-Code",
+      "printQr": "QR drucken",
+      "downloadQr": "Herunterladen",
+      "scanToOrder": "Scannen zum Bestellen",
+      "qrModalTitle": "QR-Code für Tisch {number}",
+      "qrModalDesc": "Drucken Sie diesen QR-Code aus und platzieren Sie ihn auf Tisch {number}. Kunden können ihn scannen, um direkt von ihren Handys aus zu bestellen.",
+      "close": "Schließen",
       "title": "🪑 Tischverwaltung",
       "summary": "{active} von {total} aktiv · Gesamtkapazität {capacity} Plätze",
       "newItem": "+ Neuer Tisch",

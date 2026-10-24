@@ -38,13 +38,15 @@
       "mapTitle": "موقع مطعم Lumière"
     }
   },
-    "Cart": {
+  "Cart": {
     "title": "سلة التسوق",
     "empty": "سلة التسوق فارغة.",
     "subtotal": "المجموع الفرعي",
     "checkout": "إتمام الطلب"
   },
-    "Menu": {
+  "Menu": {
+    "dineInBanner": "أنت تطلب الآن للطاولة رقم {table}",
+    "clearTable": "التبديل إلى التوصيل",
     "kicker": "قائمتنا",
     "title": "قائمة Lumière",
     "subtitle": "مجموعة مختارة بعناية من أشهى الأطباق، مُعدّة بأجود المكونات",
@@ -267,6 +269,7 @@
         "labelItems": "العناصر",
         "labelTotal": "الإجمالي",
         "labelDeliveryAddress": "عنوان التوصيل",
+        "labelTableNumber": "رقم الطاولة",
         "trackButton": "تتبع طلبك",
         "trackHint": "يمكنك تتبع حالة طلبك في أي وقت بالنقر على الزر أعلاه أو بزيارة صفحة تتبع الطلب.",
         "footerAutoMessage": "تم إرسال هذا البريد تلقائياً من نظام طلبات لوميير.",
@@ -296,6 +299,8 @@
     }
   },
   "Checkout": {
+    "dineInOrder": "طلب داخلي",
+    "tableNumber": "الطاولة {table}",
     "title": "إتمام الطلب",
     "subtitle": "أدخل تفاصيل التوصيل لإكمال الطلب.",
     "nameLabel": "الاسم الكامل",
@@ -504,6 +509,13 @@
       "saving": "جاري الحفظ..."
     },
     "tables": {
+      "qrCode": "رمز QR",
+      "printQr": "طباعة الرمز",
+      "downloadQr": "تحميل",
+      "scanToOrder": "امسح للطلب",
+      "qrModalTitle": "رمز QR للطاولة {number}",
+      "qrModalDesc": "اطبع هذا الرمز وضعه على الطاولة {number}. يمكن للعملاء مسحه للطلب مباشرة من هواتفهم.",
+      "close": "إغلاق",
       "title": "🪑 إدارة الطاولات",
       "summary": "{active} من {total} نشطة · سعة إجمالية {capacity} كرسي",
       "newItem": "+ طاولة جديدة",

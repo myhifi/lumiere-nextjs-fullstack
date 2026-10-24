@@ -59,8 +59,10 @@ export async function OrderDetail({ order, locale }: { order: TrackedOrderDetail
           <h3 className="font-bold text-lg mb-4">{t("deliveryInfoLabel")}</h3>
           <div className="space-y-3 text-sm">
             <div>
-              <p className="text-muted mb-1">{t("addressLabel")}</p>
-              <p className="font-medium text-gray-900">{order.deliveryAddress}</p>
+              <p className="text-muted mb-1">{order.deliveryAddress ? t("addressLabel") : "Table Number"}</p>
+              <p className="font-medium text-gray-900">
+                {order.deliveryAddress ? order.deliveryAddress : `Table ${order.tableNumber}`}
+              </p>
             </div>
             <div>
               <p className="text-muted mb-1">{t("phoneLabel")}</p>

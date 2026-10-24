@@ -1,9 +1,12 @@
+// src/components/admin.TableRow.tsx
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { toggleTableActive, deleteTable } from "@/actions/admin-tables";
+import { QRCodeModal } from "./QRCodeModal";
+import { QrCode } from "lucide-react";
 
 type Table = {
   id: string;
@@ -22,8 +25,10 @@ export function TableRow({
   isAdmin: boolean;
 }) {
   const t = useTranslations("Admin.tables");
+  const locale = useLocale();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
   // ─── ترجمة اسم الموقع ───
   function getLocationLabel(location: string | null): string | null {
@@ -111,6 +116,16 @@ export function TableRow({
           >
             {t("edit")}
           </Link>
+        
+        {/* QR Code Button */}
+        <button
+          onClick={() => setIsQrModalOpen(true)}
+          className="flex items-center gap-1 px-3 py-1.5 text-sm bg-accent-light text-accent-dark border border-accent/20 hover:bg-accent hover:text-white rounded-lg transition-colors"
+          title={t("qrCode")}
+        >
+          <QrCode className="w-4 h-4" />
+          <span className="hidden sm:inline">{t("qrCode")}</span>
+        </button>
 
           {isAdmin && (
             <button
@@ -130,6 +145,13 @@ export function TableRow({
           {error}
         </div>
       )}
+
+        <QRCodeModal 
+        isOpen={isQrModalOpen} 
+        onClose={() => setIsQrModalOpen(false)} 
+        tableNumber={table.number} 
+        locale={locale} // Ensure you have locale passed as a prop to TableRow!
+      />
     </div>
   );
 }

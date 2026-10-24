@@ -38,13 +38,15 @@
       "mapTitle": "Emplacement du restaurant Lumière"
     }
   },
-    "Cart": {
+  "Cart": {
     "title": "Votre Panier",
     "empty": "Votre panier est vide.",
     "subtotal": "Sous-total",
     "checkout": "Passer à la caisse"
   },
-    "Menu": {
+  "Menu": {
+    "dineInBanner": "Vous commandez pour la table {table}",
+    "clearTable": "Passer en livraison",
     "kicker": "NOTRE MENU",
     "title": "Menu Lumière",
     "subtitle": "Une sélection soigneusement élaborée des meilleurs plats, préparés avec les meilleurs ingrédients",
@@ -267,6 +269,7 @@
         "labelItems": "Articles",
         "labelTotal": "Total",
         "labelDeliveryAddress": "Adresse de livraison",
+        "labelTableNumber": "Numéro de table",
         "trackButton": "Suivre votre commande",
         "trackHint": "Vous pouvez suivre l'état de votre commande à tout moment en cliquant sur le bouton ci-dessus ou en visitant notre page de suivi.",
         "footerAutoMessage": "Cet e-mail a été envoyé automatiquement par le système de commandes Lumière.",
@@ -296,6 +299,8 @@
     }
   },
   "Checkout": {
+    "dineInOrder": "Commande sur place",
+    "tableNumber": "Table {table}",
     "title": "Paiement",
     "subtitle": "Entrez vos coordonnées de livraison pour finaliser la commande.",
     "nameLabel": "Nom complet",
@@ -502,7 +507,14 @@
       "create": "Ajouter la catégorie",
       "saving": "Enregistrement..."
     },
-        "tables": {
+    "tables": {
+      "qrCode": "Code QR",
+      "printQr": "Imprimer le QR",
+      "downloadQr": "Télécharger",
+      "scanToOrder": "Scanner pour commander",
+      "qrModalTitle": "Code QR de la table {number}",
+      "qrModalDesc": "Imprimez ce code QR et placez-le sur la table {number}. Les clients peuvent le scanner pour commander directement depuis leur téléphone.",
+      "close": "Fermer",
       "title": "🪑 Gestion des tables",
       "summary": "{active} sur {total} actives · Capacité totale {capacity} sièges",
       "newItem": "+ Nouvelle table",

@@ -1,3 +1,4 @@
+// src/lib/email/templates/OrderConfirmation.tsx
 import {
   Html,
   Head,
@@ -37,6 +38,7 @@ export function OrderConfirmation({
   items,
   totalAmount,
   deliveryAddress,
+  tableNumber, // <--- ADD THIS LINE
   locale,
   t,
   whatsappNumber,
@@ -96,10 +98,19 @@ export function OrderConfirmation({
               </Row>
             </Section>
 
-            {/* ─── معلومات التوصيل ─── */}
+            {/* ─── معلومات التوصيل أو الطاولة ─── */}
             <Section style={deliveryBox}>
-              <Text style={detailLabel}>{t("labelDeliveryAddress")}</Text>
-              <Text style={detailValue}>{deliveryAddress}</Text>
+              {deliveryAddress ? (
+                <>
+                  <Text style={detailLabel}>{t("labelDeliveryAddress")}</Text>
+                  <Text style={detailValue}>{deliveryAddress}</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={detailLabel}>{t("labelTableNumber")}</Text>
+                  <Text style={detailValue}>Table {tableNumber}</Text>
+                </>
+              )}
             </Section>
 
             <Hr style={hr} />

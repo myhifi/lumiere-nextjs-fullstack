@@ -12,7 +12,8 @@ type Order = {
   guestName: string;
   guestEmail: string;
   guestPhone: string;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
+  tableNumber: string | null;
   totalAmount: number;
   status: string;
   createdAt: Date;
@@ -82,7 +83,9 @@ export function OrderRow({ order, locale }: Props) {
           <div className="text-xs text-muted mt-1">{formattedDate}</div>
           <p className="text-sm text-gray-500">{order.guestEmail}</p>
           <div className="text-xs text-muted mt-1" dir="ltr">{order.guestPhone}</div>
-          <div className="text-xs text-muted mt-1 line-clamp-1">{order.deliveryAddress}</div>
+          <div className="text-xs text-muted mt-1 line-clamp-1">
+            {order.deliveryAddress ? order.deliveryAddress : `Dine-In: Table ${order.tableNumber}`}
+          </div>
         </div>
 
         {/* Items Summary */}

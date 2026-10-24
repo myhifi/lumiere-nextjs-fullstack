@@ -6,15 +6,15 @@ import { ClearCartOnMount } from "@/components/cart/ClearCartOnMount";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ session_id?: string }>;
+  searchParams: Promise<{ session_id?: string; orderId?: string; cash?: string }>;
 };
 
-export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
-  await params;
-  const { session_id } = await searchParams;
+export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
+  const { session_id, orderId, cash } = await searchParams;
   const t = await getTranslations("CheckoutSuccess");
 
-  if (!session_id) {
+  // Accept cash orderId OR Stripe session_id
+  if (!session_id && !(cash === "true" && orderId)) {
     return (
       <div className="max-w-lg mx-auto px-4 py-24 text-center">
         <h1 className="text-2xl font-bold mb-4">{t("noSession")}</h1>

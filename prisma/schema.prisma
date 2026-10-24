@@ -216,10 +216,14 @@ model Order {
   guestName             String
   guestEmail            String
   guestPhone            String
-  deliveryAddress       String
   
+  // Fulfillment (Delivery OR Dine-in)
+  deliveryAddress       String?
+  tableNumber           String?
+
   // Payment & Status
   status                String      @default("PENDING") // PENDING, PAID, PREPARING, DELIVERED, CANCELLED
+  paymentMethod         String      @default("CARD")    // CARD | CASH
   totalAmount           Float
   stripeSessionId       String?     @unique
   stripePaymentIntentId String?     @unique

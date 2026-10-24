@@ -88,6 +88,7 @@ export async function POST(req: Request) {
           })),
           totalAmount: existingOrder.totalAmount,
           deliveryAddress: existingOrder.deliveryAddress,
+          tableNumber: existingOrder.tableNumber,
           locale,
         });
         console.log(`[Webhook] Order confirmation email dispatched for ${orderId}.`);

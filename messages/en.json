@@ -38,13 +38,15 @@
       "mapTitle": "Lumière Restaurant Location"
     }
   },
-    "Cart": {
+  "Cart": {
     "title": "Your Cart",
     "empty": "Your cart is empty.",
     "subtotal": "Subtotal",
     "checkout": "Proceed to Checkout"
   },
-    "Menu": {
+  "Menu": {
+    "dineInBanner": "You are ordering for Table {table}",
+    "clearTable": "Switch to Delivery",
     "kicker": "OUR MENU",
     "title": "Lumière Menu",
     "subtitle": "A carefully curated selection of the finest dishes, prepared with the best ingredients",
@@ -267,6 +269,7 @@
         "labelItems": "Items",
         "labelTotal": "Total",
         "labelDeliveryAddress": "Delivery Address",
+        "labelTableNumber": "Table Number",
         "trackButton": "Track Your Order",
         "trackHint": "You can track the status of your order at any time by clicking the button above or by visiting our Track Order page.",
         "footerAutoMessage": "This email was sent automatically by the Lumière order system.",
@@ -296,6 +299,8 @@
     }
   },
   "Checkout": {
+    "dineInOrder": "Dine-In Order",
+    "tableNumber": "Table {table}",
     "title": "Checkout",
     "subtitle": "Enter your delivery details to complete the order.",
     "nameLabel": "Full Name",
@@ -504,6 +509,13 @@
       "saving": "Saving..."
     },
     "tables": {
+      "qrCode": "QR Code",
+      "printQr": "Print QR",
+      "downloadQr": "Download",
+      "scanToOrder": "Scan to Order",
+      "qrModalTitle": "Table {number} QR Code",
+      "qrModalDesc": "Print this QR code and place it on Table {number}. Customers can scan it to order directly from their phones.",
+      "close": "Close",
       "title": "🪑 Tables Management",
       "summary": "{active} of {total} active · Total capacity {capacity} seats",
       "newItem": "+ New Table",

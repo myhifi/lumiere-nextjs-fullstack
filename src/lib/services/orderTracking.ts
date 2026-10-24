@@ -19,7 +19,8 @@ export type TrackedOrderDetail = {
   guestName: string;
   guestEmail: string;
   guestPhone: string;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
+  tableNumber: string | null;
   totalAmount: number;
   items: TrackedOrderItem[];
 };
@@ -66,6 +67,7 @@ export async function getTrackedOrderById(
     guestEmail: order.guestEmail,
     guestPhone: order.guestPhone,
     deliveryAddress: order.deliveryAddress,
+    tableNumber: order.tableNumber,
     totalAmount: order.totalAmount,
     items: order.items.map((i) => ({
       id: i.id,

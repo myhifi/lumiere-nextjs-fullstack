@@ -1,3 +1,4 @@
+// src/components/cart/CheckoutForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -9,11 +10,13 @@ import { useScrollToFirstError } from "@/lib/hooks/use-scroll-to-first-error";
 import { createPendingOrder } from "@/actions/checkout";
 import { createStripeSession } from "@/actions/stripe";
 import { useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 export function CheckoutForm() {
   const t = useTranslations("Checkout");
-  const { items, getTotal } = useCartStore();
+  const { items, getTotal, tableNumber } = useCartStore();
   const locale = useLocale();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     guestName: "",
@@ -21,6 +24,7 @@ export function CheckoutForm() {
     guestPhone: "",
     deliveryAddress: "",
   });
+  const [paymentMethod, setPaymentMethod] = useState<"CARD" | "CASH">("CARD");
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
@@ -42,12 +46,25 @@ export function CheckoutForm() {
     setFieldErrors({});
 
     // 1. Create the order in DB
-    const result = await createPendingOrder(formData, items);
+    const payload = {
+      ...formData,
+      deliveryAddress: formData.deliveryAddress || undefined,
+      guestPhone: formData.guestPhone || undefined,          
+      tableNumber: tableNumber || undefined,
+      paymentMethod: paymentMethod,
+    };
+    const result = await createPendingOrder(payload, items);
 
     if (!result.success) {
       setError(result.error);
       setFieldErrors(result.fieldErrors ?? {});
       setIsSubmitting(false);
+      return;
+    }
+
+    // If paying by cash, skip Stripe and go straight to success page
+    if (paymentMethod === "CASH") {
+      router.push(`/checkout/success?orderId=${result.orderId}&cash=true`);
       return;
     }
 
@@ -76,15 +93,45 @@ export function CheckoutForm() {
         {fieldErrors.guestEmail && <p className="text-xs text-red-600 mt-1">{fieldErrors.guestEmail[0]}</p>}
       </FormField>
 
-      <FormField label={t("phoneLabel")} required>
-        <input type="tel" name="guestPhone" value={formData.guestPhone} onChange={handleChange} required dir="ltr" className={inputClasses} />
-        {fieldErrors.guestPhone && <p className="text-xs text-red-600 mt-1">{fieldErrors.guestPhone[0]}</p>}
-      </FormField>
+      {/* Hide phone for Dine-In */}
+      {!tableNumber && (
+        <FormField label={t("phoneLabel")} required>
+          <input type="tel" name="guestPhone" value={formData.guestPhone} onChange={handleChange} required dir="ltr" className={inputClasses} />
+          {fieldErrors.guestPhone && <p className="text-xs text-red-600 mt-1">{fieldErrors.guestPhone[0]}</p>}
+        </FormField>
+      )}
 
-      <FormField label={t("addressLabel")} required>
-        <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleChange} required rows={3} className={inputClasses} />
-        {fieldErrors.deliveryAddress && <p className="text-xs text-red-600 mt-1">{fieldErrors.deliveryAddress[0]}</p>}
-      </FormField>
+      {tableNumber ? (
+        <div className="space-y-4">
+          <div className="p-4 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-between">
+            <span className="font-medium text-accent-dark">{t("dineInOrder")}</span>
+            <span className="font-bold text-lg text-accent-dark">{t("tableNumber", { table: tableNumber })}</span>
+          </div>
+          
+          {/* Payment Method Toggle */}
+          <div className="flex gap-2 p-1 bg-background border border-border rounded-xl">
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("CARD")}
+              className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CARD" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
+            >
+              Pay by Card
+            </button>
+            <button
+              type="button"
+              onClick={() => setPaymentMethod("CASH")}
+              className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CASH" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
+            >
+              Pay by Cash
+            </button>
+          </div>
+        </div>
+      ) : (
+        <FormField label={t("addressLabel")} required>
+          <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleChange} required rows={3} className={inputClasses} />
+          {fieldErrors.deliveryAddress && <p className="text-xs text-red-600 mt-1">{fieldErrors.deliveryAddress[0]}</p>}
+        </FormField>
+      )}
 
       {error && !Object.keys(fieldErrors).length && (
         <div className="p-3 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200">{error}</div>

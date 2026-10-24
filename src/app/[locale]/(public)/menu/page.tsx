@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { TableDetector } from "@/components/menu/TableDetector";
 import { prisma } from "@/lib/prisma";
 import { MenuItemCard } from "@/components/menu/MenuItemCard";
 import { CategoryFilter } from "@/components/menu/CategoryFilter";
@@ -88,6 +89,7 @@ export default async function MenuPage({
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-12">
+      <TableDetector />
       <div className="text-center mb-12">
         <span className="text-accent text-sm font-medium tracking-widest">
           {t("kicker")}

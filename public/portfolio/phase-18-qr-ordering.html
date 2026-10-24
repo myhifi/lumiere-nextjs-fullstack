@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 18 — QR Table Ordering & Cash Payments · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 18</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#qr">QR Generation</a>
+      <a href="#flow">Customer Flow</a>
+      <a href="#cash">Cash & Dine-In Checkout</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 18 · QR Table Ordering</div>
+      <h1>The Physical-Digital Bridge</h1>
+      <p class="lede">Allow customers to scan a QR code at their table, browse the menu, and order instantly. Implement Dine-In workflows with optional contact details and a seamless Cash/Card payment toggle.</p>
+      <div class="stack">
+        <span>Zustand Persistence</span><span>QR Code Generation</span>
+        <span>URL State</span><span>Dynamic Zod Validation</span>
+        <span>Cash Payment Flow</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Enable physical table ordering via QR codes and handle Dine-In specific requirements (like skipping delivery addresses and allowing cash payments).</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>QR Code Generator:</strong> Admin UI to generate and print high-resolution QR codes for each table.</li>
+        <li><strong>Table Detection:</strong> A Zustand-backed URL parser that detects <code>?table=5</code> and locks the cart to Dine-In mode.</li>
+        <li><strong>Dine-In Checkout:</strong> Hides the delivery address and phone number fields, replacing them with a "Pay by Card / Pay by Cash" toggle.</li>
+        <li><strong>Cash Payment Bypass:</strong> Cash orders bypass Stripe entirely, immediately setting the order status to <code>PAID</code> and triggering the Kitchen Display and Email receipt.</li>
+      </ul>
+    </section>
+
+    <section id="qr">
+      <h2><span class="num">2</span> QR Code Generation</h2>
+      <p>We used the <code>qrcode</code> package to generate Base64 Data URLs on the server. This avoids needing to store physical image files.</p>
+
+      <pre><code>// src/actions/qrcode.ts
+const targetUrl = `${baseUrl}/${locale}/menu?table=${tableNumber}`;
+
+const dataUrl = await QRCode.toDataURL(targetUrl, {
+  width: 600,
+  margin: 2,
+  color: { dark: "#1a1a1a", light: "#ffffff" },
+});
+return { success: true, dataUrl, targetUrl };</code></pre>
+
+      <p>The Admin UI uses a custom modal that displays the QR code and includes a "Print" button which opens a clean, branded print window.</p>
+    </section>
+
+    <section id="flow">
+      <h2><span class="num">3</span> Customer Flow & Table Detection</h2>
+      <p>When the customer scans the QR, they land on <code>/menu?table=5</code>. A Client Component reads the URL and saves it to the Zustand store.</p>
+
+      <pre><code>// src/components/menu/TableDetector.tsx
+useEffect(() => {
+  if (tableParam && tableParam !== tableNumber) {
+    setTableNumber(tableParam);
+  }
+}, [tableParam, tableNumber, setTableNumber]);</code></pre>
+      
+      <div class="callout info">
+        <strong>Persistence is Key</strong>
+        The <code>tableNumber</code> is saved in <code>localStorage</code> via Zustand's <code>persist</code> middleware. This ensures that if the user refreshes the page or navigates to the cart, the table number is not lost.
+      </div>
+    </section>
+
+    <section id="cash">
+      <h2><span class="num">4</span> Cash & Dine-In Checkout</h2>
+      <p>In a real restaurant, asking for a delivery address at the table is poor UX. We made the Zod schema dynamic.</p>
+
+      <pre><code>// src/lib/validations/order.ts
+guestPhone: z.string().trim().optional().refine((val) => {
+  if (!val) return true; // Valid for Dine-In
+  return /^[+\d\s\-()]+$/.test(val) && val.length >= 8;
+}, t("guestPhoneInvalidChars")),
+
+deliveryAddress: z.string().trim().min(5).max(200).optional(),
+paymentMethod: z.enum(["CARD", "CASH"]).default("CARD"),</code></pre>
+
+      <p>For Cash orders, the Server Action skips Stripe, marks the order as <code>PAID</code>, deducts stock, and dispatches the Resend confirmation email immediately.</p>
+
+      <pre><code>// src/actions/checkout.ts
+if (data.paymentMethod === "CASH") {
+  await sendOrderConfirmation({ ... }); // Instant receipt
+}
+return { success: true, orderId: order.id };</code></pre>
+
+      <div class="callout warn">
+        <strong>The Resend 403 Error</strong>
+        During testing, Cash orders triggered a 403 error from Resend. This was because the Resend Free Tier strictly limits sending to the account's registered email address. In production with a verified domain, this works flawlessly.
+      </div>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">5</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>Base64 vs File Storage:</strong> Generating QR codes as Base64 strings eliminates the need for S3/Cloudinary buckets and avoids broken image links.</li>
+        <li><strong>Zustand Persistence:</strong> Always explicitly include critical context variables (like <code>tableNumber</code>) inside the <code>partialize</code> block of your Zustand store, or they will be lost on page refresh.</li>
+        <li><strong>Optional Zod Fields:</strong> When making a field optional in Zod, always ensure you send <code>undefined</code> rather than an empty string <code>""</code>, otherwise <code>.min(5)</code> validation will fail silently.</li>
+        <li><strong>Business Logic > Tech:</strong> Allowing Cash payments requires bypassing the Stripe Webhook entirely and triggering the post-payment side effects (email, KDS) directly inside the Server Action.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-17-analytics.html">← Phase 17 (Analytics)</a>
+      <span class="center">Phase 18</span>
+      <a href="phase-19-pdf.html">Phase 19 (PDF Receipts) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

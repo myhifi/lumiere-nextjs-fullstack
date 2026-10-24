@@ -478,6 +478,23 @@ LESSONS:
 - Excel requires the UTF-8 BOM prefix to render Arabic characters correctly.
 - Use `<a>` tags (not `<Link>`) for API routes that trigger file downloads.
 
+───────────────────────────────────────────────────────────────
+2026-10-24 — PHASE 18: QR TABLE ORDERING & CASH PAYMENTS
+───────────────────────────────────────────────────────────────
+✅ Added `tableNumber` and `paymentMethod` to Prisma schema
+✅ Zustand store updated to persist `tableNumber` in localStorage
+✅ Server Action `generateTableQRCode` (Base64 generation)
+✅ Admin UI modal to Print / Download high-res QR codes
+✅ `/menu?table=X` URL detection with a Dine-In banner
+✅ Checkout form dynamically hides address/phone for Dine-In
+✅ Cash payment flow: bypasses Stripe, marks order PAID, sends email instantly
+✅ Card payment flow: standard Stripe Webhook flow
+
+LESSONS:
+- QR codes can be generated dynamically as Base64 strings, avoiding file storage.
+- Zustand `partialize` must include critical state (like tableNumber) or it gets lost on refresh.
+- Zod `.optional()` fields must receive `undefined` (not empty strings) to skip validation.
+- Cash payments require manually triggering email/KDS side effects, bypassing the Stripe webhook.
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

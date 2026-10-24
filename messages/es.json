@@ -38,13 +38,15 @@
       "mapTitle": "Ubicación del restaurante Lumière"
     }
   },
-    "Cart": {
+  "Cart": {
     "title": "Tu Carrito",
     "empty": "Tu carrito está vacío.",
     "subtotal": "Subtotal",
     "checkout": "Proceder al pago"
   },
-    "Menu": {
+  "Menu": {
+    "dineInBanner": "Estás pidiendo para la mesa {table}",
+    "clearTable": "Cambiar a entrega a domicilio",
     "kicker": "NUESTRO MENÚ",
     "title": "Menú de Lumière",
     "subtitle": "Una selección cuidadosamente elaborada de los mejores platos, preparados con los mejores ingredientes",
@@ -267,6 +269,7 @@
         "labelItems": "Artículos",
         "labelTotal": "Total",
         "labelDeliveryAddress": "Dirección de entrega",
+        "labelTableNumber": "Número de mesa",
         "trackButton": "Sigue tu pedido",
         "trackHint": "Puedes seguir el estado de tu pedido en cualquier momento haciendo clic en el botón de arriba o visitando nuestra página de seguimiento.",
         "footerAutoMessage": "Este correo electrónico fue enviado automáticamente por el sistema de pedidos de Lumière.",
@@ -296,6 +299,8 @@
     }
   },
   "Checkout": {
+    "dineInOrder": "Pedido para comer aquí",
+    "tableNumber": "Mesa {table}",
     "title": "Finalizar compra",
     "subtitle": "Introduce tus datos de entrega para completar el pedido.",
     "nameLabel": "Nombre completo",
@@ -502,7 +507,14 @@
       "create": "Añadir categoría",
       "saving": "Guardando..."
     },
-        "tables": {
+    "tables": {
+      "qrCode": "Código QR",
+      "printQr": "Imprimir QR",
+      "downloadQr": "Descargar",
+      "scanToOrder": "Escanear para pedir",
+      "qrModalTitle": "Código QR de la mesa {number}",
+      "qrModalDesc": "Imprime este código QR y colócalo en la mesa {number}. Los clientes pueden escanearlo para pedir directamente desde sus teléfonos.",
+      "close": "Cerrar",
       "title": "🪑 Gestión de mesas",
       "summary": "{active} de {total} activas · Capacidad total {capacity} asientos",
       "newItem": "+ Nueva mesa",

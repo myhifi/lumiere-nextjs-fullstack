@@ -33,6 +33,7 @@ export type OrderEmailData = {
   orderId: string;
   items: OrderEmailItem[];
   totalAmount: number;
-  deliveryAddress: string;
+  deliveryAddress: string | null;
+  tableNumber: string | null;
   locale: string;
 };

@@ -4,6 +4,8 @@ import type { CartItem } from "@/types/order";
 
 type CartState = {
   items: CartItem[];
+  tableNumber: string | null;
+  setTableNumber: (num: string | null) => void;
   isOpen: boolean;
   addItem: (item: CartItem) => void;
   removeItem: (menuItemId: string) => void;
@@ -18,6 +20,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      tableNumber: null, 
+      setTableNumber: (num) => set({ tableNumber: num }),
       isOpen: false,
 
       addItem: (item) =>
@@ -62,7 +66,7 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: "lumiere-cart-storage", // Key in localStorage
-      partialize: (state) => ({ items: state.items }), // Don't persist isOpen state
+            partialize: (state) => ({ items: state.items, tableNumber: state.tableNumber }),
     }
   )
 );

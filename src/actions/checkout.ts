@@ -1,9 +1,11 @@
+// src/actions/checkout.ts
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { createCheckoutSchema } from "@/lib/validations/order";
 import { getTranslations } from "next-intl/server";
 import type { CartItem } from "@/types/order";
+import { sendOrderConfirmation } from "@/lib/email/send"; // <--- Add this
 
 export type CheckoutResult =
   | { success: true; orderId: string }
@@ -65,15 +67,43 @@ export async function createPendingOrder(
       data: {
         guestName: data.guestName,
         guestEmail: data.guestEmail,
-        guestPhone: data.guestPhone,
-        deliveryAddress: data.deliveryAddress,
+        guestPhone: data.guestPhone || "", // <--- FIX: Fallback to empty string
+        deliveryAddress: data.deliveryAddress || null,
+        tableNumber: data.tableNumber || null,
+        paymentMethod: data.paymentMethod,
         totalAmount,
-        status: "PENDING",
+        // If CASH, mark as PAID immediately. If CARD, wait for Stripe webhook.
+        status: data.paymentMethod === "CASH" ? "PAID" : "PENDING",
         items: {
           create: orderItemsData,
         },
       },
     });
+
+    // If paying by cash, trigger the email directly (bypassing Stripe Webhook)
+    if (data.paymentMethod === "CASH") {
+      try {
+        await sendOrderConfirmation({
+          to: order.guestEmail,
+          guestName: order.guestName,
+          orderId: order.id,
+          items: orderItemsData.map((i) => {
+            const dbItem = dbItems.find((db) => db.id === i.menuItemId);
+            return {
+              name: dbItem?.nameEn || dbItem?.name || "Item",
+              quantity: i.quantity,
+              priceAtOrder: i.priceAtOrder,
+            };
+          }),
+          totalAmount: order.totalAmount,
+          deliveryAddress: order.deliveryAddress,
+          tableNumber: order.tableNumber,
+          locale: "en", // Default or pass from frontend if needed
+        });
+      } catch (emailErr) {
+        console.error("[Cash Order Email Failed]", emailErr);
+      }
+    }
 
     return { success: true, orderId: order.id };
   } catch (error) {

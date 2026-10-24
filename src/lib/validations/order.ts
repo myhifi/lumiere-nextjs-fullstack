@@ -1,3 +1,4 @@
+// src/lib/validations/order.ts
 import { z } from "zod";
 
 type TranslateFn = (key: string) => string;
@@ -19,15 +20,19 @@ export function createCheckoutSchema(t: TranslateFn) {
     guestPhone: z
       .string()
       .trim()
-      .min(8, t("guestPhoneTooShort"))
-      .max(20, t("guestPhoneTooLong"))
-      .regex(/^[+\d\s\-()]+$/, t("guestPhoneInvalidChars")),
+      .optional()
+      .refine((val) => {
+        // If it's empty (Dine-In), it's valid
+        if (!val) return true;
+        // Otherwise, enforce the rules
+        if (val.length < 8) return false;
+        if (val.length > 20) return false;
+        return /^[+\d\s\-()]+$/.test(val);
+      }, t("guestPhoneInvalidChars")),
     
-    deliveryAddress: z
-      .string()
-      .trim()
-      .min(10, t("addressTooShort"))
-      .max(200, t("addressTooLong")),
+    deliveryAddress: z.string().trim().min(5).max(200).optional(),
+    tableNumber: z.string().optional(),
+    paymentMethod: z.enum(["CARD", "CASH"]).default("CARD"),
   });
 }
 
