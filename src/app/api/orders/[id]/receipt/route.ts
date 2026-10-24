@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import fs from "fs";
+import path from "path";
 import { renderToStream } from "@react-pdf/renderer";
 import { createTranslator } from "next-intl";
 import { getOrderDataForPdf } from "@/lib/services/pdf";
@@ -20,7 +22,8 @@ export async function GET(
     }
 
     // 2. Load translations
-    const messages = (await import(`../../../../../../messages/${locale}.json`)).default;
+    const messagesPath = path.join(process.cwd(), `messages/${locale}.json`);
+    const messages = JSON.parse(fs.readFileSync(messagesPath, "utf8"));
     const t = createTranslator({ locale, messages, namespace: "PDF" });
 
     // 3. Generate the PDF Stream

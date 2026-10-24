@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "flagcdn.com" }, // <-- إضافة جديدة
     ],
   },
+  outputFileTracingIncludes: {
+    '/api/orders/[id]/receipt': ['./public/fonts/**/*', './messages/**/*'],
+    '/api/orders/[id]/ticket': ['./public/fonts/**/*', './messages/**/*'],
+  },
 };
 
 export default withNextIntl(nextConfig);

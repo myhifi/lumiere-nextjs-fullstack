@@ -1,14 +1,13 @@
-
 import type { PdfOrderData } from "@/lib/services/pdf";
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import path from "path";
 
-// Register the Arabic font
-const fontBaseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+// Read from filesystem to bypass Vercel Deployment Protection & network latency
 Font.register({
   family: "Cairo",
   fonts: [
-    { src: `${fontBaseUrl}/fonts/Cairo-Regular.ttf` },
-    { src: `${fontBaseUrl}/fonts/Cairo-Bold.ttf`, fontWeight: "bold" },
+    { src: path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf") },
+    { src: path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf"), fontWeight: "bold" },
   ],
 });
 
