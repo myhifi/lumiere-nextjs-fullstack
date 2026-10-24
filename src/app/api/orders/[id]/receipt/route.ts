@@ -1,10 +1,12 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { renderToStream } from "@react-pdf/renderer";
+import { renderToBuffer } from "@react-pdf/renderer";
 import { createTranslator } from "next-intl";
 import { getOrderDataForPdf } from "@/lib/services/pdf";
 import { CustomerReceipt } from "@/lib/pdf/CustomerReceipt";
+
+export const runtime = "nodejs";
 
 export async function GET(
   req: NextRequest,
@@ -15,24 +17,21 @@ export async function GET(
     const { searchParams } = new URL(req.url);
     const locale = searchParams.get("locale") || "en";
 
-    // 1. Fetch order data securely from the DB
     const order = await getOrderDataForPdf(id, locale);
     if (!order) {
       return new Response("Order not found", { status: 404 });
     }
 
-    // 2. Load translations
     const messagesPath = path.join(process.cwd(), `messages/${locale}.json`);
     const messages = JSON.parse(fs.readFileSync(messagesPath, "utf8"));
     const t = createTranslator({ locale, messages, namespace: "PDF" });
 
-    // 3. Generate the PDF Stream
-    const stream = await renderToStream(
+    // Changed from renderToStream to renderToBuffer for Vercel Serverless compatibility
+    const buffer = await renderToBuffer(
       CustomerReceipt({ order, t: t as unknown as (key: string) => string, locale })
     );
 
-    // 4. Return the PDF response
-    return new Response(stream as unknown as ReadableStream, {
+    return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/pdf",
         "Content-Disposition": `inline; filename="lumiere-receipt-${order.shortId}.pdf"`,
@@ -40,6 +39,10 @@ export async function GET(
     });
   } catch (error) {
     console.error("[Receipt API Error]", error);
-    return new Response("Failed to generate PDF", { status: 500 });
+    // Return exact error for easier debugging
+    return new Response(
+      `Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`, 
+      { status: 500 }
+    );
   }
 }

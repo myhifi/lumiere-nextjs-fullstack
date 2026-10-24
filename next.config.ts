@@ -1,3 +1,4 @@
+// next.config.ts
 import type { NextConfig } from "next";
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 import createNextIntlPlugin from "next-intl/plugin";

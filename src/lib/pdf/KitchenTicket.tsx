@@ -1,21 +1,36 @@
+// src/lib/pdf/KitchenTicket.tsx
 import type { PdfOrderData } from "@/lib/services/pdf";
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import fs from "fs";
 import path from "path";
 
-// Read from filesystem to bypass Vercel Deployment Protection & network latency
-Font.register({
-  family: "Cairo",
-  fonts: [
-    { src: path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf") },
-    { src: path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf"), fontWeight: "bold" },
-  ],
-});
+const cairoRegular = path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf");
+const cairoBold = path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf");
+
+let fontFamily = "Helvetica"; // Fallback
+
+try {
+  if (fs.existsSync(cairoRegular) && fs.existsSync(cairoBold)) {
+    Font.register({
+      family: "Cairo",
+      fonts: [
+        { src: cairoRegular },
+        { src: cairoBold, fontWeight: "bold" },
+      ],
+    });
+    fontFamily = "Cairo";
+  } else {
+    console.warn("[PDF] Cairo font files not found, falling back to Helvetica");
+  }
+} catch (err) {
+  console.error("[PDF] Error registering font:", err);
+}
 
 // ═══════════════════════════════════════════════════
 // 🎨 Kitchen Ticket Styles (High Contrast, Large Font)
 // ═══════════════════════════════════════════════════
 const styles = StyleSheet.create({
-  page: { padding: 30, fontFamily: "Cairo", backgroundColor: "#ffffff" },
+  page: { padding: 30, fontFamily: fontFamily, backgroundColor: "#ffffff" },
   header: { borderBottomWidth: 3, borderBottomColor: "#000000", paddingBottom: 10, marginBottom: 20, flexDirection: "row", justifyContent: "space-between" },
   title: { fontSize: 28, fontWeight: "heavy" },
   orderId: { fontSize: 18, fontWeight: "bold" },

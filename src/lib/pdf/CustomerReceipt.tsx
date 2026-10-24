@@ -1,21 +1,35 @@
 import type { PdfOrderData } from "@/lib/services/pdf";
 import { Document, Page, Text, View, StyleSheet, Font } from "@react-pdf/renderer";
+import fs from "fs";
 import path from "path";
 
-// Read from filesystem to bypass Vercel Deployment Protection & network latency
-Font.register({
-  family: "Cairo",
-  fonts: [
-    { src: path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf") },
-    { src: path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf"), fontWeight: "bold" },
-  ],
-});
+const cairoRegular = path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf");
+const cairoBold = path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf");
+
+let fontFamily = "Helvetica"; // Fallback
+
+try {
+  if (fs.existsSync(cairoRegular) && fs.existsSync(cairoBold)) {
+    Font.register({
+      family: "Cairo",
+      fonts: [
+        { src: cairoRegular },
+        { src: cairoBold, fontWeight: "bold" },
+      ],
+    });
+    fontFamily = "Cairo";
+  } else {
+    console.warn("[PDF] Cairo font files not found, falling back to Helvetica");
+  }
+} catch (err) {
+  console.error("[PDF] Error registering font:", err);
+}
 
 // ═══════════════════════════════════════════════════
 // 🎨 PDF Styles
 // ═══════════════════════════════════════════════════
 const styles = StyleSheet.create({
-  page: { padding: 40, fontFamily: "Cairo", fontSize: 10, color: "#1a1a1a" },
+  page: { padding: 40, fontFamily: fontFamily, fontSize: 10, color: "#1a1a1a" },
   header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 30, borderBottomWidth: 2, borderBottomColor: "#c9a961", paddingBottom: 10 },
   logo: { fontSize: 24, fontWeight: "bold", color: "#c9a961" },
   receiptTitle: { fontSize: 14, color: "#6b6b6b", textAlign: "right" },
