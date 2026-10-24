@@ -70,6 +70,7 @@ li { margin-bottom: 0.4rem; }
       <a href="#templates">React PDF Templates</a>
       <a href="#streaming">Streaming API</a>
       <a href="#arabic">Arabic & Fonts</a>
+      <a href="#vercel">The Vercel Hurdle</a>
       <a href="#lessons">Lessons Learned</a>
     </nav>
   </aside>
@@ -114,11 +115,11 @@ const styles = StyleSheet.create({
       <h2><span class="num">3</span> Streaming API Routes</h2>
       <p>Instead of saving the PDF to a folder (which breaks on Vercel Serverless), we stream it directly to the browser.</p>
 
-      <pre><code>import { renderToStream } from "@react-pdf/renderer";
+      <pre><code>import { renderToBuffer } from "@react-pdf/renderer";
 
-const stream = await renderToStream(&lt;CustomerReceipt ... /&gt;);
+const buffer = await renderToBuffer(&lt;CustomerReceipt ... /&gt;);
 
-return new Response(stream as ReadableStream, {
+return new NextResponse(new Uint8Array(buffer), {
   headers: {
     "Content-Type": "application/pdf",
     "Content-Disposition": `inline; filename="receipt.pdf"`,
@@ -138,19 +139,52 @@ return new Response(stream as ReadableStream, {
       <pre><code>Font.register({
   family: "Cairo",
   fonts: [
-    { src: `${process.env.NEXT_PUBLIC_APP_URL}/fonts/Cairo-Regular.ttf` },
-    { src: `${process.env.NEXT_PUBLIC_APP_URL}/fonts/Cairo-Bold.ttf`, fontWeight: "bold" },
+    { src: path.join(process.cwd(), "public/fonts/Cairo-Regular.ttf") },
+    { src: path.join(process.cwd(), "public/fonts/Cairo-Bold.ttf"), fontWeight: "bold" },
   ],
 });</code></pre>
+    </section>
 
-      <p><strong>Critical Deployment Step:</strong> Because PDF generation happens on the server, the server must be able to fetch the font file over the network. This is why setting <code>NEXT_PUBLIC_APP_URL</code> in Vercel's environment variables is mandatory for this phase to work.</p>
+    <section id="vercel">
+      <h2><span class="num">5</span> The Vercel Serverless Hurdle</h2>
+      <p>Deploying PDF generation to Vercel Serverless is notoriously difficult. We encountered a specific error where Vercel's file tracer failed to bundle the underlying <code>pdfkit</code> dynamic chunks.</p>
+      
+      <div class="callout danger">
+        <strong>The Error</strong>
+        <code>Cannot find module './chunks/standardGlyphNames-DNHAb7rp.cjs'</code>
+        <p>Require stack: <code>/var/task/node_modules/pdfkit/js/standard-fonts/Helvetica.cjs</code></p>
+      </div>
+
+      <p><strong>Why it happens:</strong> <code>pdfkit</code> uses dynamically generated CJS chunks for its standard fonts. Vercel's bundler missed these chunks, causing a 500 error in production while working perfectly locally.</p>
+
+      <h3>The Fix: `next.config.ts`</h3>
+      <p>We must tell Webpack not to bundle <code>pdfkit</code>, and explicitly force Vercel's tracer to include the entire <code>pdfkit/js</code> folder (including the hidden chunks).</p>
+
+      <pre><code>// next.config.ts
+const nextConfig: NextConfig = {
+  serverExternalPackages: ["pdfkit", "@react-pdf/renderer"],
+  
+  outputFileTracingIncludes: {
+    "/api/orders/[id]/receipt": [
+      "./node_modules/pdfkit/js/**/*", // <--- The magic fix
+      "./public/fonts/**/*",
+      "./messages/**/*",
+    ],
+    "/api/orders/[id]/ticket": [
+      "./node_modules/pdfkit/js/**/*",
+      "./public/fonts/**/*",
+      "./messages/**/*",
+    ],
+  },
+};</code></pre>
     </section>
 
     <section id="lessons">
-      <h2><span class="num">5</span> Engineering Lessons</h2>
+      <h2><span class="num">6</span> Engineering Lessons</h2>
       <ul>
         <li><strong>PDFs are a different beast:</strong> CSS for the web (like Tailwind) does not work in PDFs. You must use <code>StyleSheet.create</code> from <code>@react-pdf/renderer</code>.</li>
         <li><strong>RTL Support:</strong> Just adding Arabic text is not enough. You must pass <code>direction: "rtl"</code> to the Page style, and ensure the font supports Arabic shaping/ligatures.</li>
+        <li><strong>Serverless Bundling:</strong> When using third-party Node libraries on Vercel, always check if they use dynamic imports. If they do, you must explicitly include their internal folders in <code>outputFileTracingIncludes</code>.</li>
         <li><strong>Thermal Printers:</strong> Kitchen tickets must not have background colors, logos, or prices. High contrast (black and white) and massive font sizes (20pt+) are required for readability in a hot, busy kitchen.</li>
       </ul>
     </section>
