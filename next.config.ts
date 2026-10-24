@@ -19,9 +19,23 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "flagcdn.com" }, // <-- إضافة جديدة
     ],
   },
+  // 1. Mark pdfkit as an external package so its internal imports work
+  serverExternalPackages: ["pdfkit"],
+
+  // 2. Tell Vercel to explicitly bundle pdfkit's standard fonts and our custom fonts
   outputFileTracingIncludes: {
-    '/api/orders/[id]/receipt': ['./public/fonts/**/*', './messages/**/*'],
-    '/api/orders/[id]/ticket': ['./public/fonts/**/*', './messages/**/*'],
+    '/api/orders/[id]/receipt': [
+      './public/fonts/**/*', 
+      './messages/**/*',
+      './node_modules/pdfkit/js/data/*.afm',
+      './node_modules/pdfkit/js/standard-fonts/*.cjs'
+    ],
+    '/api/orders/[id]/ticket': [
+      './public/fonts/**/*', 
+      './messages/**/*',
+      './node_modules/pdfkit/js/data/*.afm',
+      './node_modules/pdfkit/js/standard-fonts/*.cjs'
+    ],
   },
 };
 
