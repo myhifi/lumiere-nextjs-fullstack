@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 19 — PDF Invoices & Kitchen Tickets · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 19</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#templates">React PDF Templates</a>
+      <a href="#streaming">Streaming API</a>
+      <a href="#arabic">Arabic & Fonts</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 19 · PDF Invoices & Kitchen Tickets</div>
+      <h1>Document Engineering</h1>
+      <p class="lede">Generate high-quality, printable PDF documents dynamically on the server. Deliver branded A4 receipts to customers and high-contrast Kitchen Tickets to chefs.</p>
+      <div class="stack">
+        <span>@react-pdf/renderer</span><span>Streaming</span>
+        <span>Custom Fonts</span><span>RTL PDFs</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Complete the physical restaurant loop by generating real PDF documents. Customers get a branded receipt, and the kitchen gets a no-nonsense, high-contrast cooking ticket.</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>Customer Receipt:</strong> A beautifully branded A4 PDF with the Lumière gold accents, itemized list, and payment method.</li>
+        <li><strong>Kitchen Ticket:</strong> A simplified, massive-font PDF with no prices, designed to be printed on thermal printers in the kitchen.</li>
+        <li><strong>Server-Side Streaming:</strong> Generating PDFs on the fly via API routes without saving files to disk.</li>
+        <li><strong>Custom Font Registration:</strong> Loading the Cairo font to properly support Arabic ligatures in PDFs.</li>
+      </ul>
+    </section>
+
+    <section id="templates">
+      <h2><span class="num">2</span> React PDF Templates</h2>
+      <p>We used <code>@react-pdf/renderer</code> to build the templates. Just like React Email, it uses absolute inline styles and Flexbox, but renders to a physical A4 page.</p>
+
+      <pre><code>// src/lib/pdf/CustomerReceipt.tsx
+const styles = StyleSheet.create({
+  page: { padding: 40, fontFamily: "Cairo", fontSize: 10 },
+  header: { borderBottomWidth: 2, borderBottomColor: "#c9a961" },
+  // ...
+});</code></pre>
+    </section>
+
+    <section id="streaming">
+      <h2><span class="num">3</span> Streaming API Routes</h2>
+      <p>Instead of saving the PDF to a folder (which breaks on Vercel Serverless), we stream it directly to the browser.</p>
+
+      <pre><code>import { renderToStream } from "@react-pdf/renderer";
+
+const stream = await renderToStream(&lt;CustomerReceipt ... /&gt;);
+
+return new Response(stream as ReadableStream, {
+  headers: {
+    "Content-Type": "application/pdf",
+    "Content-Disposition": `inline; filename="receipt.pdf"`,
+  },
+});</code></pre>
+    </section>
+
+    <section id="arabic">
+      <h2><span class="num">4</span> Arabic & Custom Fonts</h2>
+      <p>The default <code>Helvetica</code> font in PDFs does not support Arabic characters, resulting in gibberish text (e.g., <code>Ø§Ù„Ø¥ÙŠØµØ§Ù„</code>).</p>
+      
+      <div class="callout warn">
+        <strong>The Font Solution</strong>
+        We downloaded the <strong>Cairo</strong> font from Google Fonts, placed the <code>.ttf</code> files in <code>public/fonts/</code>, and registered them globally in the PDF template.
+      </div>
+
+      <pre><code>Font.register({
+  family: "Cairo",
+  fonts: [
+    { src: `${process.env.NEXT_PUBLIC_APP_URL}/fonts/Cairo-Regular.ttf` },
+    { src: `${process.env.NEXT_PUBLIC_APP_URL}/fonts/Cairo-Bold.ttf`, fontWeight: "bold" },
+  ],
+});</code></pre>
+
+      <p><strong>Critical Deployment Step:</strong> Because PDF generation happens on the server, the server must be able to fetch the font file over the network. This is why setting <code>NEXT_PUBLIC_APP_URL</code> in Vercel's environment variables is mandatory for this phase to work.</p>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">5</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>PDFs are a different beast:</strong> CSS for the web (like Tailwind) does not work in PDFs. You must use <code>StyleSheet.create</code> from <code>@react-pdf/renderer</code>.</li>
+        <li><strong>RTL Support:</strong> Just adding Arabic text is not enough. You must pass <code>direction: "rtl"</code> to the Page style, and ensure the font supports Arabic shaping/ligatures.</li>
+        <li><strong>Thermal Printers:</strong> Kitchen tickets must not have background colors, logos, or prices. High contrast (black and white) and massive font sizes (20pt+) are required for readability in a hot, busy kitchen.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-18-qr-ordering.html">← Phase 18 (QR Ordering)</a>
+      <span class="center">Phase 19</span>
+      <a href="phase-20-hardening.html">Phase 20 (Production Hardening) →</a>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

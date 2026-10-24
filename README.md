@@ -3,7 +3,7 @@
 > A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, secure Stripe checkout, order tracking, automated email receipts notifications, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-17%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-17-analytics.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-20%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-17-analytics.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -95,6 +95,9 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - 🤖 **Smart FAQ Assistant** — floating chat panel that answers common questions in all 7 languages. Zero download, zero external API, sub-50ms responses
 - 🛒 **Shopping Cart & Delivery** — persistent Zustand cart, dynamic checkout, and order tracking (AED currency)
 - 🔍 **Order Tracking** — secure, URL-driven page to track delivery status by Order ID or Email
+- 🪑 **QR Table Ordering** — Scan a QR code at the table to open the menu and order directly.
+- 💵 **Cash & Dine-In Payments** — Bypass Stripe for dine-in orders and instantly trigger the KDS via Cash payments.
+- 📄 **PDF Receipts & Tickets** — Downloadable, branded A4 PDF receipts for customers, and high-contrast Kitchen Tickets for chefs.
 - 📧 **Automated Emails** — beautifully branded React Email receipts sent automatically via Resend Webhooks
 - 💳 **Stripe Payments** — secure Stripe Checkout with event-driven webhooks and inventory deduction
 - ⭐ **Customer reviews** — star ratings with admin moderation
@@ -106,6 +109,9 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - 📊 **Dashboard overview** with real-time statistics
 - 📦 **Order Management** — track delivery orders, update statuses (Paid → Preparing → Delivered), and audit log every change
 - 👨‍🍳 Kitchen Display System (KDS) — Real-time order screen with audio alerts for chefs
+- 🪑 **QR Table Ordering** — Generate printable QR codes for tables. Customers scan to order directly from their phones.
+- 🖨️ **PDF Generation** — Server-side generation of A4 customer receipts and Kitchen Tickets.
+- 💵 **Cash & Dine-In Payments** — Bypass Stripe for dine-in orders and trigger the KDS/Emails instantly via Cash payments.
 - 📈 **Advanced Analytics** — Track Total Revenue, Total Orders, and Average Order Value (AOV) with interactive Recharts line and bar graphs.
 - 📥 **Localized CSV Export** — One-click export of all financial orders to a UTF-8 Excel-compatible CSV, perfectly formatted in English or Arabic.
 - 📅 **Reservations management** — status lifecycle: pending → confirmed → completed (or cancelled)
@@ -204,6 +210,8 @@ This project was built in **15 documented phases**, each with a self-contained H
 | 15 | Order Tracking & Email Automation | [Open](./public/portfolio/phase-15-order-tracking.html) |
 | 16 | Real-Time KDS & Live Alerts | [Open](./public/portfolio/phase-16-kds.html) |
 | 17 | Advanced Analytics & CSV Export | [Open](./public/portfolio/phase-17-analytics.html) |
+| 18 | QR Table Ordering & Cash Payments | [Open](./public/portfolio/phase-18-qr-ordering.html) |
+| 19 | PDF Invoices & Kitchen Tickets | [Open](./public/portfolio/phase-19-pdf.html) |
 
 > **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 

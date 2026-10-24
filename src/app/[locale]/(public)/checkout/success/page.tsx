@@ -9,7 +9,8 @@ type PageProps = {
   searchParams: Promise<{ session_id?: string; orderId?: string; cash?: string }>;
 };
 
-export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
+export default async function CheckoutSuccessPage({ params, searchParams }: PageProps) {
+  const { locale } = await params;
   const { session_id, orderId, cash } = await searchParams;
   const t = await getTranslations("CheckoutSuccess");
 
@@ -36,12 +37,21 @@ export default async function CheckoutSuccessPage({ searchParams }: PageProps) {
       <h1 className="text-3xl font-bold mb-4">{t("title")}</h1>
       <p className="text-muted mb-8">{t("message")}</p>
 
-      <Link
-        href="/menu"
-        className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"
-      >
-        {t("backToMenu")}
-      </Link>
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
+        <a
+          href={`/api/orders/${orderId || session_id}/receipt?locale=${locale}`} 
+          target="_blank"
+          className="inline-block bg-white border border-border hover:bg-gray-50 text-foreground font-medium px-8 py-3 rounded-full transition-colors"
+        >
+          {t("downloadReceipt")}
+        </a>
+        <Link
+          href="/menu"
+          className="inline-block bg-accent hover:bg-accent-dark text-white font-medium px-8 py-3 rounded-full transition-colors"
+        >
+          {t("backToMenu")}
+        </Link>
+      </div>
     </div>
   );
 }

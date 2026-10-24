@@ -153,7 +153,14 @@ export function KitchenBoard({ initialOrders, locale }: { initialOrders: KDSOrde
                 </ul>
               </div>
 
-              <div className="p-4 border-t border-gray-700">
+              <div className="p-4 border-t border-gray-700 flex flex-col gap-2">
+                <a 
+                  href={`/api/orders/${order.id}/ticket?locale=${locale}`} 
+                  target="_blank" 
+                  className="text-center text-xs text-gray-400 hover:text-white underline mb-1"
+                >
+                  Print Ticket
+                </a>
                 {order.status === "PAID" ? (
                   <button 
                     onClick={() => handleUpdate(order.id, "PREPARING")}

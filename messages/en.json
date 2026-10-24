@@ -311,6 +311,7 @@
     "processing": "Processing..."
   },
   "CheckoutSuccess": {
+    "downloadReceipt": "Download Receipt",
     "title": "Payment Successful!",
     "message": "Thank you for your order. We have received your payment and are preparing your food.",
     "backToMenu": "Back to Menu",
@@ -693,6 +694,21 @@
       "title": "Demo Mode",
       "message": "You are browsing a demo account. All changes (add, edit, delete) are automatically reset every 6 hours to preserve the demo experience."
     }
+  },
+  "PDF": {
+    "receipt": "Payment Receipt",
+    "kitchenTicket": "KITCHEN TICKET",
+    "billedTo": "Billed To",
+    "date": "Date",
+    "paymentMethod": "Payment Method",
+    "deliveryAddress": "Delivery Address",
+    "dineIn": "Dine-In",
+    "item": "Item",
+    "qty": "Qty",
+    "price": "Price",
+    "total": "Total",
+    "thankYou": "Thank you for dining with us!",
+    "orderedAt": "Ordered At"
   },
   "Errors": {
     "unauthorized": "Not authorized",

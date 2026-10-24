@@ -102,8 +102,17 @@ export function OrderRow({ order, locale }: Props) {
         </div>
 
         {/* Total */}
-        <div className="text-lg font-bold text-accent-dark min-w-25">
-          {order.totalAmount} <span className="text-xs font-normal">AED</span>
+        <div className="flex flex-col items-end min-w-25">
+          <div className="text-lg font-bold text-accent-dark">
+            {order.totalAmount} <span className="text-xs font-normal">AED</span>
+          </div>
+          <a 
+            href={`/api/orders/${order.id}/receipt?locale=${locale}`} 
+            target="_blank"
+            className="text-xs text-accent hover:underline mt-1"
+          >
+            Receipt PDF ↓
+          </a>
         </div>
 
         {/* Status Badge & Action */}

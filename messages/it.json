@@ -311,6 +311,7 @@
     "processing": "In elaborazione..."
   },
   "CheckoutSuccess": {
+    "downloadReceipt": "Scarica ricevuta",
     "title": "Pagamento Riuscito!",
     "message": "Grazie per il tuo ordine. Abbiamo ricevuto il tuo pagamento e stiamo preparando il tuo cibo.",
     "backToMenu": "Torna al Menu",
@@ -692,6 +693,21 @@
       "title": "Modalità Demo",
       "message": "Stai esplorando un account demo. Tutte le modifiche (aggiunta, modifica, eliminazione) vengono ripristinate automaticamente ogni 6 ore per preservare l'esperienza di prova."
     }
+  },
+  "PDF": {
+    "receipt": "Ricevuta di pagamento",
+    "kitchenTicket": "BIGLIETTO CUCINA",
+    "billedTo": "Fatturato a",
+    "date": "Data",
+    "paymentMethod": "Metodo di pagamento",
+    "deliveryAddress": "Indirizzo di consegna",
+    "dineIn": "Al tavolo",
+    "item": "Articolo",
+    "qty": "Q.tà",
+    "price": "Prezzo",
+    "total": "Totale",
+    "thankYou": "Grazie per aver mangiato da noi!",
+    "orderedAt": "Ordinato il"
   },
   "Errors": {
     "unauthorized": "Non autorizzato",

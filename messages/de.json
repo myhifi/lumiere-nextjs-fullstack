@@ -311,6 +311,7 @@
     "processing": "Wird bearbeitet..."
   },
   "CheckoutSuccess": {
+    "downloadReceipt": "Beleg herunterladen",
     "title": "Zahlung Erfolgreich!",
     "message": "Vielen Dank für Ihre Bestellung. Wir haben Ihre Zahlung erhalten und bereiten Ihr Essen vor.",
     "backToMenu": "Zurück zum Menü",
@@ -693,7 +694,22 @@
       "message": "Sie befinden sich in einem Demo-Konto. Alle Änderungen (Hinzufügen, Bearbeiten, Löschen) werden alle 6 Stunden automatisch zurückgesetzt, um die Demo-Erfahrung zu erhalten."
     }    
   },
-    "Errors": {
+  "PDF": {
+    "receipt": "Zahlungsbeleg",
+    "kitchenTicket": "KÜCHENTICKET",
+    "billedTo": "Rechnungsempfänger",
+    "date": "Datum",
+    "paymentMethod": "Zahlungsmethode",
+    "deliveryAddress": "Lieferadresse",
+    "dineIn": "Im Restaurant",
+    "item": "Artikel",
+    "qty": "Menge",
+    "price": "Preis",
+    "total": "Gesamt",
+    "thankYou": "Vielen Dank für Ihren Besuch!",
+    "orderedAt": "Bestellt am"
+  },
+  "Errors": {
     "unauthorized": "Nicht autorisiert",
     "adminRequired": "Administratorrechte erforderlich",
     "notFound": "Element nicht gefunden",

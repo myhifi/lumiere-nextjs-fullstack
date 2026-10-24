@@ -495,6 +495,24 @@ LESSONS:
 - Zustand `partialize` must include critical state (like tableNumber) or it gets lost on refresh.
 - Zod `.optional()` fields must receive `undefined` (not empty strings) to skip validation.
 - Cash payments require manually triggering email/KDS side effects, bypassing the Stripe webhook.
+
+───────────────────────────────────────────────────────────────
+2026-10-24 — PHASE 19: PDF INVOICES & KITCHEN TICKETS
+───────────────────────────────────────────────────────────────
+✅ Installed `@react-pdf/renderer` for server-side PDF generation
+✅ Created Customer Receipt template (branded, A4, itemized)
+✅ Created Kitchen Ticket template (high-contrast, large fonts, no prices)
+✅ Built streaming API routes (`/api/orders/[id]/receipt` & `/ticket`)
+✅ Added "Download Receipt" button to Customer Success page
+✅ Added "Print Ticket" link to KDS and Admin Orders
+✅ Downloaded and registered Cairo font to support Arabic PDFs
+✅ Added `NEXT_PUBLIC_APP_URL` dependency to load fonts correctly
+
+LESSONS:
+- PDF CSS is completely different from Web CSS. Must use `StyleSheet.create`.
+- RTL PDFs require a custom Unicode font (like Cairo) + `direction: "rtl"` on the Page.
+- `renderToStream` prevents saving files to disk, making it perfect for Vercel Serverless.
+- The server must be able to fetch the font file via an absolute URL in production.
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

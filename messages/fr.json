@@ -311,6 +311,7 @@
     "processing": "Traitement en cours..."
   },
   "CheckoutSuccess": {
+    "downloadReceipt": "Télécharger le reçu",
     "title": "Paiement Réussi !",
     "message": "Merci pour votre commande. Nous avons bien reçu votre paiement et préparons votre repas.",
     "backToMenu": "Retour au Menu",
@@ -693,7 +694,22 @@
       "message": "Vous consultez un compte de démonstration. Toutes les modifications (ajout, édition, suppression) sont automatiquement réinitialisées toutes les 6 heures pour préserver l'expérience de démonstration."
     }    
   },
-      "Errors": {
+  "PDF": {
+    "receipt": "Reçu de paiement",
+    "kitchenTicket": "TICKET DE CUISINE",
+    "billedTo": "Facturé à",
+    "date": "Date",
+    "paymentMethod": "Moyen de paiement",
+    "deliveryAddress": "Adresse de livraison",
+    "dineIn": "Sur place",
+    "item": "Article",
+    "qty": "Qté",
+    "price": "Prix",
+    "total": "Total",
+    "thankYou": "Merci d'avoir dîné avec nous !",
+    "orderedAt": "Commandé le"
+  },
+  "Errors": {
     "unauthorized": "Non autorisé",
     "adminRequired": "Privilèges administrateur requis",
     "notFound": "Élément introuvable",
