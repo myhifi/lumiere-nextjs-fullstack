@@ -1,3 +1,4 @@
+// next.config.ts
 import type { NextConfig } from "next";
 import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 import createNextIntlPlugin from "next-intl/plugin";
@@ -42,4 +43,20 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+import { withSentryConfig } from "@sentry/nextjs/config";
+
+export default withSentryConfig(withNextIntl(nextConfig), {
+  silent: true,
+  org: "lumiere",
+  project: "javascript-nextjs",
+  widenClientFileUpload: true,
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+    automaticVercelMonitors: true,
+  },
+});

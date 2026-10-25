@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "Mit Karte bezahlen",
+    "payByCash": "Barzahlung bei Lieferung",
     "dineInOrder": "Im Restaurant bestellen",
     "tableNumber": "Tisch {table}",
     "title": "Kasse",

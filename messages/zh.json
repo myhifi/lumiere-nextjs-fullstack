@@ -299,6 +299,8 @@
 }
 },
 "Checkout": {
+  "payByCard": "刷卡支付",
+  "payByCash": "货到付款",
   "dineInOrder": "堂食点餐",
   "tableNumber": "桌号 {table}",
   "title": "结账",

@@ -18,7 +18,10 @@ jobs:
       EMAIL_PROVIDER: "console"
       RESEND_API_KEY: "re_mock_key_for_ci_build"
       STRIPE_SECRET_KEY: "sk_test_mock_key_for_ci_build"
-      STRIPE_WEBHOOK_SECRET: "whsec_mock_key_for_ci_build" 
+      STRIPE_WEBHOOK_SECRET: "whsec_mock_key_for_ci_build"
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+      NEXT_PUBLIC_SENTRY_DSN: "https://mock@sentry.io/mock" 
 
     steps:
     - uses: actions/checkout@v4

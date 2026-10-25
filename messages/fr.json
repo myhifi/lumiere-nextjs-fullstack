@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "Payer par carte",
+    "payByCash": "Paiement à la livraison",
     "dineInOrder": "Commande sur place",
     "tableNumber": "Table {table}",
     "title": "Paiement",

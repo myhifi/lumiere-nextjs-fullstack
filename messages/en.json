@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "Pay by Card",
+    "payByCash": "Cash on Delivery",
     "dineInOrder": "Dine-In Order",
     "tableNumber": "Table {table}",
     "title": "Checkout",

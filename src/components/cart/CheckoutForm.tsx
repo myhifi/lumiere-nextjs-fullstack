@@ -37,7 +37,7 @@ export function CheckoutForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     if (items.length === 0) return;
 
@@ -45,40 +45,41 @@ export function CheckoutForm() {
     setError(null);
     setFieldErrors({});
 
-    // 1. Create the order in DB
-    const payload = {
-      ...formData,
-      deliveryAddress: formData.deliveryAddress || undefined,
-      guestPhone: formData.guestPhone || undefined,          
-      tableNumber: tableNumber || undefined,
-      paymentMethod: paymentMethod,
-    };
-    const result = await createPendingOrder(payload, items);
+    try {
+      const payload = {
+        ...formData,
+        deliveryAddress: formData.deliveryAddress || undefined,
+        guestPhone: formData.guestPhone || undefined,          
+        tableNumber: tableNumber || undefined,
+        paymentMethod: paymentMethod,
+      };
+      const result = await createPendingOrder(payload, items);
 
-    if (!result.success) {
-      setError(result.error);
-      setFieldErrors(result.fieldErrors ?? {});
+      if (!result.success) {
+        setError(result.error);
+        setFieldErrors(result.fieldErrors ?? {});
+        return; // The finally block will handle setIsSubmitting(false)
+      }
+
+      if (paymentMethod === "CASH") {
+        router.push(`/checkout/success?orderId=${result.orderId}&cash=true`);
+        return;
+      }
+
+      const stripeResult = await createStripeSession(result.orderId, locale);
+
+      if (!stripeResult.success || !stripeResult.url) {
+        setError(stripeResult.error || "Failed to connect to Stripe");
+        return;
+      }
+
+      window.location.href = stripeResult.url;
+    } catch (err) {
+      console.error("[Checkout Submit Error]", err);
+      setError("An unexpected error occurred. Please try again.");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    // If paying by cash, skip Stripe and go straight to success page
-    if (paymentMethod === "CASH") {
-      router.push(`/checkout/success?orderId=${result.orderId}&cash=true`);
-      return;
-    }
-
-    // 2. Create Stripe Session
-    const stripeResult = await createStripeSession(result.orderId, locale);
-
-    if (!stripeResult.success || !stripeResult.url) {
-      setError(stripeResult.error || "Failed to connect to Stripe");
-      setIsSubmitting(false);
-      return;
-    }
-
-    // 3. Redirect to Stripe Checkout
-    window.location.href = stripeResult.url;
   }
 
   return (
@@ -101,37 +102,39 @@ export function CheckoutForm() {
         </FormField>
       )}
 
-      {tableNumber ? (
-        <div className="space-y-4">
-          <div className="p-4 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-between">
-            <span className="font-medium text-accent-dark">{t("dineInOrder")}</span>
-            <span className="font-bold text-lg text-accent-dark">{t("tableNumber", { table: tableNumber })}</span>
-          </div>
-          
-          {/* Payment Method Toggle */}
-          <div className="flex gap-2 p-1 bg-background border border-border rounded-xl">
-            <button
-              type="button"
-              onClick={() => setPaymentMethod("CARD")}
-              className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CARD" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
-            >
-              Pay by Card
-            </button>
-            <button
-              type="button"
-              onClick={() => setPaymentMethod("CASH")}
-              className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CASH" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
-            >
-              Pay by Cash
-            </button>
-          </div>
+      {tableNumber && (
+        <div className="p-4 bg-accent/10 border border-accent/20 rounded-xl flex items-center justify-between">
+          <span className="font-medium text-accent-dark">{t("dineInOrder")}</span>
+          <span className="font-bold text-lg text-accent-dark">{t("tableNumber", { table: tableNumber })}</span>
         </div>
-      ) : (
+      )}
+
+      {!tableNumber && (
         <FormField label={t("addressLabel")} required>
           <textarea name="deliveryAddress" value={formData.deliveryAddress} onChange={handleChange} required rows={3} className={inputClasses} />
           {fieldErrors.deliveryAddress && <p className="text-xs text-red-600 mt-1">{fieldErrors.deliveryAddress[0]}</p>}
         </FormField>
       )}
+
+      {/* Payment Method Toggle (Always Visible) */}
+      <div className="space-y-4">
+        <div className="flex gap-2 p-1 bg-background border border-border rounded-xl">
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("CARD")}
+            className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CARD" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
+          >
+            {t("payByCard")}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPaymentMethod("CASH")}
+            className={`flex-1 py-2 rounded-lg font-medium transition-colors ${paymentMethod === "CASH" ? "bg-white shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}
+          >
+            {t("payByCash")}
+          </button>
+        </div>
+      </div>
 
       {error && !Object.keys(fieldErrors).length && (
         <div className="p-3 rounded-lg text-sm bg-red-50 text-red-800 border border-red-200">{error}</div>

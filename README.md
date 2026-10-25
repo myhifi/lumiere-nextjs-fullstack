@@ -212,6 +212,7 @@ This project was built in **15 documented phases**, each with a self-contained H
 | 17 | Advanced Analytics & CSV Export | [Open](./public/portfolio/phase-17-analytics.html) |
 | 18 | QR Table Ordering & Cash Payments | [Open](./public/portfolio/phase-18-qr-ordering.html) |
 | 19 | PDF Invoices & Kitchen Tickets | [Open](./public/portfolio/phase-19-pdf.html) |
+| 20 | Production Hardening & CI/CD | [Open](./public/portfolio/phase-20-hardening.html) |
 
 > **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 

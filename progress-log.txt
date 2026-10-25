@@ -513,6 +513,24 @@ LESSONS:
 - RTL PDFs require a custom Unicode font (like Cairo) + `direction: "rtl"` on the Page.
 - `renderToStream` prevents saving files to disk, making it perfect for Vercel Serverless.
 - The server must be able to fetch the font file via an absolute URL in production.
+
+───────────────────────────────────────────────────────────────
+2026-10-25 — PHASE 20: PRODUCTION HARDENING & CI/CD
+───────────────────────────────────────────────────────────────
+✅ Integrated Playwright for E2E testing
+✅ Created Dine-In Cash Checkout E2E test
+✅ Created Rate Limiter E2E test
+✅ Configured GitHub Actions CI pipeline
+✅ Fixed Next.js CI build crashes (Resend/Stripe lazy init)
+✅ Implemented Upstash Redis rate limiting on checkout
+✅ Integrated Sentry for production error tracking
+✅ Added dynamic Rate Limit env var for testing (RATE_LIMIT_MAX)
+
+LESSONS:
+- Lazy initialize third-party SDKs (Stripe, Resend) to prevent Next.js build-time crashes.
+- Next.js `router.push` aborts crash React components. Use real network requests or JSON mocks.
+- CI environments need a separate `.env` or passed secrets at the job level.
+- Rate limiters require Redis. Upstash is the best Serverless choice.
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

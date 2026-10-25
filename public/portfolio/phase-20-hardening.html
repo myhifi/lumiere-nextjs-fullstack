@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 20 — Production Hardening & CI/CD · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 20</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#e2e">E2E Testing</a>
+      <a href="#ci">CI/CD Pipeline</a>
+      <a href="#security">Rate Limiting</a>
+      <a href="#observability">Observability</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 20 · Production Hardening</div>
+      <h1>Enterprise-Grade Reliability</h1>
+      <p class="lede">Transform the Lumière platform from a functional application into a resilient, production-ready enterprise system. Implement automated testing, CI/CD, rate limiting, and error tracking.</p>
+      <div class="stack">
+        <span>Playwright</span><span>GitHub Actions</span>
+        <span>Upstash Redis</span><span>Sentry</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Security, stability, and observability. We ensured the app doesn't break, can't be spammed, and sends us an alert if something goes wrong.</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>End-to-End Testing:</strong> Playwright tests simulating the full customer journey.</li>
+        <li><strong>CI/CD Pipeline:</strong> GitHub Actions automating builds and tests on every push.</li>
+        <li><strong>Rate Limiting:</strong> Upstash Redis protecting server actions from abuse.</li>
+        <li><strong>Error Tracking:</strong> Sentry monitoring production errors with full stack traces.</li>
+      </ul>
+    </section>
+
+    <section id="e2e">
+      <h2><span class="num">2</span> End-to-End Testing (Playwright)</h2>
+      <p>We wrote comprehensive Playwright tests that simulate a customer adding an item to the cart, selecting Dine-In, and completing a Cash checkout.</p>
+      
+      <div class="callout info">
+        <strong>Handling Next.js Server Actions</strong>
+        Testing Server Actions requires intercepting the React Flight Stream. We used Playwright's <code>route.fulfill</code> with JSON payloads to safely test error states without crashing the React component.
+      </div>
+    </section>
+
+    <section id="ci">
+      <h2><span class="num">3</span> CI/CD Pipeline (GitHub Actions)</h2>
+      <p>Every push to <code>main</code> triggers a GitHub Actions workflow that builds the production app and runs the Playwright suite.</p>
+
+      <pre><code>// .github/workflows/playwright.yml
+steps:
+  - uses: actions/checkout@v4
+  - uses: actions/setup-node@v4
+  - run: npm ci
+  - run: npx prisma generate
+  - run: npm run build  # <--- Builds production app
+  - run: npx playwright test</code></pre>
+
+      <div class="callout warn">
+        <strong>Lazy Initialization for CI</strong>
+        Top-level initializations like <code>new Resend()</code> and <code>new Stripe()</code> crash the CI build. We moved them inside the function bodies so they only initialize at runtime.
+      </div>
+    </section>
+
+    <section id="security">
+      <h2><span class="num">4</span> Rate Limiting (Upstash Redis)</h2>
+      <p>We implemented a sliding window rate limiter in the <code>createPendingOrder</code> Server Action to prevent users from spamming the checkout endpoint.</p>
+
+      <pre><code>import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+export const rateLimiter = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(5, "1 m"),
+});</code></pre>
+
+      <p>If a user exceeds 5 requests in 1 minute, the Server Action returns a custom error that the UI displays as a red banner.</p>
+    </section>
+
+    <section id="observability">
+      <h2><span class="num">5</span> Observability (Sentry)</h2>
+      <p>We integrated Sentry into the Next.js App Router to catch both client-side and server-side errors.</p>
+
+      <pre><code>import * as Sentry from "@sentry/nextjs";
+
+Sentry.init({
+  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+});</code></pre>
+
+      <p>Sentry now captures unhandled exceptions in API routes, Server Actions, and React components, providing us with a live dashboard of production health.</p>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">6</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>CI environments fail fast:</strong> Builds run in clean environments with no <code>.env</code> files. Always pass secrets via GitHub Actions <code>env</code> blocks.</li>
+        <li><strong>Server Actions use Flight Streams:</strong> You cannot mock them with standard JSON. It's better to test the real action or use a component-level mock.</li>
+        <li><strong>Rate limiters fail open:</strong> Redis timeouts allow the request through. Always configure a <code>timeout</code> and test the actual error state.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-19-pdf.html">← Phase 19 (PDF Generation)</a>
+      <span class="center">Phase 20 · Final</span>
+      <span class="disabled">End of Project</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

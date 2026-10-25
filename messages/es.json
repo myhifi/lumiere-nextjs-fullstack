@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "Pagar con tarjeta",
+    "payByCash": "Pago contra entrega",
     "dineInOrder": "Pedido para comer aquí",
     "tableNumber": "Mesa {table}",
     "title": "Finalizar compra",

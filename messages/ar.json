@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "الدفع بالبطاقة",
+    "payByCash": "الدفع عند الاستلام",
     "dineInOrder": "طلب داخلي",
     "tableNumber": "الطاولة {table}",
     "title": "إتمام الطلب",

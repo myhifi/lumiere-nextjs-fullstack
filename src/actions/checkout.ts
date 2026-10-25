@@ -5,7 +5,9 @@ import { prisma } from "@/lib/prisma";
 import { createCheckoutSchema } from "@/lib/validations/order";
 import { getTranslations } from "next-intl/server";
 import type { CartItem } from "@/types/order";
-import { sendOrderConfirmation } from "@/lib/email/send"; // <--- Add this
+import { sendOrderConfirmation } from "@/lib/email/send"; 
+import { headers } from "next/headers"; // <--- Add
+import { rateLimiter, getClientIp } from "@/lib/rate-limit"; // <--- Add// <--- Add this
 
 export type CheckoutResult =
   | { success: true; orderId: string }
@@ -15,6 +17,19 @@ export async function createPendingOrder(
   input: unknown,
   cartItems: CartItem[]
 ): Promise<CheckoutResult> {
+  // 1. Rate Limit Check
+  const headersList = await headers();
+  const ip = getClientIp(headersList);
+  const rl = await rateLimiter.limit(`checkout_${ip}`);
+  console.log("[RateLimit]", { ip, success: rl.success, limit: rl.limit, remaining: rl.remaining, reason: rl.reason });
+  
+  if (!rl.success) {
+    return { 
+      success: false, 
+      error: "Too many checkout attempts. Please try again in a minute." 
+    };
+  }
+
   const tValidation = await getTranslations("Errors.validation");
   const schema = createCheckoutSchema((key) =>
     tValidation(key as Parameters<typeof tValidation>[0])

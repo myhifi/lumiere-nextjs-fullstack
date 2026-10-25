@@ -299,6 +299,8 @@
     }
   },
   "Checkout": {
+    "payByCard": "Paga con carta",
+    "payByCash": "Pagamento alla consegna",
     "dineInOrder": "Ordine al tavolo",
     "tableNumber": "Tavolo {table}",
     "title": "Cassa",
