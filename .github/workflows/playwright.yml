@@ -16,7 +16,9 @@ jobs:
       AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
       EMAIL_PROVIDER: "console"
-      RESEND_API_KEY: "re_mock_key_for_ci_build" 
+      RESEND_API_KEY: "re_mock_key_for_ci_build"
+      STRIPE_SECRET_KEY: "sk_test_mock_key_for_ci_build"
+      STRIPE_WEBHOOK_SECRET: "whsec_mock_key_for_ci_build" 
 
     steps:
     - uses: actions/checkout@v4

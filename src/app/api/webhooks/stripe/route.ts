@@ -4,10 +4,10 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
 import { sendOrderConfirmation } from "@/lib/email/send";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
-
 export async function POST(req: Request) {
+  // Lazily initialize Stripe to prevent build-time crashes if the API key is missing
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "sk_test_mock_key");
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "whsec_mock_key";
   try {
     const body = await req.text();
     const signature = (await headers()).get("stripe-signature") as string;
