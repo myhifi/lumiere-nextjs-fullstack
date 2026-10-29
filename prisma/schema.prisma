@@ -116,6 +116,7 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   orders       Order[] 
+  announcements Announcement[]
 
   @@map("users")
 }
@@ -259,4 +260,45 @@ model OrderItem {
   priceAtOrder Float    // CRITICAL: Snapshot the price at the time of purchase
 
   @@map("order_items")
+}
+
+// ═══════════════════════════════════════════════════
+// 📢 Announcement — Admin/Staff Alerts & Announcements
+// ═══════════════════════════════════════════════════
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String?  
+  message     String
+  type        String   @default("INFO") 
+  isActive    Boolean  @default(true)
+  expiresAt   DateTime?
+  
+  // NEW: Track source (MANUAL or SYSTEM)
+  source      String   @default("MANUAL") 
+  triggerKey  String?  @unique // e.g., "low_stock_5", "high_order_500"
+
+  createdById String
+  createdBy   User @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([isActive])
+  @@map("announcements")
+}
+
+// ═══════════════════════════════════════════════════
+// ⚙️ SystemRule — Admin-defined conditions for auto-alerts
+// ═══════════════════════════════════════════════════
+model SystemRule {
+  id        String   @id @default(cuid())
+  key       String?  @unique // e.g., "default_low_stock"
+  name      String   // e.g., "High Order Alert"
+  metric    String   // "STOCK_LEVEL", "ORDER_TOTAL", "PENDING_RESERVATIONS"
+  threshold Float    // e.g., 10 (for stock), 500 (for amount)
+  type      String   @default("WARNING") // INFO, WARNING, SUCCESS, URGENT
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_rules")
 }

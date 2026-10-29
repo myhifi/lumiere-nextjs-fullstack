@@ -15,6 +15,7 @@ type UserInfo = {
 
 const commonLinks = [
   { href: "/admin", labelKey: "overview", icon: "📊", exact: true },
+  { href: "/admin/announcements", labelKey: "announcements", icon: "📢" },
   { href: "/admin/orders", labelKey: "orders", icon: "📦" },
   { href: "/admin/kitchen", labelKey: "kitchen", icon: "👨‍🍳" },
   { href: "/admin/analytics", labelKey: "analytics", icon: "📈" },
@@ -24,6 +25,7 @@ const commonLinks = [
   { href: "/admin/tables", labelKey: "tables", icon: "🪑" },
   { href: "/admin/reviews", labelKey: "reviews", icon: "⭐" },
   { href: "/admin/audit-log", labelKey: "auditLog", icon: "📋" },
+  { href: "/admin/help", labelKey: "help", icon: "❓" },
 ] as const;
 
 const adminOnlyLinks = [

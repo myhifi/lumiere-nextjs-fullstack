@@ -101,6 +101,8 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 - 📧 **Automated Emails** — beautifully branded React Email receipts sent automatically via Resend Webhooks
 - 💳 **Stripe Payments** — secure Stripe Checkout with event-driven webhooks and inventory deduction
 - ⭐ **Customer reviews** — star ratings with admin moderation
+- 📢 **Admin Announcements** — Create manual alerts or auto-rules (e.g., low stock) that appear across the dashboard.
+- ❓ **Interactive Help Guide** — A built-in user manual with step-by-step instructions for every feature.
 - ⬆️ **Scroll-to-top button** — appears after 400px of scrolling, elegant fade-in
 - 📱 **Fully responsive** — mobile-first design with three breakpoints
 
@@ -189,7 +191,7 @@ Git push → GitHub → Vercel Build → Production URL
 ---
 ## 📚 Project Documentation
 
-This project was built in **15 documented phases**, each with a self-contained HTML portfolio page:
+This project was built in **21 documented phases**, each with a self-contained HTML portfolio page:
 
 | Phase | Topic | Documentation |
 |---|---|---|
@@ -213,6 +215,7 @@ This project was built in **15 documented phases**, each with a self-contained H
 | 18 | QR Table Ordering & Cash Payments | [Open](./public/portfolio/phase-18-qr-ordering.html) |
 | 19 | PDF Invoices & Kitchen Tickets | [Open](./public/portfolio/phase-19-pdf.html) |
 | 20 | Production Hardening & CI/CD | [Open](./public/portfolio/phase-20-hardening.html) |
+| 21 | Announcements & User Guide | [Open](./public/portfolio/phase-21-announcements.html) |
 
 > **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 

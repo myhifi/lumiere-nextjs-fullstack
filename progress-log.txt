@@ -531,6 +531,24 @@ LESSONS:
 - Next.js `router.push` aborts crash React components. Use real network requests or JSON mocks.
 - CI environments need a separate `.env` or passed secrets at the job level.
 - Rate limiters require Redis. Upstash is the best Serverless choice.
+
+───────────────────────────────────────────────────────────────
+2026-10-28 — PHASE 21: ANNOUNCEMENTS & HELP ENGINE
+───────────────────────────────────────────────────────────────
+✅ Added Announcement model to Prisma schema
+✅ Built Admin Manager UI (/admin/announcements) with full CRUD
+✅ Created Global Announcement Banner with max 3 alerts & scrollable UI
+✅ Built SystemRule model for custom auto-alerts
+✅ Implemented SystemAlertEngine (runs on page load, checks stock/orders/reservations)
+✅ Added Built-in vs Custom Rules logic (Built-ins can be Edited/Reset but not Deleted)
+✅ Built Help & User Guide page (/admin/help) with interactive accordion
+✅ Fixed UI overflow issues with flex-col layout
+
+LESSONS:
+- Use `upsert` with `triggerKey` to prevent duplicate system alerts.
+- Always pass ALL required Zod fields when updating (e.g., `metric`).
+- When toggling state in a list, avoid local `useState` caching; read from props.
+- Flexbox columns are safer for UI cards with lots of buttons.
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

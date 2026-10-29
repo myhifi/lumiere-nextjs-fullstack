@@ -331,8 +331,10 @@
         "markReady": "Mark as Ready"
       },
     "sidebar": {
+      "help": "Help & Guide",
       "brand": "Admin Panel",
       "overview": "Overview",
+      "announcements": "Announcements",
       "orders": "Orders",
       "kitchen": "Kitchen Board",
       "analytics": "Analytics",
@@ -692,9 +694,118 @@
       "topItemsTitle": "Top 5 Selling Items",
       "noData": "Not enough data to display this chart yet."
     },
+    "announcements": {
+      "title": "📢 Announcements & Alerts",
+      "subtitle": "Manage alerts displayed to staff and customers on the admin dashboard.",
+      "newTitle": "Create New Announcement",
+      "labelTitle": "Title (Optional)",
+      "placeholderTitle": "e.g., Weather Warning",
+      "labelMessage": "Message",
+      "placeholderMessage": "e.g., Delivery is temporarily paused due to weather.",
+      "labelType": "Alert Type",
+      "labelExpiry": "Expires At (Optional)",
+      "submit": "Publish Alert",
+      "submitting": "Publishing...",
+      "empty": "No announcements found.",
+      "active": "Active",
+      "inactive": "Inactive",
+      "enable": "Enable",
+      "disable": "Disable",
+      "delete": "Delete",
+      "deleteConfirm": "Are you sure you want to delete this announcement permanently?",
+      "types": {
+        "INFO": "Info",
+        "WARNING": "Warning",
+        "SUCCESS": "Success",
+        "URGENT": "Urgent"
+      }
+    },
     "demoBanner": {
       "title": "Demo Mode",
       "message": "You are browsing a demo account. All changes (add, edit, delete) are automatically reset every 6 hours to preserve the demo experience."
+    }
+  },
+  "Help": {
+    "pageTitle": "Help & User Guide",
+    "pageSubtitle": "A complete guide to managing your restaurant with Lumière.",
+    "sections": {
+      "overview": {
+        "title": "📊 Overview",
+        "desc": "Get a quick snapshot of your restaurant's daily performance.",
+        "ex1": "Check today's reservations and pending confirmations at a glance.",
+        "ex2": "See how many items are currently available vs out of stock.",
+        "ex3": "Monitor your table occupancy rate to understand peak hours."
+      },
+      "orders": {
+        "title": "📦 Order Management",
+        "desc": "Manage delivery and takeaway orders from customers.",
+        "ex1": "When a customer pays via Stripe or chooses Cash on Delivery, the order appears here.",
+        "ex2": "Use the dropdown to transition the order from 'Paid' → 'Preparing' → 'Ready' → 'Delivered'.",
+        "ex3": "You can download a printable PDF receipt for any order."
+      },
+      "kds": {
+        "title": "👨‍🍳 Kitchen Display System (KDS)",
+        "desc": "A real-time screen designed for chefs in the kitchen.",
+        "ex1": "Open the KDS on a tablet or screen in the kitchen. It updates automatically when new orders arrive.",
+        "ex2": "Click 'Start Cooking' to move an order to 'Preparing'. Click 'Mark as Ready' when the food is done.",
+        "ex3": "Enable the sound alert (top right) to hear a 'ding' when a new order comes in."
+      },
+      "announcements": {
+        "title": "📢 Announcements & Auto-Rules",
+        "desc": "Create internal alerts for your staff or automate system alerts.",
+        "ex1": "Create a manual alert (e.g., 'Staff meeting at 4 PM') that appears at the top of every admin page.",
+        "ex2": "Create Custom Auto-Rules (e.g., 'Alert me when stock falls below 10' or 'Alert me when an order exceeds 1000 AED').",
+        "ex3": "Built-in rules can be edited, reset to default, or disabled with one click."
+      },
+      "reservations": {
+        "title": "📅 Reservations & Tables",
+        "desc": "Manage table bookings and restaurant capacity.",
+        "ex1": "The system automatically assigns the best available table based on party size.",
+        "ex2": "You can manually Confirm, Complete, or Cancel a reservation.",
+        "ex3": "Go to the 'Tables' page to generate printable QR codes for Dine-In customers."
+      },
+      "analytics": {
+        "title": "📈 Business Analytics",
+        "desc": "Track your financial performance.",
+        "ex1": "View your Total Revenue, Total Orders, and Average Order Value.",
+        "ex2": "Monitor the 14-day revenue timeline and your Top 5 Selling Items.",
+        "ex3": "Click 'Export CSV' to download a spreadsheet of all orders for accounting."
+      },
+      "menu": {
+        "title": "🍽️ Menu & Categories",
+        "desc": "Manage your food items, prices, and categories.",
+        "ex1": "Create Categories (e.g., Appetizers, Desserts) to organize your menu.",
+        "ex2": "Add Dishes with prices, images, and descriptions.",
+        "ex3": "Mark items as 'Featured' to display them on the homepage, or 'Hide' them if they run out of stock."
+      },
+      "reviews": {
+        "title": "⭐ Customer Reviews",
+        "desc": "Moderate feedback left by your customers.",
+        "ex1": "When a customer leaves a review, it appears as 'Pending'.",
+        "ex2": "Click 'Approve' to publish it on the public homepage, or 'Reject' to hide it.",
+        "ex3": "You can delete spam or inappropriate reviews permanently."
+      },
+      "audit": {
+        "title": "📋 Audit Log",
+        "desc": "A secure record of every action taken by staff.",
+        "ex1": "Track exactly who changed a price, deleted a table, or modified a user account.",
+        "ex2": "Use the filters to search by severity (Info, Warning, Critical).",
+        "ex3": "This ensures maximum accountability and security for your business."
+      },
+      "staff": {
+        "title": "👥 Staff Management",
+        "desc": "Manage your team and their access levels.",
+        "ex1": "Add new staff members and assign them as 'Staff' (limited access) or 'Admin' (full access).",
+        "ex2": "Staff members can only view orders and reservations. Admins can edit menus, tables, and users.",
+        "ex3": "Admins can disable or delete staff accounts if an employee leaves."
+      },
+      "settings": {
+        "title": "⚙️ Settings",
+        "desc": "Configure global restaurant preferences.",
+        "ex1": "Update the WhatsApp number used for the floating contact button.",
+        "ex2": "Ensure the number includes the country code (e.g., +201234567890).",
+        "ex3": "Changes made here apply instantly across the entire website."
+      }
     }
   },
   "PDF": {
@@ -735,6 +846,9 @@
     "reviewUpdateFailed": "Failed to update review",
     "reviewDeleteFailed": "Failed to delete review",
     "validation": {
+      "titleTooLong": "Title is too long (maximum 80 characters)",
+      "messageTooShort": "Message is too short (minimum 5 characters)",
+      "messageTooLong": "Message is too long (maximum 500 characters)",
       "guestNameTooShort": "Name is too short (minimum 2 characters)",
       "guestNameTooLong": "Name is too long (maximum 80 characters)",
       "guestEmailInvalid": "Invalid email address",

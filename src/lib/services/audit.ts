@@ -1,3 +1,4 @@
+// src/lib/services/audit.ts
 // ═══════════════════════════════════════════════════
 // 📋 Audit Log Service — تسجيل موحّد لإجراءات الموظفين
 // ═══════════════════════════════════════════════════
@@ -20,7 +21,8 @@ export type AuditEntity =
   | "Reservation"
   | "Review"
   | "Order"
-  | "Setting";
+  | "Setting"
+  | "Announcement";
 export type AuditSeverity = "info" | "warning" | "critical";
 
 export type LogActionParams = {

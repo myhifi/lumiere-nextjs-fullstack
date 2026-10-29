@@ -331,8 +331,10 @@
         "markReady": "Marquer comme prêt"
       },
     "sidebar": {
+      "help": "Aide et guide",
       "brand": "Panneau d'administration",
       "overview": "Aperçu",
+      "announcements": "Annonces",
       "orders": "Commandes",
       "kitchen": "Tableau de cuisine",
       "reservations": "Réservations",
@@ -691,11 +693,120 @@
       "topItemsTitle": "Top 5 des articles les plus vendus",
       "noData": "Pas encore assez de données pour afficher ce graphique."
     },
+    "announcements": {
+      "title": "📢 Annonces et alertes",
+      "subtitle": "Gérer les alertes affichées au personnel et aux clients sur le tableau de bord administrateur.",
+      "newTitle": "Créer une nouvelle annonce",
+      "labelTitle": "Titre (facultatif)",
+      "placeholderTitle": "ex. : Alerte météo",
+      "labelMessage": "Message",
+      "placeholderMessage": "ex. : La livraison est temporairement suspendue en raison de la météo.",
+      "labelType": "Type d'alerte",
+      "labelExpiry": "Expire le (facultatif)",
+      "submit": "Publier l'alerte",
+      "submitting": "Publication en cours...",
+      "empty": "Aucune annonce trouvée.",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "enable": "Activer",
+      "disable": "Désactiver",
+      "delete": "Supprimer",
+      "deleteConfirm": "Êtes-vous sûr de vouloir supprimer définitivement cette annonce ?",
+      "types": {
+        "INFO": "Info",
+        "WARNING": "Avertissement",
+        "SUCCESS": "Succès",
+        "URGENT": "Urgent"
+      }
+    },
     "demoBanner": {
       "title": "Mode démo",
       "message": "Vous consultez un compte de démonstration. Toutes les modifications (ajout, édition, suppression) sont automatiquement réinitialisées toutes les 6 heures pour préserver l'expérience de démonstration."
     }    
   },
+  "Help": {
+    "pageTitle": "Aide et guide d'utilisation",
+    "pageSubtitle": "Un guide complet pour gérer votre restaurant avec Lumière.",
+    "sections": {
+      "overview": {
+        "title": "📊 Vue d'ensemble",
+        "desc": "Obtenez un aperçu rapide des performances quotidiennes de votre restaurant.",
+        "ex1": "Vérifiez les réservations d'aujourd'hui et les confirmations en attente en un coup d'œil.",
+        "ex2": "Consultez le nombre d'articles actuellement disponibles par rapport à ceux en rupture de stock.",
+        "ex3": "Surveillez le taux d'occupation des tables pour identifier les heures de pointe."
+      },
+      "orders": {
+        "title": "📦 Gestion des commandes",
+        "desc": "Gérez les commandes de livraison et à emporter des clients.",
+        "ex1": "Lorsqu'un client paie via Stripe ou choisit le paiement à la livraison, la commande apparaît ici.",
+        "ex2": "Utilisez le menu déroulant pour faire passer la commande de 'Payée' → 'En préparation' → 'Prête' → 'Livrée'.",
+        "ex3": "Vous pouvez télécharger un reçu PDF imprimable pour n'importe quelle commande."
+      },
+      "kds": {
+        "title": "👨‍🍳 Système d'affichage de cuisine (KDS)",
+        "desc": "Un écran en temps réel conçu pour les chefs en cuisine.",
+        "ex1": "Ouvrez le KDS sur une tablette ou un écran en cuisine. Il se met à jour automatiquement à l'arrivée de nouvelles commandes.",
+        "ex2": "Cliquez sur 'Commencer la cuisson' pour passer une commande à 'En préparation'. Cliquez sur 'Marquer comme prête' lorsque le plat est terminé.",
+        "ex3": "Activez l'alerte sonore (en haut à droite) pour entendre un signal sonore lors de l'arrivée d'une nouvelle commande."
+      },
+      "announcements": {
+        "title": "📢 Annonces et règles automatiques",
+        "desc": "Créez des alertes internes pour votre personnel ou automatisez les alertes système.",
+        "ex1": "Créez une alerte manuelle (ex. : 'Réunion du personnel à 16h') qui s'affiche en haut de chaque page d'administration.",
+        "ex2": "Créez des règles automatiques personnalisées (ex. : 'Avertir-moi lorsque le stock descend sous 10' ou 'Avertir-moi lorsqu'une commande dépasse 1000').",
+        "ex3": "Les règles intégrées peuvent être modifiées, réinitialisées par défaut ou désactivées en un clic."
+      },
+      "reservations": {
+        "title": "📅 Réservations et tables",
+        "desc": "Gérez les réservations de tables et la capacité du restaurant.",
+        "ex1": "Le système attribue automatiquement la meilleure table disponible en fonction de la taille du groupe.",
+        "ex2": "Vous pouvez confirmer, finaliser ou annuler manuellement une réservation.",
+        "ex3": "Allez sur la page 'Tables' pour générer des codes QR imprimables pour les clients sur place."
+      },
+      "analytics": {
+        "title": "📈 Analyses commerciales",
+        "desc": "Suivez vos performances financières.",
+        "ex1": "Affichez votre chiffre d'affaires total, le nombre total de commandes et le panier moyen.",
+        "ex2": "Surveillez la chronologie des revenus sur 14 jours et vos 5 articles les plus vendus.",
+        "ex3": "Cliquez sur 'Exporter en CSV' pour télécharger un tableur de toutes les commandes pour la comptabilité."
+      },
+      "menu": {
+        "title": "🍽️ Menu et catégories",
+        "desc": "Gérez vos plats, vos prix et vos catégories.",
+        "ex1": "Créez des catégories (ex. : Entrées, Desserts) pour organiser votre menu.",
+        "ex2": "Ajoutez des plats avec des prix, des images et des descriptions.",
+        "ex3": "Marquez les articles comme 'En vedette' pour les afficher sur la page d'accueil, ou 'Masquez-les' s'ils sont en rupture de stock."
+      },
+      "reviews": {
+        "title": "⭐ Avis clients",
+        "desc": "Modérez les retours laissés par vos clients.",
+        "ex1": "Lorsqu'un client laisse un avis, il apparaît comme 'En attente'.",
+        "ex2": "Cliquez sur 'Approuver' pour le publier sur la page d'accueil publique, ou 'Rejeter' pour le masquer.",
+        "ex3": "Vous pouvez supprimer définitivement les spams ou les avis inappropriés."
+      },
+      "audit": {
+        "title": "📋 Journal d'audit",
+        "desc": "Un enregistrement sécurisé de chaque action effectuée par le personnel.",
+        "ex1": "Suivez exactement qui a modifié un prix, supprimé une table ou modifié un compte utilisateur.",
+        "ex2": "Utilisez les filtres pour rechercher par niveau de gravité (Info, Avertissement, Critique).",
+        "ex3": "Cela garantit une responsabilité et une sécurité maximales pour votre entreprise."
+      },
+      "staff": {
+        "title": "👥 Gestion du personnel",
+        "desc": "Gérez votre équipe et ses niveaux d'accès.",
+        "ex1": "Ajoutez de nouveaux membres du personnel et attribuez-leur le rôle de 'Personnel' (accès limité) ou 'Admin' (accès complet).",
+        "ex2": "Les membres du personnel peuvent uniquement consulter les commandes et réservations. Les admins peuvent modifier le menu, les tables et les utilisateurs.",
+        "ex3": "Les administrateurs peuvent désactiver ou supprimer les comptes du personnel si un employé quitte l'entreprise."
+      },
+      "settings": {
+        "title": "⚙️ Paramètres",
+        "desc": "Configurez les préférences globales du restaurant.",
+        "ex1": "Mettez à jour le numéro WhatsApp utilisé pour le bouton de contact flottant.",
+        "ex2": "Assurez-vous que le numéro inclut l'indicatif du pays (ex. : +201234567890).",
+        "ex3": "Les modifications apportées ici s'appliquent instantanément sur l'ensemble du site."
+      }
+    }
+  },  
   "PDF": {
     "receipt": "Reçu de paiement",
     "kitchenTicket": "TICKET DE CUISINE",
@@ -734,6 +845,9 @@
     "reviewUpdateFailed": "Échec de la mise à jour de l'avis",
     "reviewDeleteFailed": "Échec de la suppression de l'avis",
     "validation": {
+      "titleTooLong": "Titre trop long (maximum 80 caractères)",
+      "messageTooShort": "Message trop court (minimum 5 caractères)",
+      "messageTooLong": "Message trop long (maximum 500 caractères)",
       "guestNameTooShort": "Le nom est trop court (minimum 2 caractères)",
       "guestNameTooLong": "Le nom est trop long (maximum 80 caractères)",
       "guestEmailInvalid": "Adresse e-mail invalide",

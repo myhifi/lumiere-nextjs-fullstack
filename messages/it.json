@@ -331,8 +331,10 @@
       "markReady": "Segna come pronto"
     },
     "sidebar": {
+      "help": "Aiuto e guida",
       "brand": "Pannello Amministrazione",
       "overview": "Panoramica",
+      "announcements": "Annunci",
       "orders": "Ordini",
       "kitchen": "Bacheca Cucina",
       "reservations": "Prenotazioni",
@@ -691,11 +693,120 @@
       "topItemsTitle": "I 5 articoli più venduti",
       "noData": "Non ci sono ancora dati sufficienti per visualizzare questo grafico."
     },
+    "announcements": {
+      "title": "📢 Annunci e avvisi",
+      "subtitle": "Gestisci gli avvisi mostrati allo staff e ai clienti nella dashboard di amministrazione.",
+      "newTitle": "Crea nuovo annuncio",
+      "labelTitle": "Titolo (facoltativo)",
+      "placeholderTitle": "es., Avviso meteo",
+      "labelMessage": "Messaggio",
+      "placeholderMessage": "es., La consegna è temporaneamente sospesa a causa del maltempo.",
+      "labelType": "Tipo di avviso",
+      "labelExpiry": "Scade il (facoltativo)",
+      "submit": "Pubblica avviso",
+      "submitting": "Pubblicazione in corso...",
+      "empty": "Nessun annuncio trovato.",
+      "active": "Attivo",
+      "inactive": "Inattivo",
+      "enable": "Abilita",
+      "disable": "Disabilita",
+      "delete": "Elimina",
+      "deleteConfirm": "Sei sicuro di voler eliminare definitivamente questo annuncio?",
+      "types": {
+        "INFO": "Informazioni",
+        "WARNING": "Avviso",
+        "SUCCESS": "Successo",
+        "URGENT": "Urgente"
+      }
+    },
     "demoBanner": {
       "title": "Modalità Demo",
       "message": "Stai esplorando un account demo. Tutte le modifiche (aggiunta, modifica, eliminazione) vengono ripristinate automaticamente ogni 6 ore per preservare l'esperienza di prova."
     }
   },
+  "Help": {
+    "pageTitle": "Aiuto e guida utente",
+    "pageSubtitle": "Una guida completa per gestire il tuo ristorante con Lumière.",
+    "sections": {
+      "overview": {
+        "title": "📊 Panoramica",
+        "desc": "Ottieni una rapida panoramica delle prestazioni giornaliere del tuo ristorante.",
+        "ex1": "Controlla le prenotazioni di oggi e le conferme in attesa a colpo d'occhio.",
+        "ex2": "Vedi quanti articoli sono attualmente disponibili rispetto a quelli esauriti.",
+        "ex3": "Monitora il tasso di occupazione dei tavoli per comprendere le ore di punta."
+      },
+      "orders": {
+        "title": "📦 Gestione ordini",
+        "desc": "Gestisci gli ordini di consegna e da asporto dei clienti.",
+        "ex1": "Quando un cliente paga tramite Stripe o sceglie il contrassegno, l'ordine appare qui.",
+        "ex2": "Usa il menu a discesa per passare l'ordine da 'Pagato' → 'In preparazione' → 'Pronto' → 'Consegnato'.",
+        "ex3": "Puoi scaricare una ricevuta PDF stampabile per qualsiasi ordine."
+      },
+      "kds": {
+        "title": "👨‍🍳 Sistema di visualizzazione cucina (KDS)",
+        "desc": "Uno schermo in tempo reale progettato per gli chef in cucina.",
+        "ex1": "Apri il KDS su un tablet o uno schermo in cucina. Si aggiorna automaticamente all'arrivo di nuovi ordini.",
+        "ex2": "Clicca su 'Inizia a cucinare' per spostare un ordine su 'In preparazione'. Clicca su 'Segna come pronto' quando il cibo è pronto.",
+        "ex3": "Abilita l'avviso sonoro (in alto a destra) per sentire un segnale acustico all'arrivo di un nuovo ordine."
+      },
+      "announcements": {
+        "title": "📢 Annunci e regole automatiche",
+        "desc": "Crea avvisi interni per il tuo staff o automatizza gli avvisi di sistema.",
+        "ex1": "Crea un avviso manuale (es. 'Riunione dello staff alle 16:00') che appare in cima a ogni pagina di amministrazione.",
+        "ex2": "Crea regole automatiche personalizzate (es. 'Avvisami quando le scorte scendono sotto 10' o 'Avvisami quando un ordine supera 1000').",
+        "ex3": "Le regole integrate possono essere modificate, ripristinate ai valori predefiniti o disattivate con un solo clic."
+      },
+      "reservations": {
+        "title": "📅 Prenotazioni e tavoli",
+        "desc": "Gestisci le prenotazioni dei tavoli e la capacità del ristorante.",
+        "ex1": "Il sistema assegna automaticamente il miglior tavolo disponibile in base alle dimensioni del gruppo.",
+        "ex2": "Puoi confermare, completare o annullare manualmente una prenotazione.",
+        "ex3": "Vai alla pagina 'Tavoli' per generare codici QR stampabili per i clienti in loco."
+      },
+      "analytics": {
+        "title": "📈 Analisi aziendali",
+        "desc": "Tieni traccia delle tue prestazioni finanziarie.",
+        "ex1": "Visualizza le entrate totali, gli ordini totali e il valore medio dell'ordine.",
+        "ex2": "Monitora la timeline delle entrate a 14 giorni e i tuoi 5 articoli più venduti.",
+        "ex3": "Clicca su 'Esporta CSV' per scaricare un foglio di calcolo di tutti gli ordini per la contabilità."
+      },
+      "menu": {
+        "title": "🍽️ Menu e categorie",
+        "desc": "Gestisci i tuoi piatti, i prezzi e le categorie.",
+        "ex1": "Crea categorie (es. Antipasti, Dessert) per organizzare il tuo menu.",
+        "ex2": "Aggiungi piatti con prezzi, immagini e descrizioni.",
+        "ex3": "Contrassegna gli articoli come 'In evidenza' per mostrarli sulla homepage, o 'Nascondili' se esauriti."
+      },
+      "reviews": {
+        "title": "⭐ Recensioni dei clienti",
+        "desc": "Modera i feedback lasciati dai tuoi clienti.",
+        "ex1": "Quando un cliente lascia una recensione, appare come 'In attesa'.",
+        "ex2": "Clicca su 'Approva' per pubblicarla sulla homepage pubblica o 'Rifiuta' per nasconderla.",
+        "ex3": "Puoi eliminare definitivamente spam o recensioni inappropriate."
+      },
+      "audit": {
+        "title": "📋 Registro di controllo",
+        "desc": "Una registrazione sicura di ogni azione compiuta dallo staff.",
+        "ex1": "Traccia esattamente chi ha cambiato un prezzo, eliminato un tavolo o modificato un account utente.",
+        "ex2": "Usa i filtri per cercare per gravità (Info, Avviso, Critico).",
+        "ex3": "Ciò garantisce la massima responsabilità e sicurezza per la tua azienda."
+      },
+      "staff": {
+        "title": "👥 Gestione del personale",
+        "desc": "Gestisci il tuo team e i relativi livelli di accesso.",
+        "ex1": "Aggiungi nuovi membri dello staff e assegna loro il ruolo di 'Staff' (accesso limitato) o 'Admin' (accesso completo).",
+        "ex2": "I membri dello staff possono solo visualizzare ordini e prenotazioni. Gli amministratori possono modificare menu, tavoli e utenti.",
+        "ex3": "Gli amministratori possono disattivare o eliminare gli account dello staff se un dipendente se ne va."
+      },
+      "settings": {
+        "title": "⚙️ Impostazioni",
+        "desc": "Configura le preferenze globali del ristorante.",
+        "ex1": "Aggiorna il numero WhatsApp utilizzato per il pulsante di contatto flottante.",
+        "ex2": "Assicurati che il numero includa il prefisso internazionale (es., +201234567890).",
+        "ex3": "Le modifiche apportate qui si applicano istantaneamente all'intero sito web."
+      }
+    }
+  },  
   "PDF": {
     "receipt": "Ricevuta di pagamento",
     "kitchenTicket": "BIGLIETTO CUCINA",
@@ -734,6 +845,9 @@
     "reviewUpdateFailed": "Aggiornamento della recensione non riuscito",
     "reviewDeleteFailed": "Eliminazione della recensione non riuscita",
     "validation": {
+      "titleTooLong": "Titolo troppo lungo (massimo 80 caratteri)",
+      "messageTooShort": "Messaggio troppo corto (minimo 5 caratteri)",
+      "messageTooLong": "Messaggio troppo lungo (massimo 500 caratteri)",
       "guestNameTooShort": "Il nome è troppo corto (minimo 2 caratteri)",
       "guestNameTooLong": "Il nome è troppo lungo (massimo 80 caratteri)",
       "guestEmailInvalid": "Indirizzo email non valido",
