@@ -662,7 +662,43 @@
 "entitySetting": "系统设置",
 "entityOrder": "订单"
 },
+"aiCopilot": {
+  "title": "AI 副驾驶",
+  "subtitle": "询问有关销售、库存或策略的问题。",
+  "placeholder": "提个问题...",
+  "send": "发送",
+  "open": "打开 AI 副驾驶",
+  "close": "关闭",
+  "notConfigured": "AI 未配置或未启用。",
+  "configureLink": "前往设置",
+  "thinking": "思考中...",
+  "quickActions": {
+    "revenue": "📊 分析營收",
+    "revenuePrompt": "你可以幫我分析過去 30 天的營收，並給我一條策略建議嗎？",
+    "topItems": "🍔 熱銷商品",
+    "topItemsPrompt": "這個月我賣得最好的前 3 名商品是什麼？",
+    "lowStock": "⚠️ 庫存不足檢查",
+    "lowStockPrompt": "目前有哪些商品的庫存偏低？"
+  }
+},
 "settings": {
+  "aiTitle": "AI 助手 (BYOK)",
+"aiSubtitle": "配置您自己的 AI 提供商以解锁商业洞察。",
+"aiEnabled": "启用 AI 助手",
+"aiProvider": "AI 提供商",
+"aiModel": "模型",
+"aiApiKey": "API 密钥",
+"aiApiKeyConfigured": "已配置密钥。留空以保持不变。",
+"aiApiKeyPlaceholder": "在此处粘贴您的 API 密钥",
+"aiTest": "测试连接",
+"aiTesting": "测试中...",
+"aiTestSuccess": "✓ 连接成功",
+"aiTestFailed": "✗ 连接失败",
+"aiProviders": {
+  "google": "Google Gemini",
+  "openai": "OpenAI",
+  "deepseek": "DeepSeek"
+},
 "title": "系统设置",
 "subtitle": "管理餐厅联系方式与配置",
 "whatsappLabel": "WhatsApp 号码",
@@ -844,7 +880,12 @@
   "reviewNotFound": "未找到对应评价",
   "reviewUpdateFailed": "更新评价失败",
   "reviewDeleteFailed": "删除评价失败",
+  "aiKeyRequired": "在启用 AI 助手之前，请添加并保存 API 密钥",
+"aiKeyInvalid": "无法验证 API 密钥。请检查密钥、提供商和模型。",
   "validation": {
+    "aiModelRequired": "模型名称不能为空",
+    "aiModelTooLong": "模型名称过长（最多 100 个字符）",
+    "aiKeyTooLong": "API 密钥过长（最多 500 个字符）",
     "titleTooLong": "标题过长（最多 80 个字符）",
     "messageTooShort": "消息过短（最少 5 个字符）",
     "messageTooLong": "消息过长（最多 500 个字符）",

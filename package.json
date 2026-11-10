@@ -14,6 +14,10 @@
     "db:admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
+    "@ai-sdk/deepseek": "^3.0.80",
+    "@ai-sdk/google": "^4.0.114",
+    "@ai-sdk/openai": "^4.0.110",
+    "@ai-sdk/react": "^4.0.168",
     "@auth/prisma-adapter": "^2.11.3",
     "@prisma/client": "^6.19.3",
     "@react-email/components": "^1.0.12",
@@ -21,6 +25,7 @@
     "@sentry/nextjs": "^11.9.0",
     "@upstash/ratelimit": "^2.2.0",
     "@upstash/redis": "^1.39.0",
+    "ai": "^7.0.164",
     "bcryptjs": "^3.0.3",
     "lucide-react": "^1.46.0",
     "next": "16.3.5",
@@ -30,7 +35,9 @@
     "qrcode": "^1.5.4",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
     "recharts": "^3.10.1",
+    "remark-gfm": "^4.0.1",
     "resend": "^6.28.1",
     "server-only": "^0.0.1",
     "sonner": "^2.0.8",

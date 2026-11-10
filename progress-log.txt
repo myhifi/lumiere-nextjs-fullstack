@@ -549,6 +549,32 @@ LESSONS:
 - Always pass ALL required Zod fields when updating (e.g., `metric`).
 - When toggling state in a list, avoid local `useState` caching; read from props.
 - Flexbox columns are safer for UI cards with lots of buttons.
+
+───────────────────────────────────────────────────────────────
+2026-11-10 — PHASE 22: ADMIN AI CO-PILOT (BYOK)
+───────────────────────────────────────────────────────────────
+✅ Added AES-256-GCM encryption (src/lib/crypto.ts) for BYOK API keys
+✅ Created AI settings service utilizing the existing key-value Setting table
+✅ Built modular AI Provider factory (Google, OpenAI, DeepSeek)
+✅ Implemented token-efficient Prisma context builder (aggregates only, no raw rows)
+✅ Added Server Actions for Test Connection, Save Settings, and Remove Key
+✅ Built AiSettingsForm UI with Model dropdowns
+✅ Built AiCoPilot floating drawer with Markdown rendering & Quick Actions
+✅ Mounted Co-Pilot on Overview and Analytics admin pages
+✅ Translated UI and system prompts across all 7 locales (including RTL)
+
+LESSONS:
+- Google API Keys (AQ.) require sending the key in the x-goog-api-key header.
+- Gemini 3.x models use default "thinking" phases that cause timeouts. Fixed by forcing thinkingLevel: "low" in providerOptions.
+- Connection tests should use lightweight HTTP probes (GET /v1beta/models) instead of generating text.
+- Vercel AI SDK v5 requires memoizing DefaultChatTransport to prevent infinite re-render loops.
+- Keep AI context strictly aggregated (use Prisma groupBy) to minimize token costs.
+
+PROJECT STATUS:  ✅ 100% COMPLETE — Production-ready (22 Phases)
+...
+✅ AI Co-Pilot (BYOK) with Gemini, OpenAI, DeepSeek
+✅ 22-phase portfolio HTML documentation
+
 ═══════════════════════════════════════════════════════════════
 📌 NEXT STEP
 ═══════════════════════════════════════════════════════════════

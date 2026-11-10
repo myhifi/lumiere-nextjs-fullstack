@@ -3,7 +3,7 @@
 > A production-ready, bilingual (Arabic + English), 7-locale restaurant platform with an intelligent table-assignment engine, secure Stripe checkout, order tracking, automated email receipts notifications, a zero-download Smart FAQ Assistant, complete admin dashboard, authentication, and About page. Built with Next.js 16, Prisma, and PostgreSQL. Deployed on Vercel. Full RTL/LTR support.
 
 [![Live Demo](https://img.shields.io/badge/Live-Demo-c9a961?style=for-the-badge&logo=vercel)](https://lumiere-nextjs-fullstack.vercel.app)
-[![Portfolio Phases](https://img.shields.io/badge/Portfolio-20%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-17-analytics.html)
+[![Portfolio Phases](https://img.shields.io/badge/Portfolio-22%20Phases-1a1a1a?style=for-the-badge&logo=read-the-docs)](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-22-ai-copilot.html)
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/myhifi/lumiere-nextjs-fullstack)
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.3-000000?style=flat-square&logo=next.js)](https://nextjs.org)
@@ -109,6 +109,7 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 ### Admin Dashboard
 
 - 📊 **Dashboard overview** with real-time statistics
+- 🤖 **Admin AI Co-Pilot (BYOK)** — A secure, floating AI assistant integrated into the dashboard. Admins can connect their own Google Gemini, OpenAI, or DeepSeek API keys (encrypted via AES-256-GCM) to get real-time business insights, analyze revenue, and receive strategic advice.
 - 📦 **Order Management** — track delivery orders, update statuses (Paid → Preparing → Delivered), and audit log every change
 - 👨‍🍳 Kitchen Display System (KDS) — Real-time order screen with audio alerts for chefs
 - 🪑 **QR Table Ordering** — Generate printable QR codes for tables. Customers scan to order directly from their phones.
@@ -151,6 +152,7 @@ A floating chat panel that answers common restaurant questions in **all 7 suppor
 | **Validation** | Zod 4 | Runtime schema validation |
 | **i18n** | next-intl 4 | 7-locale routing and messages |
 | **Assistant** | Pure TS intent matcher | Zero-dependency FAQ chatbot |
+| **AI** | Vercel AI SDK | Multi-provider LLM integration (BYOK) |
 | **Styling** | Tailwind CSS 4 | Utility-first CSS with RTL support |
 | **Auth** | Auth.js v5 (NextAuth) | Credential-based authentication |
 | **Charts** | Recharts | Interactive analytics dashboards |
@@ -216,6 +218,7 @@ This project was built in **21 documented phases**, each with a self-contained H
 | 19 | PDF Invoices & Kitchen Tickets | [Open](./public/portfolio/phase-19-pdf.html) |
 | 20 | Production Hardening & CI/CD | [Open](./public/portfolio/phase-20-hardening.html) |
 | 21 | Announcements & User Guide | [Open](./public/portfolio/phase-21-announcements.html) |
+| 22 | Admin AI Co-Pilot (BYOK) | [Open](./public/portfolio/phase-22-ai-copilot.html) |
 
 > **View on GitHub:** each HTML file renders as formatted source. **View on Vercel:** [open the latest phase](https://lumiere-nextjs-fullstack.vercel.app/portfolio/phase-15-order-tracking.html) to browse all phases as designed pages with sidebar navigation including architecture diagrams, code examples, and engineering rationale.
 

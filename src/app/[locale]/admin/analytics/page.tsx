@@ -1,21 +1,29 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { 
   getFinancialMetrics, 
   getRevenueTimeline, 
   getTopSellingItems 
 } from "@/lib/services/analytics";
+import { getAiSettings } from "@/lib/services/ai-settings";
 import { ArrowDownToLine, DollarSign, ShoppingBag, TrendingUp } from "lucide-react";
 import { FinancialCharts } from "@/components/admin/charts/FinancialCharts";
+import { AiCoPilot } from "@/components/admin/ai/AiCoPilot";
 
-export default async function AnalyticsPage({ params }: { params: Promise<{ locale: string }> }) {
+type PageProps = {
+  params: Promise<{ locale: string }>;
+};
+
+export default async function AnalyticsPage({ params }: PageProps) {
   const { locale } = await params;
+  setRequestLocale(locale);
   const t = await getTranslations("Admin.analytics");
 
   // Fetch all data in parallel for maximum performance
-  const [metrics, timeline, topItems] = await Promise.all([
+  const [metrics, timeline, topItems, aiSettings] = await Promise.all([
     getFinancialMetrics(),
     getRevenueTimeline(),
     getTopSellingItems(),
+    getAiSettings(),
   ]);
 
   return (
@@ -69,6 +77,11 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ loca
           topItemsTitle: t("topItemsTitle"),
           noData: t("noData")
         }}
+      />
+
+      <AiCoPilot
+        isEnabled={aiSettings.enabled}
+        hasApiKey={aiSettings.hasApiKey}
       />
     </div>
   );

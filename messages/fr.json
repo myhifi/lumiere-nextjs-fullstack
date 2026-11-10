@@ -662,7 +662,43 @@
       "entitySetting": "Paramètre",
       "entityOrder": "Commande"
     },
+    "aiCopilot": {
+  "title": "Copilote IA",
+  "subtitle": "Posez des questions sur les ventes, les stocks ou la stratégie.",
+  "placeholder": "Posez une question...",
+  "send": "Envoyer",
+  "open": "Ouvrir le copilote IA",
+  "close": "Fermer",
+  "notConfigured": "L'IA n'est pas configurée ou activée.",
+  "configureLink": "Aller aux paramètres",
+  "thinking": "Réflexion...",
+  "quickActions": {
+    "revenue": "📊 Analyser les revenus",
+    "revenuePrompt": "Pouvez-vous analyser mes revenus des 30 derniers jours et me donner un conseil stratégique ?",
+    "topItems": "🍔 Articles les plus vendus",
+    "topItemsPrompt": "Quels sont mes 3 articles les plus vendus ce mois-ci ?",
+    "lowStock": "⚠️ Vérifier le stock bas",
+    "lowStockPrompt": "Quels articles sont actuellement en rupture ou stock bas ?"
+  }
+},
     "settings": {
+      "aiTitle": "Assistant IA (BYOK)",
+"aiSubtitle": "Configurez votre propre fournisseur d'IA pour obtenir des analyses commerciales.",
+"aiEnabled": "Activer l'assistant IA",
+"aiProvider": "Fournisseur d'IA",
+"aiModel": "Modèle",
+"aiApiKey": "Clé API",
+"aiApiKeyConfigured": "Une clé est déjà configurée. Laissez vide pour la conserver.",
+"aiApiKeyPlaceholder": "Collez votre clé API ici",
+"aiTest": "Tester la connexion",
+"aiTesting": "Test en cours...",
+"aiTestSuccess": "✓ Connexion réussie",
+"aiTestFailed": "✗ Échec de la connexion",
+"aiProviders": {
+  "google": "Google Gemini",
+  "openai": "OpenAI",
+  "deepseek": "DeepSeek"
+},
       "title": "Paramètres",
       "subtitle": "Gérer les informations de contact du restaurant",
       "whatsappLabel": "Numéro WhatsApp",
@@ -844,7 +880,12 @@
     "reviewNotFound": "Avis introuvable",
     "reviewUpdateFailed": "Échec de la mise à jour de l'avis",
     "reviewDeleteFailed": "Échec de la suppression de l'avis",
+    "aiKeyRequired": "Ajoutez et enregistrez une clé API avant d'activer l'assistant IA",
+    "aiKeyInvalid": "La clé API n'a pas pu être validée. Vérifiez la clé, le fournisseur et le modèle.",
     "validation": {
+      "aiModelRequired": "Le nom du modèle est requis",
+      "aiModelTooLong": "Le nom du modèle est trop long (maximum 100 caractères)",
+      "aiKeyTooLong": "La clé API est trop longue (maximum 500 caractères)",
       "titleTooLong": "Titre trop long (maximum 80 caractères)",
       "messageTooShort": "Message trop court (minimum 5 caractères)",
       "messageTooLong": "Message trop long (maximum 500 caractères)",

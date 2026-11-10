@@ -56,7 +56,9 @@ export type ErrorKey =
   | "passwordTooLong"
   | "userNameTooShort"
   | "userNameTooLong"
-  | "roleInvalid";
+  | "roleInvalid"
+  | "aiKeyRequired"
+  | "aiKeyInvalid";
 
 /**
  * Returns a translated error message for the given key.

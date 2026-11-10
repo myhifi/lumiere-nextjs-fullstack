@@ -2,7 +2,9 @@ import { redirect } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { auth } from "@/auth";
 import { getWhatsAppNumber } from "@/lib/services/settings";
+import { getAiSettings } from "@/lib/services/ai-settings";
 import { SettingsForm } from "@/components/admin/SettingsForm";
+import { AiSettingsForm } from "@/components/admin/ai/AiSettingsForm";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -16,7 +18,10 @@ export default async function AdminSettingsPage({ params }: PageProps) {
   if (session?.user?.role !== "ADMIN") redirect("/admin");
 
   const t = await getTranslations("Admin.settings");
-  const whatsappNumber = await getWhatsAppNumber();
+  const [whatsappNumber, aiSettings] = await Promise.all([
+    getWhatsAppNumber(),
+    getAiSettings(),
+  ]);
 
   return (
     <div className="p-6 lg:p-8 max-w-2xl">
@@ -26,6 +31,7 @@ export default async function AdminSettingsPage({ params }: PageProps) {
       </div>
 
       <SettingsForm key={whatsappNumber} initialWhatsAppNumber={whatsappNumber} />
+      <AiSettingsForm initialSettings={aiSettings} />
     </div>
   );
 }

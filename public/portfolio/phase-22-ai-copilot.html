@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 22 — Admin AI Co-Pilot (BYOK) · Lumière Project</title>
+<style>
+:root {
+  --bg: #faf7f2; --bg-card: #ffffff; --bg-dark: #1a1a1a; --bg-code: #1e1e1e;
+  --fg: #1a1a1a; --fg-muted: #6b6b6b; --border: #e5ddd0;
+  --accent: #c9a961; --accent-dark: #a88847; --accent-light: #f5ecd9;
+  --danger: #c0392b; --success: #27ae60; --warning: #e67e22; --info: #2e6fc0;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--fg); line-height: 1.6; font-size: 15px; }
+.layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+.sidebar { background: var(--bg-dark); color: #fff; padding: 2rem 1.5rem; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+.sidebar h1 { font-size: 1.5rem; color: var(--accent); margin-bottom: 0.25rem; letter-spacing: 1px; }
+.sidebar .subtitle { font-size: 0.7rem; color: rgba(255,255,255,0.5); margin-bottom: 2rem; text-transform: uppercase; letter-spacing: 1.5px; }
+.sidebar nav { display: flex; flex-direction: column; gap: 0.15rem; }
+.sidebar nav a { color: rgba(255,255,255,0.7); text-decoration: none; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; transition: all 0.15s; }
+.sidebar nav a:hover { background: rgba(201,169,97,0.15); color: var(--accent); }
+.sidebar .phase-badge { display: inline-block; background: var(--accent); color: var(--bg-dark); font-size: 0.7rem; font-weight: 700; padding: 0.25rem 0.6rem; border-radius: 4px; margin-bottom: 1rem; letter-spacing: 1px; }
+.hero { padding: 4rem 3rem 3rem; background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); }
+.hero .kicker { color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.75rem; }
+.hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 1rem; font-weight: 700; }
+.hero .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 720px; margin-bottom: 1.5rem; }
+.hero .stack { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.hero .stack span { background: var(--accent-light); color: var(--accent-dark); font-size: 0.75rem; font-weight: 600; padding: 0.35rem 0.75rem; border-radius: 999px; }
+section { padding: 3rem; border-bottom: 1px solid var(--border); max-width: 1000px; }
+section h2 { font-size: 1.5rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem; }
+section h2 .num { background: var(--accent); color: #fff; font-size: 0.85rem; width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+section h3 { font-size: 1.1rem; margin: 1.5rem 0 0.5rem; color: var(--fg); }
+section p { margin-bottom: 1rem; color: #333; }
+pre { background: var(--bg-code); color: #e8e8e8; padding: 1rem 1.25rem; border-radius: 8px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.82rem; line-height: 1.55; margin: 1rem 0; border-left: 3px solid var(--accent); }
+code { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.88em; background: rgba(201,169,97,0.12); color: var(--accent-dark); padding: 0.15em 0.4em; border-radius: 4px; }
+pre code { background: none; color: inherit; padding: 0; font-size: 1em; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.88rem; background: var(--bg-card); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+th { background: var(--bg); text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--fg-muted); font-weight: 600; border-bottom: 1px solid var(--border); }
+td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+.callout { padding: 1rem 1.25rem; border-radius: 8px; margin: 1rem 0; border-left: 4px solid var(--accent); background: var(--accent-light); font-size: 0.9rem; }
+.callout.warn { border-left-color: var(--warning); background: #fef5e7; }
+.callout.danger { border-left-color: var(--danger); background: #fdecea; }
+.callout.success { border-left-color: var(--success); background: #eaf7ef; }
+.callout.info { border-left-color: var(--info); background: #eaf0fa; }
+.callout strong { display: block; margin-bottom: 0.25rem; }
+.footer-nav { padding: 2rem 3rem; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); color: #fff; font-size: 0.85rem; }
+.footer-nav a { color: var(--accent); text-decoration: none; }
+.footer-nav .center { color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; }
+ul, ol { margin: 0.75rem 0 1rem 1.5rem; }
+li { margin-bottom: 0.4rem; }
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; }
+  .hero, section { padding: 2rem 1.5rem; }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar">
+    <span class="phase-badge">PHASE 22</span>
+    <h1>Lumière</h1>
+    <p class="subtitle">Full-Stack Next.js</p>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#architecture">Data Pipeline</a>
+      <a href="#security">BYOK Security</a>
+      <a href="#google">Google API Hurdles</a>
+      <a href="#lessons">Lessons Learned</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="hero">
+      <div class="kicker">Phase 22 · Admin AI Co-Pilot (BYOK)</div>
+      <h1>Intelligent Business Insights</h1>
+      <p class="lede">Integrate a secure, context-aware AI assistant directly into the admin dashboard. Empower managers to bring their own API keys (Google, OpenAI, DeepSeek) to analyze revenue, inventory, and strategy using real-time database aggregations.</p>
+      <div class="stack">
+        <span>Vercel AI SDK v5</span><span>AES-256-GCM</span>
+        <span>Prisma Aggregations</span><span>BYOK</span>
+        <span>Markdown Streaming</span>
+      </div>
+    </header>
+
+    <section id="overview">
+      <h2><span class="num">1</span> Overview</h2>
+      <p><strong>Goal:</strong> Provide restaurant owners with a "Senior Consultant" in their pocket. Instead of hardcoding dashboards for every question, an LLM can analyze complex relationships (e.g., "Why did revenue drop?" or "What are my top items?").</p>
+      
+      <h3>Key Deliverables</h3>
+      <ul>
+        <li><strong>Bring Your Own Key (BYOK):</strong> The admin inputs their own API key via the Settings page.</li>
+        <li><strong>Multi-Provider:</strong> Support for Google Gemini, OpenAI, and DeepSeek out of the box.</li>
+        <li><strong>Quick Actions:</strong> One-click UI buttons to instantly ask about Revenue, Top Items, or Low Stock.</li>
+        <li><strong>Global Localization:</strong> The AI responds in the admin's active locale, including full RTL formatting for Arabic.</li>
+        <li><strong>Context Awareness:</strong> The AI accurately answers questions about Lumière's real data without hallucinating.</li>
+      </ul>
+    </section>
+
+    <section id="architecture">
+      <h2><span class="num">2</span> Architecture & Token Optimization</h2>
+      <p>Sending raw database rows to an LLM causes token exhaustion and privacy leaks. We built an aggregation pipeline that summarizes the data using Prisma before the AI sees it.</p>
+
+      <pre><code>// src/lib/ai/context.ts
+const [revenueAgg, topItemsAgg, lowStockRaw] = await Promise.all([
+  prisma.order.aggregate({
+    where: { status: { in: ["PAID", "PREPARING", "READY", "DELIVERED"] } },
+    _sum: { totalAmount: true },
+    _count: true,
+  }),
+  prisma.orderItem.groupBy({
+    by: ["menuItemId"],
+    _sum: { quantity: true },
+    orderBy: { _sum: { quantity: "desc" } },
+    take: 5,
+  }),
+]);</code></pre>
+
+      <div class="callout info">
+        <strong>System Prompt Engineering</strong>
+        The aggregated JSON is injected into the system prompt. We explicitly instructed the AI to: <em>"Use only the numbers in the Live Data section. Never invent or extrapolate."</em> This eliminates AI hallucinations.
+      </div>
+    </section>
+
+    <section id="security">
+      <h2><span class="num">3</span> BYOK Security (AES-256-GCM)</h2>
+      <p>Security was the highest priority. Admin API keys are extremely sensitive, and a leak could cost thousands of dollars. The key is encrypted at rest and only decrypted on the server.</p>
+
+      <pre><code>// src/lib/crypto.ts
+export function encrypt(plaintext: string): string {
+  const iv = randomBytes(12);
+  const cipher = createCipheriv("aes-256-gcm", getKey(), iv);
+  const ciphertext = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  
+  // Packs [IV][Tag][Ciphertext] into one Base64 string
+  return Buffer.concat([iv, tag, ciphertext]).toString("base64");
+}</code></pre>
+
+      <div class="callout success">
+        <strong>Zero Client Exposure</strong>
+        The decrypted key never reaches the browser. It is only decrypted inside the Next.js API Route (<code>/api/admin/ai/chat</code>) immediately before calling the LLM provider.
+      </div>
+    </section>
+
+    <section id="google">
+      <h2><span class="num">4</span> Overcoming Google API Hurdles</h2>
+      <p>Integrating Google Gemini proved to be the hardest part of this phase due to breaking API changes.</p>
+      
+      <h3>1. The "AQ." Key Format</h3>
+      <p>Google changed their API key format from <code>AIzaSy...</code> to <code>AQ.Ab8R...</code>. The Vercel AI SDK v5 handles the header transport, but our custom "Test Connection" function was failing.</p>
+
+      <h3>2. Gemini 3.x Thinking Timeouts</h3>
+      <p>Newer models use an internal Chain-of-Thought "thinking" phase before generating the first token. Our original test used <code>generateText</code>, which caused a 20-second timeout while waiting for the AI to finish thinking.</p>
+      
+      <div class="callout danger">
+        <strong>The Fix: HTTP Probes & Thinking Levels</strong>
+        <p>We replaced the text generation test with a raw <code>fetch</code> probe (<code>GET /v1beta/models/{model}</code>) which validates the key in 0.2 seconds.</p>
+        <p>For the actual chat, we forced <code>thinkingLevel: "low"</code> in the <code>providerOptions</code> so the AI streams responses immediately.</p>
+      </div>
+
+      <pre><code>// src/lib/ai/provider.ts
+if (provider === "google" && modelId.startsWith("gemini-3")) {
+  return { google: { thinkingConfig: { thinkingLevel: "low" } } };
+}</code></pre>
+    </section>
+
+    <section id="lessons">
+      <h2><span class="num">5</span> Engineering Lessons</h2>
+      <ul>
+        <li><strong>Memoize the Transport:</strong> In Vercel AI SDK v5, passing <code>transport: new DefaultChatTransport(...)</code> directly to <code>useChat</code> causes infinite re-renders. It must be wrapped in <code>useMemo</code>.</li>
+        <li><strong>Token Economics:</strong> Never send raw table rows to an LLM. Use Prisma <code>groupBy</code> and <code>aggregate</code> to send compact JSON snapshots.</li>
+        <li><strong>Probes vs. Generation:</strong> When validating API keys, use a lightweight HTTP probe. Generating text is slow, costs money, and is prone to timeouts.</li>
+        <li><strong>Graceful Degradation:</strong> Always wrap the AI chat in a <code>try/catch</code> block. If a model is overloaded (503), display a friendly error to the user and suggest switching models in the dropdown.</li>
+      </ul>
+    </section>
+
+    <nav class="footer-nav">
+      <a href="phase-21-announcements.html">← Phase 21 (Announcements)</a>
+      <span class="center">Phase 22 · Final</span>
+      <span class="disabled">End of Project</span>
+    </nav>
+  </main>
+</div>
+</body>
+</html>

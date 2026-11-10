@@ -662,7 +662,43 @@
       "entitySetting": "Einstellung",
       "entityOrder": "Bestellung"
     },
+    "aiCopilot": {
+  "title": "KI-Copilot",
+  "subtitle": "Fragen Sie nach Verkäufen, Bestand oder Strategie.",
+  "placeholder": "Stellen Sie eine Frage...",
+  "send": "Senden",
+  "open": "KI-Copilot öffnen",
+  "close": "Schließen",
+  "notConfigured": "KI ist nicht konfiguriert oder aktiviert.",
+  "configureLink": "Zu den Einstellungen",
+  "thinking": "Denkt nach...",
+  "quickActions": {
+    "revenue": "📊 Umsatz analysieren",
+    "revenuePrompt": "Können Sie meinen Umsatz der letzten 30 Tage analysieren und mir einen strategischen Rat geben?",
+    "topItems": "🍔 Meistveraufte Artikel",
+    "topItemsPrompt": "Was sind meine 3 meistverkauften Artikel diesen Monat?",
+    "lowStock": "⚠️ Geringer Lagerbestand",
+    "lowStockPrompt": "Welche Artikel haben derzeit einen geringen Lagerbestand?"
+  }
+},
     "settings": {
+      "aiTitle": "KI-Assistent (BYOK)",
+"aiSubtitle": "Konfigurieren Sie Ihren eigenen KI-Anbieter, um Geschäftseinblicke zu erhalten.",
+"aiEnabled": "KI-Assistent aktivieren",
+"aiProvider": "KI-Anbieter",
+"aiModel": "Modell",
+"aiApiKey": "API-Schlüssel",
+"aiApiKeyConfigured": "Ein Schlüssel ist bereits konfiguriert. Leer lassen, um ihn beizubehalten.",
+"aiApiKeyPlaceholder": "Fügen Sie hier Ihren API-Schlüssel ein",
+"aiTest": "Verbindung testen",
+"aiTesting": "Teste...",
+"aiTestSuccess": "✓ Verbindung erfolgreich",
+"aiTestFailed": "✗ Verbindung fehlgeschlagen",
+"aiProviders": {
+  "google": "Google Gemini",
+  "openai": "OpenAI",
+  "deepseek": "DeepSeek"
+},
       "title": "Einstellungen",
       "subtitle": "Restaurant-Kontaktinformationen verwalten",
       "whatsappLabel": "WhatsApp-Nummer",
@@ -844,7 +880,12 @@
     "reviewNotFound": "Bewertung nicht gefunden",
     "reviewUpdateFailed": "Bewertung konnte nicht aktualisiert werden",
     "reviewDeleteFailed": "Bewertung konnte nicht gelöscht werden",
+    "aiKeyRequired": "Fügen Sie einen API-Schlüssel hinzu und speichern Sie ihn, bevor Sie den KI-Assistenten aktivieren",
+    "aiKeyInvalid": "Der API-Schlüssel konnte nicht validiert werden. Überprüfen Sie den Schlüssel, den Anbieter und das Modell.",
     "validation": {
+      "aiModelRequired": "Modellname ist erforderlich",
+      "aiModelTooLong": "Modellname ist zu lang (maximal 100 Zeichen)",
+      "aiKeyTooLong": "API-Schlüssel ist zu lang (maximal 500 Zeichen)",
       "titleTooLong": "Titel ist zu lang (maximal 80 Zeichen)",
       "messageTooShort": "Nachricht ist zu kurz (mindestens 5 Zeichen)",
       "messageTooLong": "Nachricht ist zu lang (maximal 500 Zeichen)",

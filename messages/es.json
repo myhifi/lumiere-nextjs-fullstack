@@ -662,7 +662,43 @@
       "entitySetting": "Configuración",
       "entityOrder": "Pedido"
     },
+    "aiCopilot": {
+  "title": "Copiloto de IA",
+  "subtitle": "Pregunta sobre ventas, inventario o estrategia.",
+  "placeholder": "Haz una pregunta...",
+  "send": "Enviar",
+  "open": "Abrir copiloto de IA",
+  "close": "Cerrar",
+  "notConfigured": "La IA no está configurada o habilitada.",
+  "configureLink": "Ir a Configuración",
+  "thinking": "Pensando...",
+  "quickActions": {
+    "revenue": "📊 Analizar ingresos",
+    "revenuePrompt": "¿Puedes analizar mis ingresos de los últimos 30 días y darme un consejo estratégico?",
+    "topItems": "🍔 Más vendidos",
+    "topItemsPrompt": "¿Cuáles son mis 3 artículos más vendidos este mes?",
+    "lowStock": "⚠️ Control de stock bajo",
+    "lowStockPrompt": "¿Qué artículos tienen actualmente un nivel de stock bajo?"
+  }
+},
     "settings": {
+      "aiTitle": "Asistente de IA (BYOK)",
+"aiSubtitle": "Configura tu propio proveedor de IA para obtener información comercial.",
+"aiEnabled": "Habilitar asistente de IA",
+"aiProvider": "Proveedor de IA",
+"aiModel": "Modelo",
+"aiApiKey": "Clave de API",
+"aiApiKeyConfigured": "Ya hay una clave configurada. Déjalo en blanco para mantenerla.",
+"aiApiKeyPlaceholder": "Pega tu clave de API aquí",
+"aiTest": "Probar conexión",
+"aiTesting": "Probando...",
+"aiTestSuccess": "✓ Conexión exitosa",
+"aiTestFailed": "✗ Conexión fallida",
+"aiProviders": {
+  "google": "Google Gemini",
+  "openai": "OpenAI",
+  "deepseek": "DeepSeek"
+},
       "title": "Configuración",
       "subtitle": "Gestionar la información de contacto del restaurante",
       "whatsappLabel": "Número de WhatsApp",
@@ -844,7 +880,12 @@
     "reviewNotFound": "Opinión no encontrada",
     "reviewUpdateFailed": "Error al actualizar la opinión",
     "reviewDeleteFailed": "Error al eliminar la opinión",
+    "aiKeyRequired": "Agrega y guarda una clave de API antes de habilitar el asistente de IA",
+    "aiKeyInvalid": "No se pudo validar la clave de API. Comprueba la clave, el proveedor y el modelo.",
     "validation": {
+      "aiModelRequired": "El nombre del modelo es obligatorio",
+      "aiModelTooLong": "El nombre del modelo es demasiado largo (máximo 100 caracteres)",
+      "aiKeyTooLong": "La clave de API es demasiado larga (máximo 500 caracteres)",
       "titleTooLong": "El título es demasiado largo (máximo 80 caracteres)",
       "messageTooShort": "El mensaje es demasiado corto (mínimo 5 caracteres)",
       "messageTooLong": "El mensaje es demasiado largo (máximo 500 caracteres)",

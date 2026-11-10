@@ -662,7 +662,43 @@
       "entitySetting": "Impostazione",
       "entityOrder": "Ordine"
     },
+    "aiCopilot": {
+  "title": "Copilota IA",
+  "subtitle": "Chiedi informazioni su vendite, inventario o strategia.",
+  "placeholder": "Fai una domanda...",
+  "send": "Invia",
+  "open": "Apri Copilota IA",
+  "close": "Chiudi",
+  "notConfigured": "L'IA non è configurata o abilitata.",
+  "configureLink": "Vai alle Impostazioni",
+  "thinking": "Sto pensando...",
+  "quickActions": {
+    "revenue": "📊 Analizza le entrate",
+    "revenuePrompt": "Puoi analizzare le mie entrate degli ultimi 30 giorni e darmi un consiglio strategico?",
+    "topItems": "🍔 Articoli più venduti",
+    "topItemsPrompt": "Quali sono i miei 3 articoli più venduti questo mese?",
+    "lowStock": "⚠️ Controllo scorte in esaurimento",
+    "lowStockPrompt": "Quali articoli sono attualmente in esaurimento scorte?"
+  }
+},
     "settings": {
+      "aiTitle": "Assistente IA (BYOK)",
+"aiSubtitle": "Configura il tuo provider IA per sbloccare approfondimenti aziendali.",
+"aiEnabled": "Abilita Assistente IA",
+"aiProvider": "Provider IA",
+"aiModel": "Modello",
+"aiApiKey": "Chiave API",
+"aiApiKeyConfigured": "Una chiave è già configurata. Lascia vuoto per mantenerla.",
+"aiApiKeyPlaceholder": "Incolla qui la tua chiave API",
+"aiTest": "Testa connessione",
+"aiTesting": "Test in corso...",
+"aiTestSuccess": "✓ Connessione riuscita",
+"aiTestFailed": "✗ Connessione fallita",
+"aiProviders": {
+  "google": "Google Gemini",
+  "openai": "OpenAI",
+  "deepseek": "DeepSeek"
+},
       "title": "Impostazioni",
       "subtitle": "Gestisci le informazioni di contatto del ristorante",
       "whatsappLabel": "Numero WhatsApp",
@@ -844,7 +880,12 @@
     "reviewNotFound": "Recensione non trovata",
     "reviewUpdateFailed": "Aggiornamento della recensione non riuscito",
     "reviewDeleteFailed": "Eliminazione della recensione non riuscita",
+    "aiKeyRequired": "Aggiungi e salva una chiave API prima di abilitare l'assistente IA",
+    "aiKeyInvalid": "Impossibile convalidare la chiave API. Controlla la chiave, il provider e il modello.",
     "validation": {
+      "aiModelRequired": "Il nome del modello è obbligatorio",
+      "aiModelTooLong": "Il nome del modello è troppo lungo (massimo 100 caratteri)",
+      "aiKeyTooLong": "La chiave API è troppo lunga (massimo 500 caratteri)",
       "titleTooLong": "Titolo troppo lungo (massimo 80 caratteri)",
       "messageTooShort": "Messaggio troppo corto (minimo 5 caratteri)",
       "messageTooLong": "Messaggio troppo lungo (massimo 500 caratteri)",

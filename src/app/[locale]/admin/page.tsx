@@ -11,6 +11,8 @@ import {
   getFeaturedDistribution,
 } from "@/lib/services/analytics";
 import { getLocalizedName } from "@/lib/utils/locale";
+import { getAiSettings } from "@/lib/services/ai-settings";
+import { AiCoPilot } from "@/components/admin/ai/AiCoPilot";
 
 type PageProps = {
   params: Promise<{ locale: string }>;
@@ -41,6 +43,7 @@ export default async function AdminHomePage({ params }: PageProps) {
     categoryDataRaw, // <-- تغيرت هنا للحصول على البيانات الخام
     priceData,
     featuredData,
+    aiSettings,
   ] = await Promise.all([
     prisma.reservation.count({
       where: {
@@ -60,6 +63,7 @@ export default async function AdminHomePage({ params }: PageProps) {
     getCategoryDistribution(),
     getPriceDistribution(),
     getFeaturedDistribution(),
+    getAiSettings(),
   ]);
 
   // Translate category names based on current locale
@@ -174,6 +178,11 @@ export default async function AdminHomePage({ params }: PageProps) {
         categoryData={categoryData}
         priceData={priceData}
         featuredData={featuredData}
+      />
+
+      <AiCoPilot
+        isEnabled={aiSettings.enabled}
+        hasApiKey={aiSettings.hasApiKey}
       />
     </div>
   );

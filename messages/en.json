@@ -663,7 +663,43 @@
       "entitySetting": "Setting",
       "entityOrder": "Order"
     },
+    "aiCopilot": {
+      "title": "AI Co-Pilot",
+      "subtitle": "Ask about sales, inventory, or strategy.",
+      "placeholder": "Ask a question...",
+      "send": "Send",
+      "open": "Open AI Co-Pilot",
+      "close": "Close",
+      "notConfigured": "AI is not configured or enabled.",
+      "configureLink": "Go to Settings",
+      "thinking": "Thinking...",
+      "quickActions": {
+        "revenue": "📊 Analyze Revenue",
+        "revenuePrompt": "Can you analyze my revenue for the last 30 days and give me one strategic advice?",
+        "topItems": "🍔 Top Selling Items",
+        "topItemsPrompt": "What are my top 3 selling items this month?",
+        "lowStock": "⚠️ Low Stock Check",
+        "lowStockPrompt": "Which items are currently low on stock?"
+      }
+    },
     "settings": {
+      "aiTitle": "AI Assistant (BYOK)",
+      "aiSubtitle": "Configure your own AI provider to unlock business insights.",
+      "aiEnabled": "Enable AI Assistant",
+      "aiProvider": "AI Provider",
+      "aiModel": "Model",
+      "aiApiKey": "API Key",
+      "aiApiKeyConfigured": "A key is already configured. Leave blank to keep it.",
+      "aiApiKeyPlaceholder": "Paste your API key here",
+      "aiTest": "Test Connection",
+      "aiTesting": "Testing...",
+      "aiTestSuccess": "✓ Connection successful",
+      "aiTestFailed": "✗ Connection failed",
+      "aiProviders": {
+        "google": "Google Gemini",
+        "openai": "OpenAI",
+        "deepseek": "DeepSeek"
+      },
       "title": "Settings",
       "subtitle": "Manage restaurant contact information",
       "whatsappLabel": "WhatsApp Number",
@@ -845,7 +881,12 @@
     "reviewNotFound": "Review not found",
     "reviewUpdateFailed": "Failed to update review",
     "reviewDeleteFailed": "Failed to delete review",
+    "aiKeyRequired": "Add and save an API key before enabling the AI assistant",
+    "aiKeyInvalid": "The API key could not be validated. Check the key, provider, and model.",
     "validation": {
+      "aiModelRequired": "Model name is required",
+      "aiModelTooLong": "Model name is too long (maximum 100 characters)",
+      "aiKeyTooLong": "API key is too long (maximum 500 characters)",
       "titleTooLong": "Title is too long (maximum 80 characters)",
       "messageTooShort": "Message is too short (minimum 5 characters)",
       "messageTooLong": "Message is too long (maximum 500 characters)",
