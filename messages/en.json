@@ -807,6 +807,13 @@
         "ex2": "Monitor the 14-day revenue timeline and your Top 5 Selling Items.",
         "ex3": "Click 'Export CSV' to download a spreadsheet of all orders for accounting."
       },
+      "aiCopilot": {
+        "title": "✨ AI Co-Pilot",
+        "desc": "Your intelligent business assistant for analytics and strategy.",
+        "ex1": "Go to Settings to configure your own API key (Google Gemini, OpenAI, or DeepSeek).",
+        "ex2": "Open the floating ✨ drawer on the Overview or Analytics page to ask questions about your business.",
+        "ex3": "Use Quick Actions like 'Analyze Revenue' or 'Top Selling Items' to get instant, data-driven insights."
+      },
       "menu": {
         "title": "🍽️ Menu & Categories",
         "desc": "Manage your food items, prices, and categories.",

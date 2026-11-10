@@ -806,6 +806,13 @@
         "ex2": "Monitoree la línea de tiempo de ingresos de 14 días y sus 5 artículos más vendidos.",
         "ex3": "Haga clic en 'Exportar CSV' para descargar una hoja de cálculo con todos los pedidos para contabilidad."
       },
+      "aiCopilot": {
+        "title": "✨ Copiloto de IA",
+        "desc": "Tu asistente comercial inteligente para análisis y estrategia.",
+        "ex1": "Ve a Configuración para configurar tu propia clave de API (Google Gemini, OpenAI o DeepSeek).",
+        "ex2": "Abre el cajón flotante ✨ en la página de Resumen o Analítica para hacer preguntas sobre tu negocio.",
+        "ex3": "Usa Acciones Rápidas como 'Analizar Ingresos' o 'Artículos Más Vendidos' para obtener información instantánea basada en datos."
+      },
       "menu": {
         "title": "🍽️ Menú y categorías",
         "desc": "Administre sus platos, precios y categorías.",

@@ -42,6 +42,12 @@ export default async function HelpPage() {
       examples: [t("sections.analytics.ex1"), t("sections.analytics.ex2"), t("sections.analytics.ex3")],
     },
     {
+      id: "aiCopilot",
+      title: t("sections.aiCopilot.title"),
+      desc: t("sections.aiCopilot.desc"),
+      examples: [t("sections.aiCopilot.ex1"), t("sections.aiCopilot.ex2"), t("sections.aiCopilot.ex3")],
+    },
+    {
       id: "menu",
       title: t("sections.menu.title"),
       desc: t("sections.menu.desc"),

@@ -806,6 +806,13 @@
         "ex2": "Überwachen Sie den 14-Tage-Umsatzverlauf und Ihre Top-5-Verkaufsprodukte.",
         "ex3": "Klicken Sie auf 'CSV exportieren', um eine Tabelle aller Bestellungen für die Buchhaltung herunterzuladen."
       },
+      "aiCopilot": {
+        "title": "✨ KI-Co-Pilot",
+        "desc": "Ihr intelligentestes Geschäftsassistent für Analysen und Strategie.",
+        "ex1": "Gehen Sie zu den Einstellungen, um Ihren eigenen API-Schlüssel zu konfigurieren (Google Gemini, OpenAI oder DeepSeek).",
+        "ex2": "Öffnen Sie die schwebende ✨ Schublade auf der Übersicht- oder Analytics-Seite, um Fragen zu Ihrem Unternehmen zu stellen.",
+        "ex3": "Verwenden Sie Schnellaktionen wie 'Umsatz analysieren' oder 'Meistverkaufte Artikel', um sofortige, datengestützte Einblicke zu erhalten."
+      },
       "menu": {
         "title": "🍽️ Menü & Kategorien",
         "desc": "Verwalten Sie Ihre Speisen, Preise und Kategorien.",

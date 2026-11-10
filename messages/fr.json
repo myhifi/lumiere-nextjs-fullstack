@@ -806,6 +806,13 @@
         "ex2": "Surveillez la chronologie des revenus sur 14 jours et vos 5 articles les plus vendus.",
         "ex3": "Cliquez sur 'Exporter en CSV' pour télécharger un tableur de toutes les commandes pour la comptabilité."
       },
+      "aiCopilot": {
+        "title": "✨ Co-pilote IA",
+        "desc": "Votre assistant commercial intelligent pour l'analyse et la stratégie.",
+        "ex1": "Allez dans Paramètres pour configurer votre propre clé API (Google Gemini, OpenAI ou DeepSeek).",
+        "ex2": "Ouvrez le tiroir flottant ✨ sur la page Aperçu ou Analyses pour poser des questions sur votre entreprise.",
+        "ex3": "Utilisez des actions rapides telles que 'Analyser le chiffre d'affaires' ou 'Articles les plus vendus' pour obtenir des informations instantanées basées sur les données."
+      },
       "menu": {
         "title": "🍽️ Menu et catégories",
         "desc": "Gérez vos plats, vos prix et vos catégories.",

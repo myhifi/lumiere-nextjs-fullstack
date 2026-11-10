@@ -806,6 +806,13 @@
         "ex2": "Monitora la timeline delle entrate a 14 giorni e i tuoi 5 articoli più venduti.",
         "ex3": "Clicca su 'Esporta CSV' per scaricare un foglio di calcolo di tutti gli ordini per la contabilità."
       },
+      "aiCopilot": {
+        "title": "✨ Co-pilota IA",
+        "desc": "Il tuo assistente aziendale intelligente per analisi e strategia.",
+        "ex1": "Vai su Impostazioni per configurare la tua chiave API (Google Gemini, OpenAI o DeepSeek).",
+        "ex2": "Apri il pannello mobile ✨ nella pagina Panoramica o Analisi per fare domande sulla tua attività.",
+        "ex3": "Usa le Azioni Rapide come 'Analizza Entrate' o 'Articoli più venduti' per ottenere approfondimenti immediati basati sui dati."
+      },
       "menu": {
         "title": "🍽️ Menu e categorie",
         "desc": "Gestisci i tuoi piatti, i prezzi e le categorie.",
